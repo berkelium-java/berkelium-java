@@ -3,8 +3,7 @@ package org.berkelium;
 public final class Context {
 	private static Context instance = new Context();
 
-	public Context() {
-		System.out.println("Context()");
+	private Context() {
 		handle = _init();
 	}
 
@@ -22,7 +21,6 @@ public final class Context {
 	protected transient long handle;
 
 	public static Context getDefault() {
-		System.out.println("Context getDefault()");
 		return instance;
 	}
 }

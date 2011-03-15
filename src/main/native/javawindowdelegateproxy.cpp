@@ -43,10 +43,12 @@ public:
 	}
 
 	virtual void onAddressBarChanged(Berkelium::Window *win, Berkelium::URLString newURL) {
-		std::cout << (void*)win << "*** onAddressBarChanged " << newURL << std::endl;
+		// FIXME: str
+		callWindowFuncStr("onAddressBarChanged", win, 0);
 	}
 	virtual void onStartLoading(Berkelium::Window *win, Berkelium::URLString newURL) {
-		std::cout << (void*)win << "*** onStartLoading " << newURL << std::endl;
+		// FIXME: str
+		callWindowFuncStr("onStartLoading", win, 0);
 	}
 	
 	virtual void onLoad(Berkelium::Window *win) {
@@ -57,39 +59,40 @@ public:
 		callWindowFunc("onCrashedWorker", win);
 	}
 	virtual void onCrashedPlugin(Berkelium::Window *win, Berkelium::WideString pluginName) {
-		std::wcout << L"*** onCrashedPlugin " << pluginName << std::endl;
+		std::wcout << L"FIXME, NOT IMPLEMENTED: onCrashedPlugin " << pluginName << std::endl;
 	}
 	virtual void onProvisionalLoadError(Berkelium::Window *win, Berkelium::URLString url,
 										int errorCode, bool isMainFrame) {
-		std::cout << "*** onProvisionalLoadError " << url << ": " << errorCode;
+		std::cout << "FIXME, NOT IMPLEMENTED: onProvisionalLoadError " << url << ": " << errorCode;
 		if (isMainFrame) std::cout << " (main frame)";
 		std::cout << std::endl;
 	}
 	virtual void onConsoleMessage(Berkelium::Window *win, Berkelium::WideString message,
 								  Berkelium::WideString sourceId, int line_no) {
-		std::wcout << L"*** onConsoleMessage " << message << L" from "
+		std::wcout << L"FIXME, NOT IMPLEMENTED: onConsoleMessage " << message << L" from "
 				   << sourceId << L" line " << line_no << std::endl;
 	}
 	virtual void onScriptAlert(Berkelium::Window *win, Berkelium::WideString message,
 							  Berkelium::WideString defaultValue, Berkelium::URLString url,
 							  int flags, bool &success, Berkelium::WideString &value) {
-		std::wcout << L"*** onBerkelium::ScriptAlert " << message << std::endl;
+		std::wcout << L"FIXME, NOT IMPLEMENTED: onBerkelium::ScriptAlert " << message << std::endl;
 	}
 	virtual void onNavigationRequested(Berkelium::Window *win, Berkelium::URLString newURL,
 									   Berkelium::URLString referrer, bool isNewWindow,
 									   bool &cancelDefaultAction) {
-		std::cout << (void*)win << "*** onNavigationRequested " << newURL << " by " << referrer
+		std::cout << "FIXME, NOT IMPLEMENTED: onNavigationRequested " << newURL << " by " << referrer
 				  << (isNewWindow?"  (new window)" : " (same window)") << std::endl;
 	}
 	virtual void onLoadingStateChanged(Berkelium::Window *win, bool isLoading) {
-		std::cout << (void*)win << "*** onLoadingStateChanged "
-				  << (isLoading?"started":"stopped") << std::endl;
+		callWindowFuncBoolean("onLoadingStateChanged", win, isLoading);
 	}
 	virtual void onTitleChanged(Berkelium::Window *win, Berkelium::WideString title) {
-		std::wcout << L"*** onTitleChanged " << title << std::endl;
+		// FIXME: str
+		callWindowFuncStr("onTitleChanged", win, 0);
 	}
 	virtual void onTooltipChanged(Berkelium::Window *win, Berkelium::WideString text) {
-		std::wcout << L"*** onTooltipChanged " << text << std::endl;
+		// FIXME: str
+		callWindowFuncStr("onTooltipChanged", win, 0);
 	}
 	virtual void onCrashed(Berkelium::Window *win) {
 		callWindowFunc("onCrashed", win);
@@ -102,7 +105,7 @@ public:
 	}
 	virtual void onCreatedWindow(Berkelium::Window *win, Berkelium::Window *newWindow,
 								 const Berkelium::Rect &initialRect) {
-		std::cout << (void*)win << "*** onCreatedWindow " << (void*)newWindow<<" "
+		std::cout << "FIXME, NOT IMPLEMENTED: onCreatedWindow " << (void*)newWindow<<" "
 				  << initialRect.mLeft << "," << initialRect.mTop << ": "
 				  << initialRect.mWidth << "x" << initialRect.mHeight << std::endl;
 		if (initialRect.mWidth < 1 || initialRect.mHeight < 1) {
@@ -111,24 +114,24 @@ public:
 		newWindow->setDelegate(this);
 	}
 	virtual void onWidgetCreated(Berkelium::Window *win, Berkelium::Widget *newWidget, int zIndex) {
-		std::cout << "*** onWidgetCreated " << newWidget << " index " << zIndex << std::endl;
+		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetCreated " << newWidget << " index " << zIndex << std::endl;
 	}
 	virtual void onWidgetResize(Berkelium::Window *win, Berkelium::Widget *wid, int newWidth, int newHeight) {
-		std::cout << "*** onWidgetResize " << wid << " "
+		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetResize " << wid << " "
 				  << newWidth << "x" << newHeight << std::endl;
 	}
 	virtual void onWidgetMove(Berkelium::Window *win, Berkelium::Widget *wid, int newX, int newY) {
-		std::cout << "*** onWidgetMove " << wid << " "
+		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetMove " << wid << " "
 				  << newX << "," << newY << std::endl;
 	}
 	virtual void onShowContextMenu(Berkelium::Window *win,
 								   const Berkelium::ContextMenuEventArgs& args) {
-		std::cout << "*** onShowContextMenu at " << args.mouseX << "," << args.mouseY;
+		std::cout << "FIXME, NOT IMPLEMENTED: onShowContextMenu at " << args.mouseX << "," << args.mouseY;
 		std::cout << std::endl;
 	}
 	
 	virtual void onJavaScriptCallback(Berkelium::Window *win, void* replyMsg, Berkelium::URLString url, Berkelium::WideString funcName, Berkelium::Script::Variant *args, size_t numArgs) {
-		std::cout << "*** onJavaBerkelium::ScriptCallback at URL " << url << ", "
+		std::cout << "FIXME, NOT IMPLEMENTED: onJavaBerkelium::ScriptCallback at URL " << url << ", "
 				  << (replyMsg?"synchronous":"async") << std::endl;
 		std::wcout << L"	Function name: " << funcName << std::endl;
 		for (size_t i = 0; i < numArgs; i++) {
@@ -153,7 +156,7 @@ public:
 	 * \param defaultFile  Default file to select in dialog.
 	 */
 	virtual void onRunFileChooser(Berkelium::Window *win, int mode, Berkelium::WideString title, Berkelium::FileString defaultFile) {
-		std::wcout << L"*** onRunFileChooser type " << mode << L", title " << title << L":" << std::endl;
+		std::wcout << L"FIXME, NOT IMPLEMENTED: onRunFileChooser type " << mode << L", title " << title << L":" << std::endl;
 #ifdef _WIN32
 		std::wcout <<
 #else
@@ -170,7 +173,7 @@ public:
 		Berkelium::URLString origin,
 		Berkelium::URLString target)
 	{
-		std::cout << "*** onExternalHost at URL from "<<origin<<" to "<<target<<":"<<std::endl;
+		std::cout << "FIXME, NOT IMPLEMENTED: onExternalHost at URL from "<<origin<<" to "<<target<<":"<<std::endl;
 		std::wcout << message<<std::endl;
 	}
 	
@@ -198,13 +201,48 @@ private:
 		return env->NewGlobalRef(globalDelegate);
 	}
 
+	/**
+	 * FIXME: use varargs code here
+	 */
 	void callWindowFunc(const char* func, Berkelium::Window *wini) {
 		const char* sig = "(Lorg/berkelium/Window;)V";
 		JNIEnv* env = attachCurrentThread();
+		if (env == 0)return;
 		jobject obj = getLocalDelegate(env);
+		if (obj == 0)return;
 		jmethodID jmid = getMethod(env, obj, func, sig);
+		if (jmid == 0)return;
 		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
+		if (win == 0)return;
 		env->CallVoidMethod(obj, jmid, win);
+		detachCurrentThread();
+	}
+
+	void callWindowFuncBoolean(const char* func, Berkelium::Window *wini, bool val) {
+		const char* sig = "(Lorg/berkelium/Window;Z)V";
+		JNIEnv* env = attachCurrentThread();
+		if (env == 0)return;
+		jobject obj = getLocalDelegate(env);
+		if (obj == 0)return;
+		jmethodID jmid = getMethod(env, obj, func, sig);
+		if (jmid == 0)return;
+		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
+		if (win == 0)return;
+		env->CallVoidMethod(obj, jmid, win, val);
+		detachCurrentThread();
+	}
+
+	void callWindowFuncStr(const char* func, Berkelium::Window *wini, jobject str) {
+		const char* sig = "(Lorg/berkelium/Window;Ljava/lang/String;)V";
+		JNIEnv* env = attachCurrentThread();
+		if (env == 0)return;
+		jobject obj = getLocalDelegate(env);
+		if (obj == 0)return;
+		jmethodID jmid = getMethod(env, obj, func, sig);
+		if (jmid == 0)return;
+		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
+		if (win == 0)return;
+		env->CallVoidMethod(obj, jmid, win, str);
 		detachCurrentThread();
 	}
 	

@@ -7,13 +7,14 @@ public final class Platform extends Berkelium {
 	// private final static NativeLibrary lib;
 
 	static {
-		// lib =
-		new NativeLibraryLoader("win32");
+		try {
+			_init(new NativeLibraryLoader("win32").getSystemPath());
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
+		}
 	}
 
 	public Platform() {
-		// System.loadLibrary("berkelium-java");
-		_init();
 	}
 
 	@Override
@@ -21,7 +22,7 @@ public final class Platform extends Berkelium {
 		return new WindowImpl();
 	}
 
-	private final native void _init();
+	private final static native void _init(String path);
 
 	@Override
 	public final native void update();

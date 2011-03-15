@@ -32,6 +32,6 @@ class Example1 extends WindowAdapter {
 	public static void main(String[] args) throws Exception {
 		new Example1().run();
 		// shutdown berkelium
-		Berkelium.getInstance().destroy();
+		berkelium.destroy();
 	}
 }

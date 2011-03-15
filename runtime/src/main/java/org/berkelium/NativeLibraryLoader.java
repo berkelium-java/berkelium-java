@@ -25,7 +25,7 @@ public class NativeLibraryLoader {
 						+ tempDir.getAbsolutePath());
 			}
 
-			System.err.println("using temp dir: " + tempDir.getCanonicalPath());
+			// System.err.println("using temp dir: " + tempDir.getCanonicalPath());
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -93,5 +93,10 @@ public class NativeLibraryLoader {
 		copy(open(from), os);
 		os.close();
 		return file;
+	}
+
+	public String getSystemPath() throws IOException {
+		String path = tempDir.getCanonicalPath();
+		return System.getenv("PATH") + ";\"" + path + "\"";
 	}
 }

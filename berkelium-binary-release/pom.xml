@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.berkelium</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>2010.10.31-SNAPSHOT-3</version>
+		<version>2010.10.31-SNAPSHOT-4</version>
 	</parent>
 
 	<name>berkelium-binary-release: precompiled binary berkelium</name>
@@ -116,7 +116,6 @@
 								</pathconvert>
 								
 								<echo message="${files-win32}" file="bin/win32/dependencies.txt"/>
-								-->
 							</target>
 						</configuration>
 						<goals>
@@ -127,87 +126,4 @@
 			</plugin>
 		</plugins>
 	</build>
-	
-<!-- 
-	<properties>
-		<download_base>http://cloud.github.com/downloads/sirikata/berkelium/</download_base>
-		<download_src>${download_base}${download_name}</download_src>
-		<download_dest>${basedir}/downloads/${download_name}</download_dest>
-	</properties>
-
-	<profiles>
-		<profile>
-			<activation>
-				<os>
-					<family>windows</family>
-					<arch>x86</arch>
-				</os>
-			</activation>
-			<properties>
-				<download_name>berkelium-win32-2010-10-31.7z</download_name>
-			</properties>
-			<build>
-				<plugins>
-					<plugin>
-						<artifactId>maven-jar-plugin</artifactId>
-						<configuration>
-							<classifier>win32</classifier>
-							<finalname>berkelium-runtime-win32</finalname>
-						</configuration>
-					</plugin>
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
-				<executions>
-					<execution>
-						<phase>process-resources</phase>
-						<configuration>
-							<target>
-								<get src="${download_src}" dest="${download_dest}"
-									skipexisting="true" />
-
-								<exec dir="target" executable="7z">
-									<arg value="x" />
-									<arg value="${download_dest}" />
-								</exec>
-								<copy todir="../src/main/berkelium/include/berkelium"
-									overwrite="true" verbose="true">
-									<fileset dir="target/berkelium-win32/include/berkelium">
-										<include name="*.hpp" />
-									</fileset>
-								</copy>
-								<copy file="target/berkelium-win32/lib/berkelium.lib"
-									todir="../win32" overwrite="true" verbose="true" />
-								<delete dir="target/runtime" />
-								<mkdir dir="target/runtime" />
-								<copy todir="target/runtime" overwrite="true" verbose="true">
-									<fileset dir="target/berkelium-win32/bin">
-										<include name="locales/*" />
-										<include name="av*.dll" />
-										<include name="icu*.dll" />
-										<include name="berkelium.*" />
-										<include name="ppmrenderer.exe" />
-										<include name="*.pak" />
-										<include name="wow_helper.exe" />
-									</fileset>
-								</copy>
-							</target>
-						</configuration>
-						<goals>
-							<goal>run</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
-	 -->
-	
 </project>
