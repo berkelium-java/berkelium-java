@@ -1,3 +1,10 @@
+#if WIN32
+#include <windows.h>
+#ifndef CP_UTF8
+#define CP_UTF8 65001
+#endif
+#endif
+
 #define BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM 0
 extern JNIEnv* Berkelium_Java_Update_JNIEnv;
 class JavaWindowDelegateProxy : public Berkelium::WindowDelegate {
@@ -43,12 +50,10 @@ public:
 	}
 
 	virtual void onAddressBarChanged(Berkelium::Window *win, Berkelium::URLString newURL) {
-		// FIXME: str
-		callWindowFuncStr("onAddressBarChanged", win, 0);
+		callWindowFuncStr("onAddressBarChanged", win, newURL);
 	}
 	virtual void onStartLoading(Berkelium::Window *win, Berkelium::URLString newURL) {
-		// FIXME: str
-		callWindowFuncStr("onStartLoading", win, 0);
+		callWindowFuncStr("onStartLoading", win, newURL);
 	}
 	
 	virtual void onLoad(Berkelium::Window *win) {
@@ -59,7 +64,7 @@ public:
 		callWindowFunc("onCrashedWorker", win);
 	}
 	virtual void onCrashedPlugin(Berkelium::Window *win, Berkelium::WideString pluginName) {
-		std::wcout << L"FIXME, NOT IMPLEMENTED: onCrashedPlugin " << pluginName << std::endl;
+		callWindowFuncStr("onCrashedPlugin", win, pluginName);
 	}
 	virtual void onProvisionalLoadError(Berkelium::Window *win, Berkelium::URLString url,
 										int errorCode, bool isMainFrame) {
@@ -87,12 +92,10 @@ public:
 		callWindowFuncBoolean("onLoadingStateChanged", win, isLoading);
 	}
 	virtual void onTitleChanged(Berkelium::Window *win, Berkelium::WideString title) {
-		// FIXME: str
-		callWindowFuncStr("onTitleChanged", win, 0);
+		callWindowFuncStr("onTitleChanged", win, title);
 	}
 	virtual void onTooltipChanged(Berkelium::Window *win, Berkelium::WideString text) {
-		// FIXME: str
-		callWindowFuncStr("onTooltipChanged", win, 0);
+		callWindowFuncStr("onTooltipChanged", win, text);
 	}
 	virtual void onCrashed(Berkelium::Window *win) {
 		callWindowFunc("onCrashed", win);
@@ -232,6 +235,18 @@ private:
 		detachCurrentThread();
 	}
 
+	void callWindowFuncStr(const char* func, Berkelium::Window *win, Berkelium::URLString str) {
+		JNIEnv* env = attachCurrentThread();
+		if (env == 0)return;
+		callWindowFuncStr(func, win, env->NewStringUTF(str.data()));
+	}
+
+	void callWindowFuncStr(const char* func, Berkelium::Window *win, Berkelium::WideString str) {
+		JNIEnv* env = attachCurrentThread();
+		if (env == 0)return;
+		callWindowFuncStr(func, win, wideString2javaString(env, str));
+	}
+	
 	void callWindowFuncStr(const char* func, Berkelium::Window *wini, jobject str) {
 		const char* sig = "(Lorg/berkelium/Window;Ljava/lang/String;)V";
 		JNIEnv* env = attachCurrentThread();
@@ -250,4 +265,52 @@ private:
 		jclass cls = env->GetObjectClass(obj);
 		return env->GetMethodID(cls, func, sig);
 	}
+
+#if WIN32
+	// from http://stackoverflow.com/questions/870414/passing-double-byte-wchar-strings-from-c-to-java-via-jni
+	jobject wideString2javaString(JNIEnv* env, Berkelium::WideString ws) {
+		const wchar_t* utf16 = ws.data();
+		int utf16_length = ws.length();
+		int utf8_length = WideCharToMultiByte(
+		  CP_UTF8,           // Convert to UTF-8
+		  0,                 // No special character conversions required 
+		                     // (UTF-16 and UTF-8 support the same characters)
+		  utf16,             // UTF-16 string to convert
+		  utf16_length,      // utf16 is NULL terminated (if not, use length)
+		  NULL,              // Determining correct output buffer size
+		  0,                 // Determining correct output buffer size
+		  NULL,              // Must be NULL for CP_UTF8
+		  NULL);             // Must be NULL for CP_UTF8
+		
+		if (utf8_length == 0) {
+			printf("internal berkelium-java error: WideCharToMultiByte failed (1)\n");
+			return 0;
+		}
+		
+		char* utf8 = new char[utf8_length+1]; // Allocate space for UTF-8 string
+		
+		utf8_length = WideCharToMultiByte(
+		  CP_UTF8,           // Convert to UTF-8
+		  0,                 // No special character conversions required 
+		                     // (UTF-16 and UTF-8 support the same characters)
+		  utf16,             // UTF-16 string to convert
+		  utf16_length,      // utf16 is NULL terminated (if not, use length)
+		  utf8,              // UTF-8 output buffer
+		  utf8_length,       // UTF-8 output buffer size
+		  NULL,              // Must be NULL for CP_UTF8
+		  NULL);             // Must be NULL for CP_UTF8
+		
+		if (utf8_length == 0) {
+			printf("internal berkelium-java error: WideCharToMultiByte failed (2)\n");
+			return 0;
+		}
+		
+		utf8[utf8_length] = 0;
+		jobject ret = env->NewStringUTF(utf8);
+		delete utf8;
+		
+		return ret;
+	}
+#endif
+
 };
