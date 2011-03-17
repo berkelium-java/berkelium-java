@@ -5,22 +5,13 @@
 #endif
 #endif
 
-#define BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM 0
-extern JNIEnv* Berkelium_Java_Update_JNIEnv;
 class JavaWindowDelegateProxy : public Berkelium::WindowDelegate {
 private:
-#if BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM
-	JavaVM* jvm;
-#endif
 	jobject globalDelegate;
 	
 public:
-	JavaWindowDelegateProxy(JNIEnv* env, jobject localDelegate) {
-		globalDelegate = env->NewGlobalRef(localDelegate);
-#if BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM
-		env->GetJavaVM(&jvm);
-		std::cout << "JavaWindowDelegateProxy(" << (int)jvm << ", " << (int)globalDelegate << std::endl;
-#endif
+	JavaWindowDelegateProxy(jobject localDelegate) {
+		globalDelegate = Berkelium_Java_Env::get()->NewGlobalRef(localDelegate);
 	}
 	
 	virtual void onPaint(
@@ -33,106 +24,130 @@ public:
 		int dy,
 		const Berkelium::Rect &scroll_rect)
 	{
-		const char* sig = "(Lorg/berkelium/Window;Lorg/berkelium/Buffer;Lorg/berkelium/Rect;[Lorg/berkelium/Rect;IILorg/berkelium/Rect;)V";
-		JNIEnv* env = attachCurrentThread();
-		jobject dlg = getLocalDelegate(env);
-		jmethodID jmid = getMethod(env, dlg, "onPaint", sig);
-		if (jmid == 0)return;
-		jobject win = Berkelium_Java_Registry_get(env, (jlong)wini);
-		if (win == 0)return;
-		jobject buffer = Berkelium_Java_Buffer(env, bitmap_in, 4 * bitmap_rect.width() * bitmap_rect.height());
-		if (buffer == 0)return;
-		jobject inRect = Berkelium_Java_Rect(env, bitmap_rect);
-		jobject copyRects = Berkelium_Java_Rects(env, num_copy_rects, copy_rects);
-		jobject scrollRect = Berkelium_Java_Rect(env, scroll_rect);
-		env->CallVoidMethod(dlg, jmid, win, buffer, inRect, copyRects, dx, dy, scrollRect);
-		detachCurrentThread();
+		callFuncA(
+			"onLoad",
+			"(Lorg/berkelium/Window;Lorg/berkelium/Buffer;Lorg/berkelium/Rect;[Lorg/berkelium/Rect;IILorg/berkelium/Rect;)V",
+			map(wini),
+			map(bitmap_in, 4 * bitmap_rect.width() * bitmap_rect.height()),
+			map(bitmap_rect),
+			map(num_copy_rects, copy_rects),
+			dx,
+			dy,
+			map(scroll_rect)
+		);
 	}
 
 	virtual void onAddressBarChanged(Berkelium::Window *win, Berkelium::URLString newURL) {
-		callWindowFuncStr("onAddressBarChanged", win, newURL);
+		callFunc("onAddressBarChanged", win, map(newURL));
 	}
 	virtual void onStartLoading(Berkelium::Window *win, Berkelium::URLString newURL) {
-		callWindowFuncStr("onStartLoading", win, newURL);
+		callFunc("onStartLoading", win, map(newURL));
 	}
 	
 	virtual void onLoad(Berkelium::Window *win) {
-		callWindowFunc("onLoad", win);
+		callFunc("onLoad", win);
 	}
 	
 	virtual void onCrashedWorker(Berkelium::Window *win) {
-		callWindowFunc("onCrashedWorker", win);
+		callFunc("onCrashedWorker", win);
 	}
+
 	virtual void onCrashedPlugin(Berkelium::Window *win, Berkelium::WideString pluginName) {
-		callWindowFuncStr("onCrashedPlugin", win, pluginName);
+		callFunc("onCrashedPlugin", win, map(pluginName));
 	}
+
 	virtual void onProvisionalLoadError(Berkelium::Window *win, Berkelium::URLString url,
 										int errorCode, bool isMainFrame) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onProvisionalLoadError " << url << ": " << errorCode;
-		if (isMainFrame) std::cout << " (main frame)";
-		std::cout << std::endl;
+		callFunc("onProvisionalLoadError", win, map(url), errorCode, isMainFrame);
 	}
+
 	virtual void onConsoleMessage(Berkelium::Window *win, Berkelium::WideString message,
 								  Berkelium::WideString sourceId, int line_no) {
-		std::wcout << L"FIXME, NOT IMPLEMENTED: onConsoleMessage " << message << L" from "
-				   << sourceId << L" line " << line_no << std::endl;
+		callFunc("onConsoleMessage", win, map(message), map(sourceId), line_no);
 	}
+
 	virtual void onScriptAlert(Berkelium::Window *win, Berkelium::WideString message,
 							  Berkelium::WideString defaultValue, Berkelium::URLString url,
 							  int flags, bool &success, Berkelium::WideString &value) {
-		std::wcout << L"FIXME, NOT IMPLEMENTED: onBerkelium::ScriptAlert " << message << std::endl;
+		callFuncA(
+			"onScriptAlert",
+			"(Lorg/berkelium/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I[Z[Ljava/lang/String;)V",
+			map(win),
+			map(message),
+			map(defaultValue),
+			map(url),
+			flags,
+			mapRw(success),
+			mapRw(value)
+		);
+		// FIXME: unmap(success)
+		// FIXME: unmap(value)
 	}
+
 	virtual void onNavigationRequested(Berkelium::Window *win, Berkelium::URLString newURL,
 									   Berkelium::URLString referrer, bool isNewWindow,
 									   bool &cancelDefaultAction) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onNavigationRequested " << newURL << " by " << referrer
-				  << (isNewWindow?"  (new window)" : " (same window)") << std::endl;
+		callFuncA(
+			"onNavigationRequested",
+			"(Lorg/berkelium/Window;Ljava/lang/String;Ljava/lang/String;Z[Z)V",
+			map(win),
+			map(newURL),
+			map(referrer),
+			isNewWindow,
+			mapRw(cancelDefaultAction)
+		);
+		// FIXME: unmap(cancelDefaultAction)
 	}
+
 	virtual void onLoadingStateChanged(Berkelium::Window *win, bool isLoading) {
-		callWindowFuncBoolean("onLoadingStateChanged", win, isLoading);
+		callFunc("onLoadingStateChanged", win, isLoading);
 	}
+
 	virtual void onTitleChanged(Berkelium::Window *win, Berkelium::WideString title) {
-		callWindowFuncStr("onTitleChanged", win, title);
+		callFunc("onTitleChanged", win, map(title));
 	}
+
 	virtual void onTooltipChanged(Berkelium::Window *win, Berkelium::WideString text) {
-		callWindowFuncStr("onTooltipChanged", win, text);
+		callFunc("onTooltipChanged", win, map(text));
 	}
+
 	virtual void onCrashed(Berkelium::Window *win) {
-		callWindowFunc("onCrashed", win);
+		callFunc("onCrashed", win);
 	}
+
 	virtual void onUnresponsive(Berkelium::Window *win) {
-		callWindowFunc("onUnresponsive", win);
+		callFunc("onUnresponsive", win);
 	}
+
 	virtual void onResponsive(Berkelium::Window *win) {
-		callWindowFunc("onResponsive", win);
+		callFunc("onResponsive", win);
 	}
+
 	virtual void onCreatedWindow(Berkelium::Window *win, Berkelium::Window *newWindow,
 								 const Berkelium::Rect &initialRect) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onCreatedWindow " << (void*)newWindow<<" "
-				  << initialRect.mLeft << "," << initialRect.mTop << ": "
-				  << initialRect.mWidth << "x" << initialRect.mHeight << std::endl;
-		if (initialRect.mWidth < 1 || initialRect.mHeight < 1) {
-			//newWindow->resize(this->width, this->height);
-		}
+		// FIXME: move setDelegate call to java
 		newWindow->setDelegate(this);
+		callFunc("onCreatedWindow", win, newWindow, initialRect);
 	}
+
 	virtual void onWidgetCreated(Berkelium::Window *win, Berkelium::Widget *newWidget, int zIndex) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetCreated " << newWidget << " index " << zIndex << std::endl;
+		callFunc("onWidgetCreated", win, newWidget, zIndex);
 	}
+
 	virtual void onWidgetResize(Berkelium::Window *win, Berkelium::Widget *wid, int newWidth, int newHeight) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetResize " << wid << " "
-				  << newWidth << "x" << newHeight << std::endl;
+		callFunc("onWidgetResize", win, wid, newWidth, newHeight);
 	}
+
 	virtual void onWidgetMove(Berkelium::Window *win, Berkelium::Widget *wid, int newX, int newY) {
-		std::cout << "FIXME, NOT IMPLEMENTED: onWidgetMove " << wid << " "
-				  << newX << "," << newY << std::endl;
+		callFunc("onWidgetMove", win, wid, newX, newY);
 	}
+
 	virtual void onShowContextMenu(Berkelium::Window *win,
 								   const Berkelium::ContextMenuEventArgs& args) {
 		std::cout << "FIXME, NOT IMPLEMENTED: onShowContextMenu at " << args.mouseX << "," << args.mouseY;
 		std::cout << std::endl;
 	}
-	
+
 	virtual void onJavaScriptCallback(Berkelium::Window *win, void* replyMsg, Berkelium::URLString url, Berkelium::WideString funcName, Berkelium::Script::Variant *args, size_t numArgs) {
 		std::cout << "FIXME, NOT IMPLEMENTED: onJavaBerkelium::ScriptCallback at URL " << url << ", "
 				  << (replyMsg?"synchronous":"async") << std::endl;
@@ -151,7 +166,7 @@ public:
 			win->synchronousScriptReturn(replyMsg, numArgs ? args[0] : Berkelium::Script::Variant());
 		}
 	}
-	
+
 	/** Display a file chooser dialog, if necessary. The value to be returned should go ______.
 	 * \param win  Window instance that fired this event.
 	 * \param mode  Type of file chooser expected. See FileChooserType.
@@ -169,106 +184,110 @@ public:
 	
 		win->filesSelected(NULL);
 	}
-	
+
 	virtual void onExternalHost(
 		Berkelium::Window *win,
 		Berkelium::WideString message,
 		Berkelium::URLString origin,
 		Berkelium::URLString target)
 	{
-		std::cout << "FIXME, NOT IMPLEMENTED: onExternalHost at URL from "<<origin<<" to "<<target<<":"<<std::endl;
-		std::wcout << message<<std::endl;
+		callFunc("onExternalHost", win, map(message), map(origin), map(target));
 	}
-	
+
 private:
-	JNIEnv* attachCurrentThread() {
-#if BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM
-		JNIEnv* env = 0;
-#ifdef JNI_VERSION_1_2
-		jint res = jvm->AttachCurrentThread((void**)&env, NULL);
-#else
-		jint res = jvm->AttachCurrentThread(&env, NULL);
-#endif
-		return env;
-#else
-		return Berkelium_Java_Update_JNIEnv;
-#endif
-	}
-	void detachCurrentThread() {
-#if BERKELIUM_JAVA_ATTACH_THREAD_TO_JVM
-		jvm->DetachCurrentThread();
-#endif
-	}
-	
-	jobject getLocalDelegate(JNIEnv* env) {
-		return env->NewGlobalRef(globalDelegate);
+
+	void callFunc(const char* func, Berkelium::Window *win) {
+		callFuncA(func, "(Lorg/berkelium/Window;)V", map(win));
 	}
 
-	/**
-	 * FIXME: use varargs code here
-	 */
-	void callWindowFunc(const char* func, Berkelium::Window *wini) {
-		const char* sig = "(Lorg/berkelium/Window;)V";
-		JNIEnv* env = attachCurrentThread();
-		if (env == 0)return;
-		jobject obj = getLocalDelegate(env);
-		if (obj == 0)return;
-		jmethodID jmid = getMethod(env, obj, func, sig);
-		if (jmid == 0)return;
-		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
-		if (win == 0)return;
-		env->CallVoidMethod(obj, jmid, win);
-		detachCurrentThread();
+	void callFunc(const char* func, Berkelium::Window *win, bool val) {
+		callFuncA(func, "(Lorg/berkelium/Window;Z)V", map(win), val);
 	}
 
-	void callWindowFuncBoolean(const char* func, Berkelium::Window *wini, bool val) {
-		const char* sig = "(Lorg/berkelium/Window;Z)V";
-		JNIEnv* env = attachCurrentThread();
-		if (env == 0)return;
-		jobject obj = getLocalDelegate(env);
-		if (obj == 0)return;
-		jmethodID jmid = getMethod(env, obj, func, sig);
-		if (jmid == 0)return;
-		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
-		if (win == 0)return;
-		env->CallVoidMethod(obj, jmid, win, val);
-		detachCurrentThread();
+	void callFunc(const char* func, Berkelium::Window *win, jstring str) {
+		callFuncA(func, "(Lorg/berkelium/Window;Ljava/lang/String;)V", map(win), str);
 	}
 
-	void callWindowFuncStr(const char* func, Berkelium::Window *win, Berkelium::URLString str) {
-		JNIEnv* env = attachCurrentThread();
-		if (env == 0)return;
-		callWindowFuncStr(func, win, env->NewStringUTF(str.data()));
+	void callFunc(const char* func, Berkelium::Window *arg1, jstring arg2, jstring arg3, jstring arg4) {
+		callFuncA(func, "(Lorg/berkelium/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", map(arg1), arg2, arg3, arg4);
 	}
 
-	void callWindowFuncStr(const char* func, Berkelium::Window *win, Berkelium::WideString str) {
-		JNIEnv* env = attachCurrentThread();
-		if (env == 0)return;
-		callWindowFuncStr(func, win, wideString2javaString(env, str));
+	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2, int arg3) {
+		callFuncA(func, "(Lorg/berkelium/Window;Ljava/lang/String;Ljava/lang/String;I)V", map(win), arg1, arg2, arg3);
 	}
-	
-	void callWindowFuncStr(const char* func, Berkelium::Window *wini, jobject str) {
-		const char* sig = "(Lorg/berkelium/Window;Ljava/lang/String;)V";
-		JNIEnv* env = attachCurrentThread();
-		if (env == 0)return;
-		jobject obj = getLocalDelegate(env);
-		if (obj == 0)return;
-		jmethodID jmid = getMethod(env, obj, func, sig);
-		if (jmid == 0)return;
-		jobject win = Berkelium_Java_Registry_get(env, (jint)wini);
-		if (win == 0)return;
-		env->CallVoidMethod(obj, jmid, win, str);
-		detachCurrentThread();
+
+	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, int arg2, bool arg3) {
+		callFuncA(func, "(Lorg/berkelium/Window;Ljava/lang/String;IZ)V", map(win), arg1, arg2, arg3);
 	}
-	
-	jmethodID getMethod(JNIEnv* env, jobject obj, const char* func, const char* sig) {
+
+	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Window* arg2, const Berkelium::Rect& arg3) {
+		callFuncA(func, "(Lorg/berkelium/Window;Lorg/berkelium/Window;Lorg/berkelium/Rect;)V", map(arg1), map(arg2), map(arg3));
+	}
+
+	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Widget* arg2, int arg3) {
+		callFuncA(func, "(Lorg/berkelium/Window;Lorg/berkelium/Widget;I)V", map(arg1), map(arg2), arg3);
+	}
+
+	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Widget* arg2, int arg3, int arg4) {
+		callFuncA(func, "(Lorg/berkelium/Window;Lorg/berkelium/Widget;II)V", map(arg1), map(arg2), arg3, arg4);
+	}
+
+	void callFuncA(const char* func, const char* sig, ...) {
+		va_list args;
+		JNIEnv* env = Berkelium_Java_Env::get();
+		jobject obj = env->NewGlobalRef(globalDelegate);
+		if (obj == 0) {
+			return;
+		}
 		jclass cls = env->GetObjectClass(obj);
-		return env->GetMethodID(cls, func, sig);
+		if (cls != 0) {
+			jmethodID jmid = env->GetMethodID(cls, func, sig);
+			if (jmid != 0) {
+				va_start(args, sig);
+				env->CallVoidMethodV(obj, jmid, args);
+				va_end(args);
+			}
+		}
+		env->DeleteGlobalRef(obj);
+	}
+
+	jobject map(Berkelium::Window* win) {
+		return Berkelium_Java_Registry_get((jint)win);
+	}
+
+	jobject map(Berkelium::Widget* wid) {
+		return Berkelium_Java_Registry_get((jint)wid);
+	}
+
+	jobject map(const Berkelium::Rect& rect) {
+		return Berkelium_Java_Rect(rect);
+	}
+
+	jstring map(Berkelium::URLString str) {
+		return Berkelium_Java_Env::get()->NewStringUTF(str.data());
+	}
+
+	jobject map(const void* data, size_t num) {
+		return Berkelium_Java_Buffer(data, num);
+	}
+
+	jobject map(size_t num, const Berkelium::Rect* rects) {
+		return Berkelium_Java_Rects(num, rects);
+	}
+
+	jbooleanArray mapRw(bool& val) {
+		// FIXME!
+		return 0;
+	}
+
+	jbooleanArray mapRw(Berkelium::WideString& val) {
+		// FIXME!
+		return 0;
 	}
 
 #if WIN32
 	// from http://stackoverflow.com/questions/870414/passing-double-byte-wchar-strings-from-c-to-java-via-jni
-	jobject wideString2javaString(JNIEnv* env, Berkelium::WideString ws) {
+	jstring map(const Berkelium::WideString& ws) {
 		const wchar_t* utf16 = ws.data();
 		int utf16_length = ws.length();
 		int utf8_length = WideCharToMultiByte(
@@ -306,7 +325,7 @@ private:
 		}
 		
 		utf8[utf8_length] = 0;
-		jobject ret = env->NewStringUTF(utf8);
+		jstring ret = Berkelium_Java_Env::get()->NewStringUTF(utf8);
 		delete utf8;
 		
 		return ret;
