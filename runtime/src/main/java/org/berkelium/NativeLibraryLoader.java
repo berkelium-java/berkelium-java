@@ -31,16 +31,22 @@ public class NativeLibraryLoader {
 		}
 	}
 
-	public NativeLibraryLoader(String sys) {
+	public NativeLibraryLoader() {
+		this("linux64");
+	}
+	
+	public NativeLibraryLoader(String systemType) {
 		try {
-			String base = "org/berkelium/native/" + sys;
+			String base = "org/berkelium/native/" + systemType;
 			processList(base);
 
 			// we can not alter the PATH, so we need to load the dependencies first
-			loadLib(base, "icudt42");
-			loadLib(base, "avutil-50");
-			loadLib(base, "avcodec-52");
-			loadLib(base, "avformat-52");
+			if(systemType.startsWith("win")) {
+				loadLib(base, "icudt42");
+				loadLib(base, "avutil-50");
+				loadLib(base, "avcodec-52");
+				loadLib(base, "avformat-52");
+			}
 			loadLib(base, "berkelium");
 			loadLib(base, "berkelium-java");
 		} catch (Exception ex) {
@@ -97,6 +103,9 @@ public class NativeLibraryLoader {
 
 	public String getSystemPath() throws IOException {
 		String path = tempDir.getCanonicalPath();
-		return System.getenv("PATH") + ";\"" + path + "\"";
+		if (path.contains(" ")) {
+			path = "\"" + path + "\"";
+		}
+		return System.getenv("PATH") + File.pathSeparator + path;
 	}
 }

@@ -8,7 +8,7 @@ public final class Platform extends Berkelium {
 
 	static {
 		try {
-			_init(new NativeLibraryLoader("win32").getSystemPath());
+			_init(new NativeLibraryLoader().getSystemPath());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}

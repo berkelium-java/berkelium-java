@@ -13,12 +13,33 @@
 	<name>berkelium-binary-release: precompiled binary berkelium</name>
 	<artifactId>berkelium-binary-release</artifactId>
 	<packaging>jar</packaging>
-	
+
+	<profiles>
+		<profile>
+			<activation>
+				<os>
+					<family>windows</family>
+				</os>
+			</activation>
+			<properties>
+			 	<platform>win32</platform>
+
+			 	<download_date>2010-10-31</download_date>
+			</properties>
+		</profile>
+	</profiles>	
 	<properties>
-		<download_name>berkelium-win32-2010-10-31.7z</download_name>
+	 	<platform>linux64</platform>
+	 	<download_date>2010-11-02</download_date>
+
+	 	<download_unpacked>berkelium-${platform}</download_unpacked>
+		<download_name>berkelium-${platform}-${download_date}.7z</download_name>
 		<download_base>http://cloud.github.com/downloads/sirikata/berkelium/</download_base>
 		<download_src>${download_base}${download_name}</download_src>
-		<download_dest>${basedir}/downloads/${download_name}</download_dest>
+		<download_dest_file>${basedir}/downloads/${download_name}</download_dest_file>
+		
+		<unpack_base_dir>${basedir}/target/unpack</unpack_base_dir>
+		<unpacked>${unpack_base_dir}/${download_unpacked}</unpacked>
 	</properties>
 	
 	<build>
@@ -43,24 +64,6 @@
 								<include>**</include>
 							</includes>
 						</fileset>
-						<fileset>
-							<directory>bin/win32</directory>
-							<includes>
-								<include>**</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>include</directory>
-							<includes>
-								<include>*.hpp</include>
-							</includes>
-						</fileset>
-						<fileset>
-							<directory>lib</directory>
-							<includes>
-								<include>*.lib</include>
-							</includes>
-						</fileset>
 					</filesets>
 				</configuration>
 			</plugin>
@@ -74,48 +77,64 @@
 						<configuration>
 							<target>
 								<!-- download archive -->
-								<get src="${download_src}" dest="${download_dest}"
+								<get src="${download_src}" dest="${download_dest_file}"
 									skipexisting="true" />
 
+								<mkdir dir="${unpack_base_dir}"/>
+								
 								<!-- extract archive -->
-								<exec dir="target" executable="7z">
+								<exec dir="${unpack_base_dir}" executable="7z">
 									<arg value="x" />
-									<arg value="${download_dest}" />
+									<arg value="${download_dest_file}" />
 								</exec>
 								
 								<!--  copy header files -->
-								<copy todir="include/Berkelium"
+								<mkdir dir="target/include/berkelium"/>
+								<copy todir="target/include/berkelium"
 									overwrite="true" verbose="true">
-									<fileset dir="target/berkelium-win32/include/Berkelium">
+									<fileset dir="${unpacked}/include/berkelium">
 										<include name="*.hpp" />
 									</fileset>
 								</copy>
 								
 								<!--  copy library files -->
-								<copy file="target/berkelium-win32/lib/berkelium.lib"
-									todir="lib" overwrite="true" verbose="true" />
+								<mkdir dir="target/lib"/>
+								<copy file="${unpacked}/lib/berkelium.lib" failonerror="false"
+									todir="target/lib" overwrite="true" verbose="true" />
 									
 								<!--  copy binary files -->
-								<copy todir="bin/win32" overwrite="true" verbose="true">
-									<fileset dir="target/berkelium-win32/bin">
+								<mkdir dir="target/bin"/>
+								<copy todir="target/bin/${platform}" overwrite="true" verbose="true">
+									<fileset dir="target/unpack/${download_unpacked}/bin">
+										<!-- resources -->
+										<include name="*.pak" />
+										<!-- windows files -->
 										<include name="locales/*" />
 										<include name="av*.dll" />
 										<include name="icu*.dll" />
 										<include name="berkelium.*" />
 										<include name="ppmrenderer.exe" />
-										<include name="*.pak" />
 										<include name="wow_helper.exe" />
+										<!-- linux files -->
+										<include name="berkelium" />
+									</fileset>
+									<fileset dir="target/unpack/${download_unpacked}/lib">
+										<!-- linux files -->
+										<include name="lib*.so" />
 									</fileset>
 								</copy>
+								
+								<move file="target/bin/${platform}/liblibberkelium.so"
+									tofile="target/bin/${platform}/libberkelium.so"/>
 
 								<!-- TODO: rmdir target/berkelium-win32 -->
 								
-								<pathconvert dirsep="/" pathsep=";" property="files-win32">
-									<fileset dir="bin/win32" includes="**"/>
-									<map from="${basedir}/bin/win32/" to="" />
+								<pathconvert dirsep="/" pathsep=";" property="platform-files">
+									<fileset dir="target/bin/${platform}" includes="**"/>
+									<map from="${basedir}/target/bin/${platform}/" to="" />
 								</pathconvert>
 								
-								<echo message="${files-win32}" file="bin/win32/dependencies.txt"/>
+								<echo message="${platform-files}" file="target/bin/${platform}/dependencies.txt"/>
 							</target>
 						</configuration>
 						<goals>

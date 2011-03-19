@@ -1,7 +1,7 @@
-#include "Berkelium/Berkelium.hpp"
-#include "Berkelium/Context.hpp"
-#include "Berkelium/Window.hpp"
-#include "Berkelium/WindowDelegate.hpp"
+#include "berkelium/Berkelium.hpp"
+#include "berkelium/Context.hpp"
+#include "berkelium/Window.hpp"
+#include "berkelium/WindowDelegate.hpp"
 #include "berkelium/ScriptUtil.hpp"
 
 #include <cstring>

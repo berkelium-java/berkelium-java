@@ -1,18 +1,23 @@
 #include <org_berkelium_Platform.h>
 
-#if WIN32
+#if defined(WIN32) || defined(WIN64)
 #include <windows.h>
+#else
+#include <stdlib.h>
 #endif
 
 JNIEXPORT void JNICALL Java_org_berkelium_Platform__1init(JNIEnv* env, jclass, jstring path)
 {
 	Berkelium_Java_Env jEnv(env);
-#if WIN32
 	jboolean iscopy;
 	const char* cPath = (const char*)env->GetStringUTFChars(path, &iscopy);
+#if defined(WIN32) || defined(WIN64)
 	SetEnvironmentVariable("PATH", cPath);
-	env->ReleaseStringUTFChars(path, cPath);
+#else
+	setenv("PATH", cPath, 1);
+	//chdir(cPath);
 #endif 
+	env->ReleaseStringUTFChars(path, cPath);
 	Berkelium::init(Berkelium::FileString::empty());
 }
 

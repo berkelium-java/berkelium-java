@@ -252,11 +252,11 @@ private:
 	}
 
 	jobject map(Berkelium::Window* win) {
-		return Berkelium_Java_Registry_get((jint)win);
+		return Berkelium_Java_Registry_get((jlong)win);
 	}
 
 	jobject map(Berkelium::Widget* wid) {
-		return Berkelium_Java_Registry_get((jint)wid);
+		return Berkelium_Java_Registry_get((jlong)wid);
 	}
 
 	jobject map(const Berkelium::Rect& rect) {
@@ -285,9 +285,9 @@ private:
 		return 0;
 	}
 
-#if WIN32
 	// from http://stackoverflow.com/questions/870414/passing-double-byte-wchar-strings-from-c-to-java-via-jni
 	jstring map(const Berkelium::WideString& ws) {
+#if WIN32
 		const wchar_t* utf16 = ws.data();
 		int utf16_length = ws.length();
 		int utf8_length = WideCharToMultiByte(
@@ -329,7 +329,9 @@ private:
 		delete utf8;
 		
 		return ret;
-	}
+#else
+		return 0;
 #endif
+	}
 
 };
