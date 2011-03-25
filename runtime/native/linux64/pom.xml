@@ -6,12 +6,12 @@
 
 	<parent>
 		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium-native-base</artifactId>
+		<artifactId>berkelium-runtime-native</artifactId>
 		<version>2010.10.31-SNAPSHOT-4</version>
 	</parent>
 
-	<name>berkelium-native-linux64: native code (linux64)</name>
-	<artifactId>berkelium-native-linux64</artifactId>
+	<name>berkelium-runtime-native-linux64: native code (linux64)</name>
+	<artifactId>berkelium-runtime-native-linux64</artifactId>
 	<packaging>so</packaging>
 	
 	<build>
@@ -39,7 +39,7 @@
 						<compilerStartOption>-I${target}/include</compilerStartOption>
 					</compilerStartOptions>
 					<linkerStartOptions>
-						<linkerStartOption>-shared -lstdc++ -L${target}/bin/linux64 -lberkelium</linkerStartOption>
+						<linkerStartOption>-shared -lstdc++ -L${target.bin} -lberkelium</linkerStartOption>
 					</linkerStartOptions>
 				</configuration>
 			</plugin>
@@ -49,7 +49,7 @@
 				<configuration>
 					<target>
 						<copy
-							file="target/berkelium-runtime-native-linux64.dll"
+							file="target/berkelium-runtime-native-linux64.so"
 							tofile="${target.bin}/libberkelium-java.so"
 							overwrite="true" failonerror="false" />
 					</target>
