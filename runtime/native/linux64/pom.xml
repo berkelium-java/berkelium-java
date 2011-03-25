@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.berkelium</groupId>
+		<artifactId>berkelium-native-base</artifactId>
+		<version>2010.10.31-SNAPSHOT-4</version>
+	</parent>
+
+	<name>berkelium-native-linux64: native code (linux64)</name>
+	<artifactId>berkelium-native-linux64</artifactId>
+	<packaging>so</packaging>
+	
+	<build>
+		<sourceDirectory>${project.basedir}/../runtime/src/main/java</sourceDirectory>
+		<plugins>
+			<!-- 
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+			</plugin>
+			 -->
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<compilerProvider>generic</compilerProvider>
+					<compilerStartOptions>
+						<compilerStartOption>-I${JAVA_HOME}/include</compilerStartOption>
+						<compilerStartOption>-fPIC</compilerStartOption>
+						<compilerStartOption>-I${JAVA_HOME}/include/linux</compilerStartOption>
+						<compilerStartOption>-I${target}/include</compilerStartOption>
+					</compilerStartOptions>
+					<linkerStartOptions>
+						<linkerStartOption>-shared -lstdc++ -L${target}/bin/linux64 -lberkelium</linkerStartOption>
+					</linkerStartOptions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<target>
+						<copy
+							file="target/berkelium-runtime-native-linux64.dll"
+							tofile="${target.bin}/libberkelium-java.so"
+							overwrite="true" failonerror="false" />
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>

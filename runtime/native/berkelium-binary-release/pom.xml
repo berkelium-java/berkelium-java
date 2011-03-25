@@ -6,42 +6,25 @@
 
 	<parent>
 		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium</artifactId>
+		<artifactId>berkelium-runtime-native</artifactId>
 		<version>2010.10.31-SNAPSHOT-4</version>
 	</parent>
 
 	<name>berkelium-binary-release: precompiled binary berkelium</name>
 	<artifactId>berkelium-binary-release</artifactId>
-	<packaging>jar</packaging>
-
-	<profiles>
-		<profile>
-			<activation>
-				<os>
-					<family>windows</family>
-				</os>
-			</activation>
-			<properties>
-			 	<platform>win32</platform>
-
-			 	<download_date>2010-10-31</download_date>
-			</properties>
-		</profile>
-	</profiles>	
+	<packaging>pom</packaging>
+	
 	<properties>
-	 	<platform>linux64</platform>
-	 	<download_date>2010-11-02</download_date>
-
-	 	<download_unpacked>berkelium-${platform}</download_unpacked>
+		<download_unpacked>berkelium-${platform}</download_unpacked>
 		<download_name>berkelium-${platform}-${download_date}.7z</download_name>
 		<download_base>http://cloud.github.com/downloads/sirikata/berkelium/</download_base>
 		<download_src>${download_base}${download_name}</download_src>
 		<download_dest_file>${basedir}/downloads/${download_name}</download_dest_file>
-		
-		<unpack_base_dir>${basedir}/target/unpack</unpack_base_dir>
+
+		<unpack_base_dir>${target}/unpack</unpack_base_dir>
 		<unpacked>${unpack_base_dir}/${download_unpacked}</unpacked>
 	</properties>
-	
+
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
@@ -80,32 +63,31 @@
 								<get src="${download_src}" dest="${download_dest_file}"
 									skipexisting="true" />
 
-								<mkdir dir="${unpack_base_dir}"/>
-								
+								<mkdir dir="${unpack_base_dir}" />
+
 								<!-- extract archive -->
 								<exec dir="${unpack_base_dir}" executable="7z">
 									<arg value="x" />
 									<arg value="${download_dest_file}" />
 								</exec>
-								
+
 								<!--  copy header files -->
-								<mkdir dir="target/include/berkelium"/>
-								<copy todir="target/include/berkelium"
-									overwrite="true" verbose="true">
+								<mkdir dir="${target}/include/berkelium" />
+								<copy todir="${target}/include/berkelium" overwrite="true">
 									<fileset dir="${unpacked}/include/berkelium">
 										<include name="*.hpp" />
 									</fileset>
 								</copy>
-								
+
 								<!--  copy library files -->
-								<mkdir dir="target/lib"/>
-								<copy file="${unpacked}/lib/berkelium.lib" failonerror="false"
-									todir="target/lib" overwrite="true" verbose="true" />
-									
+								<mkdir dir="${target}/lib" />
+								<copy file="${unpacked}/lib/berkelium.lib" todir="${target}/lib" 
+									failonerror="false" overwrite="true"/>
+
 								<!--  copy binary files -->
-								<mkdir dir="target/bin"/>
-								<copy todir="target/bin/${platform}" overwrite="true" verbose="true">
-									<fileset dir="target/unpack/${download_unpacked}/bin">
+								<mkdir dir="${target.bin}" />
+								<copy todir="${target.bin}" overwrite="true">
+									<fileset dir="${target}/unpack/${download_unpacked}/bin">
 										<!-- resources -->
 										<include name="*.pak" />
 										<!-- windows files -->
@@ -118,23 +100,23 @@
 										<!-- linux files -->
 										<include name="berkelium" />
 									</fileset>
-									<fileset dir="target/unpack/${download_unpacked}/lib">
+									<fileset dir="${target}/unpack/${download_unpacked}/lib">
 										<!-- linux files -->
 										<include name="lib*.so" />
 									</fileset>
 								</copy>
-								
-								<move file="target/bin/${platform}/liblibberkelium.so"
-									tofile="target/bin/${platform}/libberkelium.so"/>
+
+								<move file="${target.bin}/liblibberkelium.so"
+									tofile="${target.bin}/libberkelium.so" failonerror="false" />
 
 								<!-- TODO: rmdir target/berkelium-win32 -->
-								
 								<pathconvert dirsep="/" pathsep=";" property="platform-files">
-									<fileset dir="target/bin/${platform}" includes="**"/>
-									<map from="${basedir}/target/bin/${platform}/" to="" />
+									<fileset dir="${target.bin}" includes="**" />
+									<map from="${target.bin}/" to="" />
 								</pathconvert>
-								
-								<echo message="${platform-files}" file="target/bin/${platform}/dependencies.txt"/>
+
+								<echo message="${platform-files}" file="${target.bin}/dependencies.txt" />
+								<echo message="${platform}" file="${target.bin}/../systemType.txt" />
 							</target>
 						</configuration>
 						<goals>

@@ -32,16 +32,13 @@ public class NativeLibraryLoader {
 	}
 
 	public NativeLibraryLoader() {
-		this("linux64");
-	}
-	
-	public NativeLibraryLoader(String systemType) {
 		try {
+			String systemType = read("org/berkelium/native/systemType.txt");
 			String base = "org/berkelium/native/" + systemType;
 			processList(base);
 
 			// we can not alter the PATH, so we need to load the dependencies first
-			if(systemType.startsWith("win")) {
+			if (systemType.startsWith("win")) {
 				loadLib(base, "icudt42");
 				loadLib(base, "avutil-50");
 				loadLib(base, "avcodec-52");
@@ -66,10 +63,10 @@ public class NativeLibraryLoader {
 		return ret;
 	}
 
-	private final byte[] read(String name) throws IOException {
+	private final String read(String name) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		copy(open(name), baos);
-		return baos.toByteArray();
+		return new String(baos.toByteArray());
 	}
 
 	private final void copy(InputStream in, OutputStream out) throws IOException {
@@ -85,7 +82,7 @@ public class NativeLibraryLoader {
 	}
 
 	private final void processList(String base) throws IOException {
-		final String data = new String(read(base + "/dependencies.txt"));
+		final String data = read(base + "/dependencies.txt");
 
 		for (String file : data.split(";")) {
 			processFile(base + "/" + file, file);
