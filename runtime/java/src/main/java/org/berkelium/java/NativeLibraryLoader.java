@@ -33,8 +33,8 @@ public class NativeLibraryLoader {
 
 	public NativeLibraryLoader() {
 		try {
-			String systemType = read("org/berkelium/native/systemType.txt");
-			String base = "org/berkelium/native/" + systemType;
+			String systemType = read("org/berkelium/java/native/systemType.txt");
+			String base = "org/berkelium/java/native/" + systemType;
 			processList(base);
 
 			// we can not alter the PATH, so we need to load the dependencies first

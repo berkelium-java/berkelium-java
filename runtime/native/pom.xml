@@ -53,7 +53,7 @@
 	</profiles>
 	<properties>
 		<target>${basedir}/../../target</target>
-		<target.bin>${target}/classes/org/berkelium/native/${platform}</target.bin>
+		<target.bin>${target}/classes/org/berkelium/java/native/${platform}</target.bin>
 	</properties>
 
 	<build>
