@@ -5,13 +5,13 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>root</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-java-examples: how to use berkelium-java</name>
-	<artifactId>berkelium-java-examples</artifactId>
+	<artifactId>examples</artifactId>
 	<packaging>jar</packaging>
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
@@ -21,6 +21,7 @@
 			<groupId>${project.groupId}</groupId>
 			<artifactId>berkelium-java</artifactId>
 			<version>${project.version}</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 </project>

@@ -5,9 +5,9 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium-runtime-native</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>native</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-binary-release: precompiled binary berkelium</name>
@@ -56,7 +56,8 @@
 				<version>1.6</version>
 				<executions>
 					<execution>
-						<phase>process-resources</phase>
+						<id>unpack-berkelium-7z</id>
+						<phase>generate-sources</phase>
 						<configuration>
 							<target>
 								<!-- download archive -->
@@ -106,17 +107,16 @@
 									</fileset>
 								</copy>
 
-								<move file="${target.bin}/liblibberkelium.so"
+								<copy file="${target.bin}/liblibberkelium.so"
 									tofile="${target.bin}/libberkelium.so" failonerror="false" />
 
-								<!-- TODO: rmdir target/berkelium-win32 -->
+								<echo message="${platform}" file="${target.bin}/../systemType.txt" />
+								<dirname file="${target.bin}/../systemType.txt" property="target.bin.abs" />
 								<pathconvert dirsep="/" pathsep=";" property="platform-files">
 									<fileset dir="${target.bin}" includes="**" />
-									<map from="${target.bin}/" to="" />
+									<map from="${target.bin.abs}/${platform}/" to="" />
 								</pathconvert>
-
 								<echo message="${platform-files}" file="${target.bin}/dependencies.txt" />
-								<echo message="${platform}" file="${target.bin}/../systemType.txt" />
 							</target>
 						</configuration>
 						<goals>

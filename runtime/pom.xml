@@ -5,156 +5,63 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>root</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-runtime: berkelium java runtime</name>
-	<artifactId>berkelium-runtime</artifactId>
+	<artifactId>runtime</artifactId>
 	<packaging>pom</packaging>
-	
-		<!--
-	<build>
-		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<finalName>berkelium-runtime.jar</finalName>
-					<includes>
-						<include>**</include>
-					</includes>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4.1</version>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>target</directory>
-							<includes>
-								<include>**</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
-		-->
+
+	<modules>
+		<module>java</module>
+		<module>native</module>
+	</modules>
+
+	<!-- package platform runtime -->
 	<profiles>
 		<profile>
-			<id>berkelium-runtime-build</id>
-			<activation>
-				<file>
-					<exists>pom.xml</exists>
-				</file>
-			</activation>
-			<modules>
-				<module>java</module>
-				<module>native</module>
-				<module>jar</module>
-			</modules>
-			<!-- 
-			<dependencies>
-				<dependency>
-					<groupId>${project.groupId}</groupId>
-					<artifactId>-native</artifactId>
-					<version>${project.version}</version>
-					<scope>import</scope>
-					<type>pom</type>
-				</dependency>
-			</dependencies>
-			 -->
-		</profile>
-			<!-- 
-		
-			<dependencies>
-				<dependency>
-					<groupId>${project.groupId}</groupId>
-					<artifactId>berkelium-native-win32</artifactId>
-					<version>${project.version}</version>
-					<type>dll</type>
-					<scope>compile</scope>
-				</dependency>
-			</dependencies>
-			 -->
-			<!-- 
-			<build>
-				<plugins>
-					
-				</plugins>
-			</build>
-		</profile>
-
-		<profile>
-			<id>berkelium-java-linux64</id>
+			<id>berkelium-java-runtime-win32-jar</id>
 			<activation>
 				<os>
-					<family>linux</family>
+					<family>windows</family>
+					<arch>x86</arch>
 				</os>
 			</activation>
-			<modules>
-				<module>linux64</module>
-			</modules>
-			<dependencies>
-				<dependency>
-					<groupId>${project.groupId}</groupId>
-					<artifactId>berkelium-java-linux64</artifactId>
-					<version>${project.version}</version>
-					<type>dll</type>
-					<scope>compile</scope>
-				</dependency>
-			</dependencies>
+
 			<build>
 				<plugins>
 					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-antrun-plugin</artifactId>
-						<version>1.6</version>
+						<inherited>false</inherited>
+						<artifactId>maven-jar-plugin</artifactId>
 						<executions>
 							<execution>
-								<phase>process-resources</phase>
-								<configuration>
-									<target>
-										<copy todir="../runtime/target/classes/org/berkelium/native"
-											overwrite="true" verbose="true">
-											<fileset dir="../berkelium-binary-release/target/bin/">
-												<include name="**" />
-											</fileset>
-										</copy>
-										<copy
-											tofile="../runtime/target/classes/org/berkelium/native/linux64/libberkelium-java.so"
-											file="../linux64/target/berkelium-java-linux64.dll"
-											overwrite="true" verbose="true" failonerror="false" />
-									</target>
-								</configuration>
+								<phase>package</phase>
 								<goals>
-									<goal>run</goal>
+									<goal>jar</goal>
 								</goals>
+								<configuration>
+									<classifier>win32</classifier>
+									<classesDirectory>${basedir}/target/classes</classesDirectory>
+									<includes>
+										<include>**</include>
+									</includes>
+								</configuration>
 							</execution>
 						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>${project.groupId}</groupId>
+								<artifactId>berkelium-runtime-native-win32</artifactId>
+								<version>${project.version}</version>
+								<type>dll</type>
+								<scope>compile</scope>
+							</dependency>
+						</dependencies>
 					</plugin>
 				</plugins>
 			</build>
 		</profile>
-			 -->
 	</profiles>
-	<!-- 
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>berkelium-java-api</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>berkelium-binary-release</artifactId>
-			<version>${project.version}</version>
-			<scope>compile</scope>
-		</dependency>
-	</dependencies>
-	 -->
 </project>

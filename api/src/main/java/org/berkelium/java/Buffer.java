@@ -1,4 +1,4 @@
-package org.berkelium;
+package org.berkelium.java;
 
 import java.nio.ByteBuffer;
 

@@ -1,4 +1,4 @@
-package org.berkelium;
+package org.berkelium.java;
 
 public interface WindowDelegate {
 	public void onAddressBarChanged(Window win, String newURL);

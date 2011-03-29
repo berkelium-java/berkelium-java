@@ -1,26 +1,36 @@
 package org.berkelium.example;
 
-import org.berkelium.Berkelium;
-import org.berkelium.Buffer;
-import org.berkelium.Rect;
-import org.berkelium.Window;
-import org.berkelium.WindowAdapter;
+import org.berkelium.java.Berkelium;
+import org.berkelium.java.Buffer;
+import org.berkelium.java.Rect;
+import org.berkelium.java.Window;
+import org.berkelium.java.WindowAdapter;
 
 class Example1 extends WindowAdapter {
-	private final static Berkelium berkelium = Berkelium.getInstance();
+	private final static Berkelium runtime = Berkelium.getInstance();
 	private final Window win;
 
 	public Example1() {
-		win = berkelium.createWindow();
+		win = runtime.createWindow();
 		win.setDelegate(this);
 	}
 
 	public void run() throws InterruptedException {
 		win.navigateTo("http://google.com");
 		for (int i = 0; i < 100; ++i) {
-			Berkelium.getInstance().update();
-			Thread.sleep(10);
+			runtime.update();
+			Thread.sleep(100);
 		}
+	}
+
+	@Override
+	public void onAddressBarChanged(Window win, String newURL) {
+		System.out.println("onAddressBarChanged:" + newURL);
+	}
+
+	@Override
+	public void onLoadingStateChanged(Window win, boolean isLoading) {
+		System.out.println("onLoadingStateChanged:" + isLoading);
 	}
 
 	@Override
@@ -32,6 +42,6 @@ class Example1 extends WindowAdapter {
 	public static void main(String[] args) throws Exception {
 		new Example1().run();
 		// shutdown berkelium
-		berkelium.destroy();
+		runtime.destroy();
 	}
 }

@@ -5,23 +5,23 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium-runtime</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>root</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-runtime-native: native code parent project</name>
-	<artifactId>berkelium-runtime-native</artifactId>
+	<artifactId>native</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<modules>
 		<module>berkelium-binary-release</module>
 	</modules>
-	
+
 	<profiles>
 		<profile>
 			<id>berkelium-runtime-native-win32</id>
-		
+
 			<activation>
 				<os>
 					<family>windows</family>
@@ -29,17 +29,10 @@
 			</activation>
 			<modules>
 				<module>win32</module>
-				<!-- lib must come after win32
-				<module>lib</module>
-				 -->
 			</modules>
 			<properties>
 				<platform>win32</platform>
 				<download_date>2010-10-31</download_date>
-				<!-- 
-				<native.lib.src>berkelium-runtime-native-win32.dll</native.lib.src>
-				<native.lib.dest>berkelium-java.dll</native.lib.dest>
-				 -->
 			</properties>
 		</profile>
 		<profile>
@@ -51,79 +44,21 @@
 			</activation>
 			<modules>
 				<module>linux64</module>
-				<!-- lib must come after linux64
-				<module>lib</module>
-				-->
 			</modules>
 			<properties>
 				<platform>linux64</platform>
 				<download_date>2010-11-02</download_date>
-				<!-- 
-				<native.lib.src>berkelium-runtime-native-linux64.so</native.lib.src>
-				<native.lib.dest>libberkelium-java.so</native.lib.dest>
-				 -->
 			</properties>
 		</profile>
 	</profiles>
 	<properties>
 		<target>${basedir}/../../target</target>
-		<target.bin>${basedir}/../../target/classes/org/berkelium/native/${platform}</target.bin>
-		<!-- 
-		<berkelium-binary-release>${project.basedir}/../berkelium-binary-release</berkelium-binary-release>
-		 -->
+		<target.bin>${target}/classes/org/berkelium/native/${platform}</target.bin>
 	</properties>
-	
+
 	<build>
-	<!-- 
-		<sourceDirectory>${project.basedir}/../../src/main/java</sourceDirectory>
-		<outputDirectory>${project.basedir}/../../target/classes</outputDirectory>
-		<plugins>
-			<plugin>
-				<artifactId>maven-clean-plugin</artifactId>
-				<version>2.4.1</version>
-				<executions>
-					<execution>
-						<phase>clean</phase>
-					</execution>
-				</executions>
-				<configuration>
-					<filesets>
-						<fileset>
-							<directory>target2</directory>
-							<includes>
-								<include>**</include>
-							</includes>
-						</fileset>
-					</filesets>
-				</configuration>
-			</plugin>
-		</plugins>
-	 -->
 		<pluginManagement>
 			<plugins>
-				<!--
-				<plugin>
-					<artifactId>maven-clean-plugin</artifactId>
-					<version>2.4.1</version>
-					<executions>
-						<execution>
-							<phase>clean</phase>
-						</execution>
-					</executions>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<executions>
-						<execution>
-							<phase>generate-sources</phase>
-							<goals>
-								<goal>compile</goal>
-							</goals>
-						</execution>
-					</executions>
-				</plugin>
-				-->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-antrun-plugin</artifactId>
@@ -144,7 +79,7 @@
 					<configuration>
 						<sources>
 							<source>
-								<directory>${project.basedir}/../../src/main/native</directory>
+								<directory>${basedir}/../src/main/native</directory>
 								<fileNames>
 									<fileName>berkelium-java.cpp</fileName>
 								</fileNames>
@@ -158,57 +93,38 @@
 								<goal>javah</goal>
 							</goals>
 							<configuration>
-								<javahOutputDirectory>${project.basedir}/../../target/native</javahOutputDirectory>
-							<!-- 
-								<javahOS>win32</javahOS>
-							 -->
+								<javahOutputDirectory>${basedir}/../../target/native</javahOutputDirectory>
+								<!-- <javahOS>win32</javahOS> -->
 								<javahClassNames>
-									<javahClassName>org.berkelium.BufferImpl</javahClassName>
-									<javahClassName>org.berkelium.Context</javahClassName>
-									<javahClassName>org.berkelium.Platform</javahClassName>
-									<javahClassName>org.berkelium.WindowImpl</javahClassName>
+									<javahClassName>org.berkelium.java.BufferImpl</javahClassName>
+									<javahClassName>org.berkelium.java.Context</javahClassName>
+									<javahClassName>org.berkelium.java.Platform</javahClassName>
+									<javahClassName>org.berkelium.java.WindowImpl</javahClassName>
 								</javahClassNames>
 							</configuration>
 						</execution>
 					</executions>
+					<dependencies>
+						<!-- this dependency is required in order to compile the cpp files -->
+						<dependency>
+							<groupId>${project.groupId}</groupId>
+							<artifactId>berkelium-binary-release</artifactId>
+							<version>${project.version}</version>
+							<type>pom</type>
+							<scope>compile</scope>
+						</dependency>
+					</dependencies>
 				</plugin>
 			</plugins>
 		</pluginManagement>
 	</build>
-		<!--
-	<dependencyManagement>
-			-->
-		<dependencies>
-		<!-- 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>berkelium-binary-release</artifactId>
-				<version>${project.version}</version>
-				<type>pom</type>
-				<scope>compile</scope>
-			</dependency>
-		 -->
-		 
-		<!--
-		 this dependency is required for javah to find the classes
-		 -->
+	<dependencies>
+		<!-- this dependency is required for javah to find the classes -->
 		<dependency>
 			<groupId>${project.groupId}</groupId>
 			<artifactId>berkelium-runtime-java</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>
-		 <!-- 
-			<dependency>
-				<groupId>${project.groupId}</groupId>
-				<artifactId>berkelium-native</artifactId>
-				<version>${project.version}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>
-		  -->
-		</dependencies>
-		<!-- 
-	</dependencyManagement>
-		 -->
+	</dependencies>
 </project>

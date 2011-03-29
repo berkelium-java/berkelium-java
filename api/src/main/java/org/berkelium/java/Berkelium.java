@@ -1,4 +1,4 @@
-package org.berkelium;
+package org.berkelium.java;
 
 public abstract class Berkelium {
 	protected static Berkelium instance = null;
@@ -7,7 +7,7 @@ public abstract class Berkelium {
 		if (instance == null) {
 			try {
 				Class<?> c = Berkelium.class.getClassLoader().loadClass(
-					"org.berkelium.Platform");
+					"org.berkelium.java.Platform");
 				instance = (Berkelium) c.getConstructor().newInstance();
 			} catch (Exception ex) {
 				throw new RuntimeException(ex);

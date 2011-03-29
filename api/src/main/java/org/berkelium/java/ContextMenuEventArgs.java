@@ -1,4 +1,4 @@
-package org.berkelium;
+package org.berkelium.java;
 
 public enum ContextMenuEventArgs {
 

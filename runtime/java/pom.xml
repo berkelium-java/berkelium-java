@@ -5,17 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium-runtime</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>root</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-runtime-java: berkelium runtime java code</name>
 	<artifactId>berkelium-runtime-java</artifactId>
 	
 	<build>
-		<sourceDirectory>${project.basedir}/../src/main/java</sourceDirectory>
-		<outputDirectory>${project.basedir}/../target/classes</outputDirectory>
+		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
+		<outputDirectory>${basedir}/../target/classes</outputDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -29,13 +29,26 @@
 					</execution>
 				</executions>
 			</plugin>
+			<!--
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>donotcleananything</directory>
+							<includes/>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>-->
 		</plugins>
 	</build>
 	
 	<dependencies>
 		<dependency>
 			<groupId>${project.groupId}</groupId>
-			<artifactId>berkelium-java-api</artifactId>
+			<artifactId>api</artifactId>
 			<version>${project.version}</version>
 			<scope>compile</scope>
 		</dependency>

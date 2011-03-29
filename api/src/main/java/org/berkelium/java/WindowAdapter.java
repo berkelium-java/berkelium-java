@@ -1,4 +1,4 @@
-package org.berkelium;
+package org.berkelium.java;
 
 public class WindowAdapter implements WindowDelegate {
 

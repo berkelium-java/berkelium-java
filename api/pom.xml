@@ -5,40 +5,17 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
-		<groupId>org.berkelium</groupId>
-		<artifactId>berkelium</artifactId>
-		<version>2010.10.31-SNAPSHOT-4</version>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>root</artifactId>
+		<version>0.9.1</version>
 	</parent>
 
 	<name>berkelium-java-api: Java interfaces</name>
-	<artifactId>berkelium-java-api</artifactId>
+	<artifactId>api</artifactId>
 	<packaging>jar</packaging>
 
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
-		<plugins>
-			<!-- 
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.3.1</version>
-				<executions>
-					<execution>
-						<phase>package</phase>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-						<configuration>
-							<classifier>api</classifier>
-							<includes>
-								<include>org/berkelium/**</include>
-							</includes>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-			 -->
-			<!-- TODO: create sources jar + javadoc; add -win etc to main artifact -->
-		</plugins>
+		<!-- TODO: create sources jar + javadoc; add -win etc to main artifact -->
 	</build>
 </project>
