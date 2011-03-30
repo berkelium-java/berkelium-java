@@ -13,7 +13,7 @@
 	<name>berkelium-binary-release: precompiled binary berkelium</name>
 	<artifactId>berkelium-binary-release</artifactId>
 	<packaging>pom</packaging>
-	
+
 	<properties>
 		<download_unpacked>berkelium-${platform}</download_unpacked>
 		<download_name>berkelium-${platform}-${download_date}.7z</download_name>
@@ -28,14 +28,6 @@
 	<build>
 		<sourceDirectory>src/main/java</sourceDirectory>
 		<plugins>
-			<plugin>
-				<artifactId>maven-jar-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>**</exclude>
-					</excludes>
-				</configuration>
-			</plugin>
 			<plugin>
 				<artifactId>maven-clean-plugin</artifactId>
 				<version>2.4.1</version>

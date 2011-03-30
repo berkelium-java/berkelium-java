@@ -6,7 +6,7 @@
 
 	<parent>
 		<groupId>org.berkelium.java</groupId>
-		<artifactId>root</artifactId>
+		<artifactId>berkelium</artifactId>
 		<version>0.9.1</version>
 	</parent>
 
@@ -33,13 +33,6 @@
 			<build>
 				<plugins>
 					<plugin>
-						<artifactId>maven-clean-plugin</artifactId>
-						<version>2.4.1</version>
-						<configuration>
-							<skip>true</skip>
-						</configuration>
-					</plugin>
-					<plugin>
 						<inherited>false</inherited>
 						<artifactId>maven-jar-plugin</artifactId>
 						<executions>
@@ -54,6 +47,9 @@
 									<includes>
 										<include>**</include>
 									</includes>
+									<excludes>
+										<exclude>org/berkelium/java/*.class</exclude>
+									</excludes>
 								</configuration>
 							</execution>
 						</executions>
@@ -70,26 +66,50 @@
 				</plugins>
 			</build>
 		</profile>
+		<profile>
+			<id>berkelium-java-runtime-linux64-jar</id>
+			<activation>
+				<os>
+					<family>linux</family>
+					<arch>x64</arch>
+				</os>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<inherited>false</inherited>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>linux64</classifier>
+									<classesDirectory>${basedir}/target/classes</classesDirectory>
+									<includes>
+										<include>**</include>
+									</includes>
+									<excludes>
+										<exclude>org/berkelium/java/*.class</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>${project.groupId}</groupId>
+								<artifactId>berkelium-runtime-native-linux64</artifactId>
+								<version>${project.version}</version>
+								<type>so</type>
+								<scope>compile</scope>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
 	</profiles>
-<!-- auto clean does not work yet, always use "mvn clean package"
-	<build>
-		<plugins>
-			<plugin>
-				<inherited>false</inherited>
-				<artifactId>maven-clean-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>auto-clean</id>
-						<phase>initialize</phase>
-						<goals>
-							<goal>clean</goal>
-						</goals>
-						<configuration>
-							<skip>false</skip>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>-->
 </project>

@@ -6,13 +6,12 @@
 
 	<parent>
 		<groupId>org.berkelium.java</groupId>
-		<artifactId>root</artifactId>
+		<artifactId>berkelium</artifactId>
 		<version>0.9.1</version>
 	</parent>
 
 	<name>org.berkelium.java: main dependency</name>
 	<artifactId>berkelium-java</artifactId>
-	<packaging>pom</packaging>
 
 	<dependencies>
 		<dependency>
@@ -63,4 +62,18 @@
 			</dependencies>
 		</profile>
 	</profiles>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<classesDirectory>${basedir}/../runtime/target/classes</classesDirectory>
+					<includes>
+						<include>org/berkelium/java/*.class</include>
+					</includes>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 </project>
