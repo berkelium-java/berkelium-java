@@ -64,42 +64,6 @@ jobject Berkelium_Java_Registry_get(jlong handle)
 	return env->CallStaticObjectMethod(cls, meth, handle);
 }
 
-jobject Berkelium_Java_Rect(const Berkelium::Rect &in)
-{
-	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Rect");
-	jmethodID meth = env->GetStaticMethodID(cls, "createRect", "(IIII)Lorg/berkelium/java/Rect;");
-	return env->CallStaticObjectMethod(cls, meth, in.x(), in.y(), in.width(), in.height());
-}
-
-jobject Berkelium_Java_Rects(size_t num, const Berkelium::Rect* rects)
-{
-	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Rect");
-	if (cls == 0)return 0;
-	jmethodID meth = env->GetStaticMethodID(cls, "createRectArray", "(I)Ljava/lang/Object;");
-	if (meth == 0)return 0;
-	jobject ret = env->CallStaticObjectMethod(cls, meth, num);
-	if (ret == 0)return 0;
-	meth = env->GetStaticMethodID(cls, "createRectInArray", "(Ljava/lang/Object;IIIII)V");
-	if (meth == 0)return 0;
-	for (size_t i = 0; i < num; ++i) {
-		const Berkelium::Rect& in = rects[i];
-		env->CallStaticVoidMethod(cls, meth, ret, i, in.x(), in.y(), in.width(), in.height());
-	}
-	return ret;
-}
-
-jobject Berkelium_Java_Buffer(const void* data, size_t num)
-{
-	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Buffer");
-	if (cls == 0)return 0;
-	jmethodID meth = env->GetStaticMethodID(cls, "create", "(JI)Ljava/lang/Object;");
-	if (meth == 0)return 0;
-	return env->CallStaticObjectMethod(cls, meth, (jlong)data, (jsize)num);
-}
-
 static inline Berkelium::Window* getWindow(jobject self)
 {
 	return (Berkelium::Window*)getHandle(self);

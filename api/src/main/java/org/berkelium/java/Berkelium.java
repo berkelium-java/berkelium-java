@@ -5,13 +5,21 @@ public abstract class Berkelium {
 
 	public static Berkelium getInstance() {
 		if (instance == null) {
-			try {
-				Class<?> c = Berkelium.class.getClassLoader().loadClass(
-					"org.berkelium.java.Platform");
-				instance = (Berkelium) c.getConstructor().newInstance();
-			} catch (Exception ex) {
-				throw new RuntimeException(ex);
-			}
+			throw new IllegalStateException();
+		}
+		return instance;
+	}
+	
+	public static Berkelium createInstance() {
+		if (instance != null) {
+			throw new IllegalStateException();
+		}
+		try {
+			Class<?> c = Berkelium.class.getClassLoader().loadClass(
+				"org.berkelium.java.Platform");
+			instance = (Berkelium) c.getConstructor().newInstance();
+		} catch (Exception ex) {
+			throw new RuntimeException(ex);
 		}
 		return instance;
 	}

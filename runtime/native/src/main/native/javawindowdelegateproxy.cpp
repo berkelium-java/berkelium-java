@@ -25,7 +25,7 @@ public:
 		const Berkelium::Rect &scroll_rect)
 	{
 		callFuncA(
-			"onLoad",
+			"onPaint",
 			"(Lorg/berkelium/java/Window;Lorg/berkelium/java/Buffer;Lorg/berkelium/java/Rect;[Lorg/berkelium/java/Rect;IILorg/berkelium/java/Rect;)V",
 			map(wini),
 			map(bitmap_in, 4 * bitmap_rect.width() * bitmap_rect.height()),
@@ -259,8 +259,13 @@ private:
 		return Berkelium_Java_Registry_get((jlong)wid);
 	}
 
-	jobject map(const Berkelium::Rect& rect) {
-		return Berkelium_Java_Rect(rect);
+	jobject map(const Berkelium::Rect& in) {
+		JNIEnv* env = Berkelium_Java_Env::get();
+		jclass cls = env->FindClass("org/berkelium/java/Platform");
+		if (cls == 0)return 0;
+		jmethodID meth = env->GetStaticMethodID(cls, "createRect", "(IIII)Lorg/berkelium/java/Rect;");
+		if (meth == 0)return 0;
+		return env->CallStaticObjectMethod(cls, meth, in.x(), in.y(), in.width(), in.height());
 	}
 
 	jstring map(Berkelium::URLString str) {
@@ -268,11 +273,29 @@ private:
 	}
 
 	jobject map(const void* data, size_t num) {
-		return Berkelium_Java_Buffer(data, num);
+		JNIEnv* env = Berkelium_Java_Env::get();
+		jclass cls = env->FindClass("org/berkelium/java/BufferImpl");
+		if (cls == 0)return 0;
+		jmethodID meth = env->GetStaticMethodID(cls, "create", "(JI)Ljava/lang/Object;");
+		if (meth == 0)return 0;
+		return env->CallStaticObjectMethod(cls, meth, (jlong)data, (jsize)num);
 	}
 
 	jobject map(size_t num, const Berkelium::Rect* rects) {
-		return Berkelium_Java_Rects(num, rects);
+		JNIEnv* env = Berkelium_Java_Env::get();
+		jclass cls = env->FindClass("org/berkelium/java/Platform");
+		if (cls == 0)return 0;
+		jmethodID meth = env->GetStaticMethodID(cls, "createRectArray", "(I)Ljava/lang/Object;");
+		if (meth == 0)return 0;
+		jobject ret = env->CallStaticObjectMethod(cls, meth, num);
+		if (ret == 0)return 0;
+		meth = env->GetStaticMethodID(cls, "createRectInArray", "(Ljava/lang/Object;IIIII)V");
+		if (meth == 0)return 0;
+		for (size_t i = 0; i < num; ++i) {
+			const Berkelium::Rect& in = rects[i];
+			env->CallStaticVoidMethod(cls, meth, ret, i, in.x(), in.y(), in.width(), in.height());
+		}
+		return ret;
 	}
 
 	jbooleanArray mapRw(bool& val) {
