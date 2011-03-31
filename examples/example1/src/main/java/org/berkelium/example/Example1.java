@@ -7,7 +7,7 @@ import org.berkelium.java.Window;
 import org.berkelium.java.WindowAdapter;
 
 class Example1 extends WindowAdapter {
-	private final static Berkelium runtime = Berkelium.getInstance();
+	private final static Berkelium runtime = Berkelium.createInstance();
 	private final Window win;
 
 	public Example1() {

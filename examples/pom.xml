@@ -12,16 +12,9 @@
 
 	<name>berkelium-java-examples: how to use berkelium-java</name>
 	<artifactId>examples</artifactId>
-	<packaging>jar</packaging>
-	<build>
-		<sourceDirectory>src/main/java</sourceDirectory>
-	</build>
-	<dependencies>
-		<dependency>
-			<groupId>${project.groupId}</groupId>
-			<artifactId>berkelium-java</artifactId>
-			<version>${project.version}</version>
-			<type>pom</type>
-		</dependency>
-	</dependencies>
+	<packaging>pom</packaging>
+	<modules>
+		<module>example1</module>
+		<module>awt</module>
+	</modules>
 </project>
