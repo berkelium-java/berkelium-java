@@ -12,50 +12,51 @@ import org.berkelium.java.WindowAdapter;
 public class ImageAdapter extends WindowAdapter {
 	private final static Logger logger = Logger.getLogger(ImageAdapter.class);
 
-	private BufferedImage img;
+	private final BufferedImage img;
 	private boolean needs_full_refresh = true;
-	private final byte[] scroll_buffer = new byte[640*480*4];
+	private final int[] scroll_buffer;
 	private boolean updated;
 
 	public ImageAdapter(BufferedImage img) {
 		this.img = img;
+		scroll_buffer = new int[(img.getWidth() + 1) * (img.getHeight() + 1)];
 	}
 
 	@Override
 	public void onLoadingStateChanged(Window win, boolean isLoading) {
 		logger.info("loading state: " + isLoading);
 	}
-	
+
 	@Override
 	public void onAddressBarChanged(Window win, String newURL) {
 		logger.info("addr: " + newURL);
 	}
-	
+
 	@Override
 	public void onTitleChanged(Window win, String title) {
 		logger.info("title: " + title);
 	}
-	
+
 	@Override
-	public void onPaint(Window wini, Buffer bitmap_in, Rect bitmap_rect, Rect[] copy_rects,
-			int dx, int dy, Rect scroll_rect) {
+	public void onPaint(Window wini, Buffer bitmap_in, Rect bitmap_rect,
+			Rect[] copy_rects, int dx, int dy, Rect scroll_rect) {
 		logger.info("onPaint");
-		if (mapOnPaintToTexture( wini,  bitmap_in,  bitmap_rect, copy_rects,
-				 dx,  dy, scroll_rect)) {
+		if (mapOnPaintToTexture(wini, bitmap_in, bitmap_rect, copy_rects, dx, dy,
+			scroll_rect)) {
 			updated = true;
 		}
 	}
-	
-	private boolean mapOnPaintToTexture(Window wini, Buffer bitmap_in, Rect bitmap_rect, Rect[] copy_rects,
-			int dx, int dy, Rect scroll_rect) {
-		
+
+	private boolean mapOnPaintToTexture(Window wini, Buffer bitmap_in, Rect bitmap_rect,
+			Rect[] copy_rects, int dx, int dy, Rect scroll_rect) {
+
 		WritableRaster wr = img.getRaster();
 		int dest_texture_width = img.getWidth();
 		int dest_texture_height = img.getHeight();
 		// img.setData(sourceBufferRect.w, sourceBufferRect.h, data);
 		// glBindTexture(GL_TEXTURE_2D, dest_texture);
 
-		final int kBytesPerPixel = 4;
+		final int kBytesPerPixel = 1;
 		// If we've reloaded the page and need a full update, ignore updates
 		// until a full one comes in. This handles out of date updates due to
 		// delays in event processing.
@@ -66,10 +67,12 @@ public class ImageAdapter extends WindowAdapter {
 				return false;
 			}
 
-			wr.setDataElements(0,0, dest_texture_width, dest_texture_height, bitmap_in.getByteArray());
-			/*gl.glTexImage2D(GL_TEXTURE_2D, 0, kBytesPerPixel, dest_texture_width,
-				dest_texture_height, 0, GL_BGRA, GL_UNSIGNED_BYTE, bitmap_in
-						.getIntArray());*/
+			wr.setDataElements(0, 0, dest_texture_width, dest_texture_height, bitmap_in
+					.getIntArray());
+			/*
+			 * gl.glTexImage2D(GL_TEXTURE_2D, 0, kBytesPerPixel, dest_texture_width, dest_texture_height, 0, GL_BGRA,
+			 * GL_UNSIGNED_BYTE, bitmap_in .getIntArray());
+			 */
 			needs_full_refresh = false;
 			logger.debug("mapOnPaintToTexture: full update");
 			return true;
@@ -120,29 +123,25 @@ public class ImageAdapter extends WindowAdapter {
 				}
 
 				// FIXME: scrolling does not work!
-				
+				// wr.getDataElements(0, 0, wid, hig, scroll_buffer);
+
 				// Copy the data out of the texture
-				//gl.glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE,
-				//	scroll_buffer, inputBuffer);
+				// gl.glGetTexImage(GL_TEXTURE_2D, 0, GL_BGRA, GL_UNSIGNED_BYTE,
+				// scroll_buffer, inputBuffer);
 
 				// Annoyingly, OpenGL doesn't provide convenient primitives, so
 				// we manually copy out the region to the beginning of the buffer
-				for (; jj < hig && jj >= 0; jj += inc) {
-					memcpy( //
-						scroll_buffer, outputBuffer + (jj * wid) * kBytesPerPixel,
-						// scroll_buffer + (jj*wid * kBytesPerPixel),
-						scroll_buffer, //
-						inputBuffer + ( //
-								(scrolled_shared_rect.top() + jj) * dest_texture_width //
-								+ scrolled_shared_rect.left()//
-								) * kBytesPerPixel, //
-						wid * kBytesPerPixel);
-				}
+				/*
+				 * for (; jj < hig && jj >= 0; jj += inc) { memcpy( // scroll_buffer, outputBuffer + (jj * wid) *
+				 * kBytesPerPixel, // scroll_buffer + (jj*wid * kBytesPerPixel), scroll_buffer, // inputBuffer + ( //
+				 * (scrolled_shared_rect.top() + jj) * dest_texture_width // + scrolled_shared_rect.left()// ) *
+				 * kBytesPerPixel, // wid * kBytesPerPixel); }
+				 */
 
 				// And finally, we push it back into the texture in the right location
-//				gl.glTexSubImage2D(GL_TEXTURE_2D, 0, shared_rect.left(), shared_rect
-//						.top(), shared_rect.width(), shared_rect.height(), GL_BGRA,
-//					GL_UNSIGNED_BYTE, scroll_buffer, outputBuffer);
+				// gl.glTexSubImage2D(GL_TEXTURE_2D, 0, shared_rect.left(), shared_rect
+				// .top(), shared_rect.width(), shared_rect.height(), GL_BGRA,
+				// GL_UNSIGNED_BYTE, scroll_buffer, outputBuffer);
 			}
 		}
 
@@ -168,7 +167,7 @@ public class ImageAdapter extends WindowAdapter {
 				memcpy(//
 					scroll_buffer, //
 					jj * wid * kBytesPerPixel, //
-					bitmap_in.getByteArray(), //
+					bitmap_in.getIntArray(), //
 					(left + (jj + top) * bitmap_rect.width()) * kBytesPerPixel, //
 					wid * kBytesPerPixel//
 				);
@@ -176,16 +175,17 @@ public class ImageAdapter extends WindowAdapter {
 
 			// Finally, we perform the main update, just copying the rect that is
 			// marked as dirty but not from scrolled data.
-			wr.setDataElements(copy_rects[i].left(), copy_rects[i].top(), wid, hig, scroll_buffer);
-//			gl.glTexSubImage2D(GL_TEXTURE_2D, 0, copy_rects[i].left(), copy_rects[i]
-//					.top(), wid, hig, GL_BGRA, GL_UNSIGNED_BYTE, scroll_buffer, 0);
+			wr.setDataElements(copy_rects[i].left(), copy_rects[i].top(), wid, hig,
+				scroll_buffer);
+			// gl.glTexSubImage2D(GL_TEXTURE_2D, 0, copy_rects[i].left(), copy_rects[i]
+			// .top(), wid, hig, GL_BGRA, GL_UNSIGNED_BYTE, scroll_buffer, 0);
 		}
 
-//		gl.glBindTexture(GL_TEXTURE_2D, 0);
+		// gl.glBindTexture(GL_TEXTURE_2D, 0);
 		return true;
 	}
 
-	private void memcpy(byte dest[], int destPos, byte src[], int srcPos, int length) {
+	private void memcpy(int dest[], int destPos, int src[], int srcPos, int length) {
 		if (srcPos >= src.length) {
 			logger.error("out of bounds memcpy: src " + srcPos + " >= " + src.length);
 			return;

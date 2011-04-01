@@ -10,11 +10,13 @@
 		<version>0.9.1</version>
 	</parent>
 
-	<name>berkelium-java-examples: how to use berkelium-java</name>
+	<name>org.berkelium.java: examples</name>
 	<artifactId>examples</artifactId>
 	<packaging>pom</packaging>
+	
 	<modules>
 		<module>example1</module>
+		<module>helloworld</module>
 		<module>awt</module>
 	</modules>
 </project>

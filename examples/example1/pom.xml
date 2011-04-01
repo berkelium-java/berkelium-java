@@ -10,19 +10,18 @@
 		<version>0.9.1</version>
 	</parent>
 
+	<name>org.berkelium.java.example: example1</name>
 	<groupId>org.berkelium.java.example</groupId>
 	<artifactId>example1</artifactId>
-	<packaging>jar</packaging>
-	
+
 	<dependencies>
 		<dependency>
 			<groupId>org.berkelium.java</groupId>
 			<artifactId>berkelium-java</artifactId>
 			<version>0.9.1</version>
 		</dependency>
-		
 	</dependencies>
-	
+
 	<repositories>
 		<repository>
 			<id>berkelium.t0c.de</id>
