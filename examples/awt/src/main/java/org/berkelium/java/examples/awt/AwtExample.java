@@ -11,71 +11,72 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import javax.swing.JFrame;
 
 import org.berkelium.java.Berkelium;
+import org.berkelium.java.BufferedImageAdapter;
 import org.berkelium.java.Window;
 
 public class AwtExample extends JFrame {
 	private static final long serialVersionUID = 8835790859223385092L;
-	private final int width = 640;
-	private final int height = 480;
-	private final BufferedImage img = new BufferedImage(width, height,
-			BufferedImage.TYPE_INT_ARGB);
-	private final ImageAdapter delegate = new ImageAdapter(img);
 	private final Berkelium runtime = Berkelium.getInstance();
 	private final Window win = runtime.createWindow();
+	private final BufferedImageAdapter bia = new BufferedImageAdapter();
+	private final int initialWidth = 640;
+	private final int initialHeight = 480;
+	private final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
 	public AwtExample() {
 		setTitle("AwtExample");
-		setMinimumSize(new Dimension(width - 1, height - 1));
-		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		setSize(new Dimension(initialWidth, initialHeight));
+		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 		setVisible(true);
 
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				final int x = e.getX() * width / getWidth();
-				final int y = e.getY() * height / getHeight();
-				final int b = e.getButton();
-				invoke(new Runnable() {
-					public void run() {
-						win.mouseMoved(x, y);
-						win.mouseButton(b, false);
-					}
-				});
+				handleMouseButtonEvent(e, false);
 			}
 
 			@Override
 			public void mousePressed(MouseEvent e) {
-				final int x = e.getX() * width / getWidth();
-				final int y = e.getY() * height / getHeight();
-				final int b = e.getButton();
-				invoke(new Runnable() {
-					public void run() {
-						win.mouseMoved(x, y);
-						win.mouseButton(b, true);
-					}
-				});
+				handleMouseButtonEvent(e, true);
+			}
+		});
+	}
+
+	private void handleMouseButtonEvent(MouseEvent e, final boolean down) {
+		final BufferedImage bi = bia.getImage();
+		if (bia == null)
+			return;
+		final int x = e.getX() * bi.getWidth() / getWidth();
+		final int y = e.getY() * bi.getHeight() / getHeight();
+		final int b = e.getButton();
+
+		// the event must be handled in the berkelium thread
+		queue.add(new Runnable() {
+			@Override
+			public void run() {
+				win.mouseMoved(x, y);
+				win.mouseButton(b, down);
 			}
 		});
 	}
 
 	@Override
 	public void paint(Graphics g) {
-		if (img != null)
-			g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
-	}
-
-	Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
-
-	private void invoke(Runnable runnable) {
-		queue.add(runnable);
+		BufferedImage img = bia.getImage();
+		if (img != null) {
+			// do not allow updates to the image while we draw it
+			synchronized (bia) {
+				g.drawImage(img, 0, 0, getWidth(), getHeight(), null);
+			}
+		}
 	}
 
 	public void run() throws Exception {
 		synchronized (runtime) {
-			win.resize(width, height);
-			// win.navigateTo("http://google.de");
+			win.setDelegate(bia);
+			bia.resize(initialWidth, initialHeight);
+			win.resize(initialWidth, initialHeight);
 			win.navigateTo("http://www.youtube.com/");
-			win.setDelegate(delegate);
 		}
 
 		while (isVisible()) {
@@ -85,7 +86,7 @@ public class AwtExample extends JFrame {
 			synchronized (runtime) {
 				runtime.update();
 			}
-			if (delegate.isUpdated()) {
+			if (bia.wasUpdated()) {
 				repaint();
 			}
 			Thread.sleep(10);
@@ -94,10 +95,17 @@ public class AwtExample extends JFrame {
 
 	public static void main(String[] args) throws Exception {
 		try {
+			System.out.println("initializing berkelium-java...");
 			Berkelium.createInstance();
+			System.out.println("running main loop...");
 			new AwtExample().run();
+			System.out.println("main loop terminated.");
+		} catch (Throwable t) {
+			t.printStackTrace();
 		} finally {
+			System.out.println("destroying berkelium-java...");
 			Berkelium.getInstance().destroy();
+			System.out.println("berkelium-java destroyed.");
 			System.exit(0);
 		}
 	}
