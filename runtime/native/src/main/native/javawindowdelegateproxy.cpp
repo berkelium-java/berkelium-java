@@ -89,7 +89,7 @@ public:
 									   bool &cancelDefaultAction) {
 		callFuncA(
 			"onNavigationRequested",
-			"(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Z[Z)V",
+			"(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Z[Z)Z",
 			map(win),
 			map(newURL),
 			map(referrer),
@@ -326,7 +326,7 @@ private:
 		
 		if (utf8_length == 0) {
 			printf("internal berkelium-java error: WideCharToMultiByte failed (1)\n");
-			return 0;
+			return Berkelium_Java_Env::get()->NewStringUTF("");
 		}
 		
 		char* utf8 = new char[utf8_length+1]; // Allocate space for UTF-8 string
@@ -344,7 +344,7 @@ private:
 		
 		if (utf8_length == 0) {
 			printf("internal berkelium-java error: WideCharToMultiByte failed (2)\n");
-			return 0;
+			return Berkelium_Java_Env::get()->NewStringUTF("");
 		}
 		
 		utf8[utf8_length] = 0;
