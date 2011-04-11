@@ -18,5 +18,6 @@
 		<module>example1</module>
 		<module>helloworld</module>
 		<module>awt</module>
+		<module>awt2</module>
 	</modules>
 </project>
