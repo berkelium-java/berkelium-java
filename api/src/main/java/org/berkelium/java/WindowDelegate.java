@@ -38,7 +38,7 @@ public interface WindowDelegate {
 
 	public void onExternalHost(Window win, String message, String origin, String target);
 
-	public void onCreatedWindow(Window win, Window newWindow, Rect initialRect[]);
+	public void onCreatedWindow(Window win, Window newWindow, Rect initialRect);
 
 	public void onPaint(Window win, Buffer sourceBuffer, Rect sourceBufferRect,
 			Rect copyRects[], int dx, int dy, Rect scrollRect);

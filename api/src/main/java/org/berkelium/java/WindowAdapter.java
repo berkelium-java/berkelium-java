@@ -27,7 +27,7 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public void onCreatedWindow(Window win, Window newWindow, Rect[] initialRect) {
+	public void onCreatedWindow(Window win, Window newWindow, Rect initialRect) {
 	}
 
 	@Override
