@@ -4,10 +4,10 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<name>berkelium: http://berkelium.org/</name>
+	<name>org.berkelium.java: java api for http://berkelium.org/</name>
 	<groupId>org.berkelium.java</groupId>
 	<artifactId>berkelium</artifactId>
-	<version>0.9.1</version>
+	<version>0.9.3</version>
 	<packaging>pom</packaging>
 
 	<profiles>
@@ -26,8 +26,13 @@
 
 	<modules>
 		<module>api</module>
+		<!-- 
+		<module>public</module>
+		 -->
+		<!-- 
 		<module>berkelium-java</module>
 		<module>examples</module>
+		 -->
 	</modules>
 
 	<build>

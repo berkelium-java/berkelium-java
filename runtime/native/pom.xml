@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.3</version>
 	</parent>
 
-	<name>berkelium-runtime-native: native code parent project</name>
+	<name>org.berkelium.java: native code parent project</name>
 	<artifactId>native</artifactId>
 	<packaging>pom</packaging>
 
@@ -106,6 +106,7 @@
 					</executions>
 					<dependencies>
 						<!-- this dependency is required in order to compile the cpp files -->
+						<!-- 
 						<dependency>
 							<groupId>${project.groupId}</groupId>
 							<artifactId>berkelium-binary-release</artifactId>
@@ -113,6 +114,7 @@
 							<type>pom</type>
 							<scope>compile</scope>
 						</dependency>
+						 -->
 					</dependencies>
 				</plugin>
 			</plugins>

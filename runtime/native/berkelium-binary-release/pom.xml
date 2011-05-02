@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>native</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.3</version>
 	</parent>
 
-	<name>berkelium-binary-release: precompiled binary berkelium</name>
+	<name>org.berkelium: binary-release precompiled binaries</name>
 	<artifactId>berkelium-binary-release</artifactId>
 	<packaging>pom</packaging>
 

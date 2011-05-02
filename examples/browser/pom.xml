@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>examples</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.3</version>
 	</parent>
 
 	<name>org.berkelium.java.example: browser</name>
@@ -18,7 +18,7 @@
 		<dependency>
 			<groupId>org.berkelium.java</groupId>
 			<artifactId>berkelium-java</artifactId>
-			<version>0.9.1</version>
+			<version>0.9.3</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>

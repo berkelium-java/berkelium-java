@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.3</version>
 	</parent>
 
-	<name>berkelium-java-api: Java interfaces</name>
+	<name>org.berkelium.java: api.jar</name>
 	<artifactId>api</artifactId>
 	<packaging>jar</packaging>
 

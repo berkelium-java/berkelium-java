@@ -7,10 +7,10 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>0.9.1</version>
+		<version>0.9.3</version>
 	</parent>
 
-	<name>berkelium-runtime-java: berkelium runtime java code</name>
+	<name>org.berkelium.java: java runtime code</name>
 	<artifactId>berkelium-runtime-java</artifactId>
 	
 	<build>
