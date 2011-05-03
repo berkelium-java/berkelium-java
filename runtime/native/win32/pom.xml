@@ -13,7 +13,9 @@
 	<name>org.berkelium.java: native runtime code (win32)</name>
 	<artifactId>berkelium-runtime-native-win32</artifactId>
 	<packaging>dll</packaging>
-	
+	<properties>
+		<in_platform_pom>1</in_platform_pom>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>

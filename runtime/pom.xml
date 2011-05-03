@@ -43,7 +43,7 @@
 								</goals>
 								<configuration>
 									<classifier>win32</classifier>
-									<classesDirectory>${basedir}/target/classes</classesDirectory>
+									<classesDirectory>${basedir}/native/win32/target/classes</classesDirectory>
 									<includes>
 										<include>**</include>
 									</includes>
@@ -88,7 +88,52 @@
 								</goals>
 								<configuration>
 									<classifier>linux64</classifier>
-									<classesDirectory>${basedir}/target/classes</classesDirectory>
+									<classesDirectory>${basedir}/native/linux64/target/classes</classesDirectory>
+									<includes>
+										<include>**</include>
+									</includes>
+									<excludes>
+										<exclude>org/berkelium/java/*.class</exclude>
+									</excludes>
+								</configuration>
+							</execution>
+						</executions>
+						<dependencies>
+							<dependency>
+								<groupId>${project.groupId}</groupId>
+								<artifactId>berkelium-runtime-native-linux64</artifactId>
+								<version>${project.version}</version>
+								<type>so</type>
+								<scope>compile</scope>
+							</dependency>
+						</dependencies>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+		<profile>
+			<id>berkelium-java-runtime-linux32-jar</id>
+			<activation>
+				<os>
+					<family>linux</family>
+					<arch>x86</arch>
+				</os>
+			</activation>
+
+			<build>
+				<plugins>
+					<plugin>
+						<inherited>false</inherited>
+						<artifactId>maven-jar-plugin</artifactId>
+						<executions>
+							<execution>
+								<phase>package</phase>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+								<configuration>
+									<classifier>linux32</classifier>
+									<classesDirectory>${basedir}/native/linux32/target/classes</classesDirectory>
 									<includes>
 										<include>**</include>
 									</includes>

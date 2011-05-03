@@ -11,11 +11,11 @@
 	</parent>
 
 	<name>org.berkelium.java: java runtime code</name>
-	<artifactId>berkelium-runtime-java</artifactId>
+	<artifactId>runtime-java</artifactId>
 	
 	<build>
 		<sourceDirectory>${basedir}/src/main/java</sourceDirectory>
-		<outputDirectory>${basedir}/../target/classes</outputDirectory>
+		<outputDirectory>${basedir}/target/classes</outputDirectory>
 		<plugins>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>

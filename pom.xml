@@ -26,13 +26,8 @@
 
 	<modules>
 		<module>api</module>
-		<!-- 
-		<module>public</module>
-		 -->
-		<!-- 
 		<module>berkelium-java</module>
 		<module>examples</module>
-		 -->
 	</modules>
 
 	<build>
