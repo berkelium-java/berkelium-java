@@ -61,6 +61,27 @@
 				</dependency>
 			</dependencies>
 		</profile>
+		<profile>
+			<id>berkelium-java-runtime-linux32</id>
+			<activation>
+				<os>
+					<family>linux</family>
+<!--
+					<arch>x86</arch>
+-->
+				</os>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>${project.groupId}</groupId>
+					<artifactId>runtime</artifactId>
+					<classifier>linux32</classifier>
+					<version>${project.version}</version>
+					<type>jar</type>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
 	</profiles>
 
 	<build>

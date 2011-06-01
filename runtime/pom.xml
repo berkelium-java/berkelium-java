@@ -116,7 +116,9 @@
 			<activation>
 				<os>
 					<family>linux</family>
+<!--
 					<arch>x86</arch>
+-->
 				</os>
 			</activation>
 
@@ -146,7 +148,7 @@
 						<dependencies>
 							<dependency>
 								<groupId>${project.groupId}</groupId>
-								<artifactId>berkelium-runtime-native-linux64</artifactId>
+								<artifactId>berkelium-runtime-native-linux32</artifactId>
 								<version>${project.version}</version>
 								<type>so</type>
 								<scope>compile</scope>

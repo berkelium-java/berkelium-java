@@ -29,7 +29,7 @@
 			</modules>
 			<properties>
 				<platform>win32</platform>
-				<download_date>2010-10-31</download_date>
+				<download_date>2010-11-02</download_date>
 			</properties>
 		</profile>
 		<profile>
@@ -37,6 +37,7 @@
 			<activation>
 				<os>
 					<family>linux</family>
+					<arch>x64</arch>
 				</os>
 			</activation>
 			<modules>
@@ -45,6 +46,24 @@
 			<properties>
 				<platform>linux64</platform>
 				<download_date>2010-11-02</download_date>
+			</properties>
+		</profile>
+		<profile>
+			<id>berkelium-runtime-native-linux32</id>
+			<activation>
+				<os>
+					<family>linux</family>
+					<!--
+					<arch>x86</arch>
+					-->
+				</os>
+			</activation>
+			<modules>
+				<module>linux32</module>
+			</modules>
+			<properties>
+				<platform>linux32</platform>
+				<download_date>2011-05-24</download_date>
 			</properties>
 		</profile>
 	</profiles>
@@ -94,7 +113,7 @@
 							<rules>
 								<requireProperty>
 									<property>platform</property>
-									<message>failed to detect platform</message>
+									<message>failed to detect platform: property "platform" is not set</message>
 									<regex>(win|linux)(32|64)</regex>
 									<regexMessage>unexpected platform: ${platform}</regexMessage>
 								</requireProperty>
