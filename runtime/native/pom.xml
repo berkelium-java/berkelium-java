@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.4</version>
 	</parent>
 
 	<name>org.berkelium.java: native code parent project</name>
@@ -29,7 +29,7 @@
 			</modules>
 			<properties>
 				<platform>win32</platform>
-				<download_date>2010-11-02</download_date>
+				<download_date>beta-2011-04-29</download_date>
 			</properties>
 		</profile>
 		<profile>

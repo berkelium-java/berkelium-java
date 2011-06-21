@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>native</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.4</version>
 	</parent>
 
 	<name>org.berkelium.java: native runtime code (win32)</name>

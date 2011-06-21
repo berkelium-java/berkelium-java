@@ -7,7 +7,7 @@
 	<name>org.berkelium.java: java api for http://berkelium.org/</name>
 	<groupId>org.berkelium.java</groupId>
 	<artifactId>berkelium</artifactId>
-	<version>0.9.3</version>
+	<version>0.9.4</version>
 	<packaging>pom</packaging>
 
 	<profiles>

@@ -7,7 +7,7 @@
 	<parent>
 		<groupId>org.berkelium.java</groupId>
 		<artifactId>berkelium</artifactId>
-		<version>0.9.3</version>
+		<version>0.9.4</version>
 	</parent>
 
 	<name>org.berkelium.java: maven main dependency</name>
