@@ -42,14 +42,14 @@
 					<compilerStartOptions>
 						<compilerStartOption>/EHsc /GR /W3 /Zi /TP</compilerStartOption>
 						<compilerStartOption>-DWIN32 -D_LIB -D_MBCS</compilerStartOption>
-						<compilerStartOption>/I${JAVA_HOME}/include</compilerStartOption>
-						<compilerStartOption>/I${JAVA_HOME}/include/win32</compilerStartOption>
-						<compilerStartOption>/I${target}/include</compilerStartOption>
+						<compilerStartOption>/I"${JAVA_HOME}/include"</compilerStartOption>
+						<compilerStartOption>/I"${JAVA_HOME}/include/win32"</compilerStartOption>
+						<compilerStartOption>/I"${target}/include"</compilerStartOption>
 					</compilerStartOptions>
 					<linkerStartOptions>
 						<linkerStartOption>/DLL</linkerStartOption>
 						<linkerStartOption>/NOLOGO</linkerStartOption>
-						<linkerStartOption>${target}/lib/berkelium.lib</linkerStartOption>
+						<linkerStartOption>"${target}/lib/berkelium.lib"</linkerStartOption>
 					</linkerStartOptions>
 				</configuration>
 			</plugin>
