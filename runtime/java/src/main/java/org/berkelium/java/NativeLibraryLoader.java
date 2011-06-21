@@ -39,7 +39,7 @@ public class NativeLibraryLoader {
 
 			// we can not alter the PATH, so we need to load the dependencies first
 			if (systemType.startsWith("win")) {
-				loadLib(base, "icudt42");
+				loadLib(base, "icudt46");
 				loadLib(base, "avutil-50");
 				loadLib(base, "avcodec-52");
 				loadLib(base, "avformat-52");
