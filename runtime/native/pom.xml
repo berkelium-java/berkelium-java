@@ -45,7 +45,7 @@
 			</modules>
 			<properties>
 				<platform>linux64</platform>
-				<download_date>2010-11-02</download_date>
+				<download_date>beta-2011-04-29</download_date>
 			</properties>
 		</profile>
 		<profile>
@@ -63,7 +63,7 @@
 			</modules>
 			<properties>
 				<platform>linux32</platform>
-				<download_date>2011-05-24</download_date>
+				<download_date>beta-2011-04-29</download_date>
 			</properties>
 		</profile>
 	</profiles>
@@ -130,7 +130,6 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-antrun-plugin</artifactId>
-				<version>1.6</version>
 				<executions>
 					<execution>
 						<id>unpack-berkelium-7z</id>
