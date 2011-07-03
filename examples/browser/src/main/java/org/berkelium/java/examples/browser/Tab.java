@@ -8,6 +8,7 @@ import java.net.URLEncoder;
 import org.berkelium.java.Berkelium;
 import org.berkelium.java.BufferedImageAdapter;
 import org.berkelium.java.Rect;
+import org.berkelium.java.MultiDelegate;
 import org.berkelium.java.Window;
 import org.berkelium.java.WindowDelegate;
 
