@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.berkelium.java</groupId>
+		<artifactId>native</artifactId>
+		<version>0.9.4</version>
+	</parent>
+
+	<name>org.berkelium.java: native runtime code (win64)</name>
+	<artifactId>berkelium-runtime-native-win64</artifactId>
+	<packaging>dll</packaging>
+	<properties>
+		<in_platform_pom>1</in_platform_pom>
+	</properties>
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>2.4.1</version>
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+								<include>*.pdb</include>
+							</includes>
+						</fileset>
+					</filesets>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>native-maven-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<envFactoryName>org.codehaus.mojo.natives.msvc.MSVC2008x86EnvFactory</envFactoryName>
+					<compilerProvider>msvc</compilerProvider>
+					<compilerStartOptions>
+						<compilerStartOption>/EHsc /GR /W3 /Zi /TP</compilerStartOption>
+						<compilerStartOption>-DWIN32 -D_LIB -D_MBCS</compilerStartOption>
+						<compilerStartOption>/I"${JAVA_HOME}/include"</compilerStartOption>
+						<compilerStartOption>/I"${JAVA_HOME}/include/win32"</compilerStartOption>
+						<compilerStartOption>/I"${target}/include"</compilerStartOption>
+					</compilerStartOptions>
+					<linkerStartOptions>
+						<linkerStartOption>/DLL</linkerStartOption>
+						<linkerStartOption>/NOLOGO</linkerStartOption>
+						<linkerStartOption>"${target}/lib/berkelium.lib"</linkerStartOption>
+					</linkerStartOptions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<configuration>
+					<target>
+						<copy
+							file="target/berkelium-runtime-native-win64.dll"
+							tofile="${target.bin}/berkelium-java.dll"
+							overwrite="true" failonerror="false" />
+					</target>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+</project>
