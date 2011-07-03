@@ -37,7 +37,6 @@ public final class BufferImpl implements Buffer {
 	private BufferImpl() {
 	}
 
-	@SuppressWarnings("unused")
 	private static Object create(long handle, int size) {
 		BufferImpl ret = new BufferImpl();
 		ret.handle = handle;

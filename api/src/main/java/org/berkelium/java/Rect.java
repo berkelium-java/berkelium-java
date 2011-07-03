@@ -38,6 +38,10 @@ public class Rect {
 		return h;
 	}
 
+	public boolean isEmpty() {
+		return w == 0 && h == 0;
+	}
+
 	public Rect translate(int i, int j) {
 		return new Rect(x + i, y + j, w, h);
 	}
@@ -55,5 +59,17 @@ public class Rect {
 	@Override
 	public String toString() {
 		return x + "x" + y + "/" + w + "x" + h;
+	}
+
+	public Rect grow(Rect other) {
+		if (w == 0 || h == 0) {
+			return new Rect(other.x, other.y, other.w, other.h);
+		} else {
+			int left = Math.min(left(), other.left());
+			int top = Math.min(top(), other.top());
+			int width = Math.max(width(), other.width());
+			int height = Math.max(bottom(), other.height());
+			return new Rect(left, top, width, height);
+		}
 	}
 }

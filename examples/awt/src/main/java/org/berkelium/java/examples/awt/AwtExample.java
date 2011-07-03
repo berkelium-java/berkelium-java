@@ -12,6 +12,7 @@ import javax.swing.JFrame;
 
 import org.berkelium.java.Berkelium;
 import org.berkelium.java.BufferedImageAdapter;
+import org.berkelium.java.Rect;
 import org.berkelium.java.Window;
 
 public class AwtExample extends JFrame {
@@ -86,8 +87,9 @@ public class AwtExample extends JFrame {
 			synchronized (runtime) {
 				runtime.update();
 			}
-			if (bia.wasUpdated()) {
-				repaint();
+			Rect rect = bia.getUpdatedRect();
+			if (!rect.isEmpty()) {
+				repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
 			}
 			Thread.sleep(10);
 		}

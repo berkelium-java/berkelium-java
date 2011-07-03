@@ -13,6 +13,7 @@ import javax.swing.JPanel;
 
 import org.berkelium.java.Berkelium;
 import org.berkelium.java.BufferedImageAdapter;
+import org.berkelium.java.Rect;
 import org.berkelium.java.Window;
 
 public class Awt2Example extends JFrame {
@@ -105,8 +106,10 @@ public class Awt2Example extends JFrame {
 			synchronized (runtime) {
 				runtime.update();
 			}
-			if (bia.wasUpdated() || bia2.wasUpdated()) {
-				repaint();
+			Rect rect = bia.getUpdatedRect();
+			rect = rect.grow(bia2.getUpdatedRect());
+			if (!rect.isEmpty()) {
+				repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
 			}
 			Thread.sleep(10);
 		}

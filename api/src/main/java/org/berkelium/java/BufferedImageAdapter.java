@@ -6,7 +6,7 @@ import java.awt.image.WritableRaster;
 public class BufferedImageAdapter extends WindowAdapter {
 	private BufferedImage img;
 	private boolean needs_full_refresh = true;
-	private boolean updated = false;
+	private Rect updatedRect = new Rect(0, 0, 0, 0);
 
 	public BufferedImageAdapter() {
 	}
@@ -40,7 +40,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 				// until a full one comes in. This handles out of date updates due to
 				// delays in event processing.
 				if (handleFullUpdate(bitmap_in, bitmap_rect)) {
-					updated = true;
+					updatedRect = updatedRect.grow(bitmap_rect);
 					needs_full_refresh = false;
 				}
 			} else {
@@ -51,7 +51,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 					handleScroll(dx, dy, scroll_rect);
 				}
 				handleCopyRects(bitmap_in, bitmap_rect, copy_rects);
-				updated = true;
+				updatedRect = updatedRect.grow(bitmap_rect);
 			}
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			needs_full_refresh = true;
@@ -134,9 +134,9 @@ public class BufferedImageAdapter extends WindowAdapter {
 		System.arraycopy(src, srcPos, dest, destPos, length);
 	}
 
-	public boolean wasUpdated() {
-		boolean ret = updated;
-		updated = false;
+	public Rect getUpdatedRect() {
+		Rect ret = updatedRect;
+		updatedRect = new Rect(0, 0, 0, 0);
 		return ret;
 	}
 }

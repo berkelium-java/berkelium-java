@@ -6,6 +6,7 @@ import java.awt.Dimension;
 
 import javax.swing.JFrame;
 
+import org.berkelium.java.Rect;
 import org.berkelium.java.Window;
 import org.berkelium.java.WindowAdapter;
 import org.berkelium.java.WindowDelegate;
@@ -47,8 +48,10 @@ public class SimpleBrowser extends JFrame {
 
 	public void checkRepaint() {
 		Tab tab = adapter.getTab();
-		if (tab != null && tab.wasUpdated()) {
-			repaint();
+		if(tab == null) return;
+		Rect rect = tab.getUpdatedRect();
+		if (!rect.isEmpty()) {
+			repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
 		}
 	}
 }

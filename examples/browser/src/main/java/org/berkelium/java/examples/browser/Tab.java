@@ -7,6 +7,7 @@ import java.net.URLEncoder;
 
 import org.berkelium.java.Berkelium;
 import org.berkelium.java.BufferedImageAdapter;
+import org.berkelium.java.Rect;
 import org.berkelium.java.Window;
 import org.berkelium.java.WindowDelegate;
 
@@ -71,7 +72,7 @@ public final class Tab {
 		multi.removeDelegate(delegate);
 	}
 
-	public boolean wasUpdated() {
-		return bia.wasUpdated();
+	public Rect getUpdatedRect() {
+		return bia.getUpdatedRect();
 	}
 }
