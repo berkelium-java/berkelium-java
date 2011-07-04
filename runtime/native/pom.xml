@@ -76,7 +76,8 @@
 		<download_name>berkelium-${platform}-${download_date}.7z</download_name>
 		<download_base>http://cloud.github.com/downloads/sirikata/berkelium/</download_base>
 		<download_src>${download_base}${download_name}</download_src>
-		<download_dest_file>${basedir}/../downloads/${download_name}</download_dest_file>
+		<downloads_dir>${basedir}/../downloads</downloads_dir>
+		<download_dest_file>${downloads_dir}/${download_name}</download_dest_file>
 
 		<unpack_base_dir>${target}/unpack</unpack_base_dir>
 		<unpacked>${unpack_base_dir}/${download_unpacked}</unpacked>
@@ -136,55 +137,98 @@
 						<phase>generate-sources</phase>
 						<configuration>
 							<target if="in_platform_pom">
-								<!-- download archive -->
-								<get src="${download_src}" dest="${download_dest_file}"
-									skipexisting="true" />
+								<taskdef resource="net/sf/antcontrib/antcontrib.properties"/>
 
-								<mkdir dir="${unpack_base_dir}" />
+								<available file="${downloads_dir}/berkelium" property="downloads_dir_present"/>
+								<if>
+									<equals arg1="${downloads_dir_present}" arg2="true" />
+									<then>
+										<!--  copy header files -->
+										<mkdir dir="${target}/include/berkelium" />
+										<copy todir="${target}/include/berkelium" overwrite="true">
+											<fileset dir="${downloads_dir}/berkelium/include/berkelium">
+												<include name="*.hpp" />
+											</fileset>
+										</copy>
 
-								<!-- extract archive -->
-								<exec dir="${unpack_base_dir}" executable="7z">
-									<arg value="x" />
-									<arg value="${download_dest_file}" />
-								</exec>
+										<!--  copy library files -->
+										<mkdir dir="${target}/lib" />
+										<copy file="${downloads_dir}/berkelium/berkelium.lib" todir="${target}/lib" 
+											failonerror="false" overwrite="true"/>
 
-								<!--  copy header files -->
-								<mkdir dir="${target}/include/berkelium" />
-								<copy todir="${target}/include/berkelium" overwrite="true">
-									<fileset dir="${unpacked}/include/berkelium">
-										<include name="*.hpp" />
-									</fileset>
-								</copy>
+										<!--  copy binary files -->
+										<mkdir dir="${target.bin}" />
+										<copy todir="${target.bin}" overwrite="true">
+											<fileset dir="${downloads_dir}/berkelium">
+												<!-- resources -->
+												<include name="*.pak" />
+												<!-- windows files -->
+												<include name="locales/*" />
+												<include name="av*.dll" />
+												<include name="icu*.dll" />
+												<include name="berkelium.*" />
+												<include name="ppmrenderer.exe" />
+												<include name="wow_helper.exe" />
+												<!-- linux files -->
+												<include name="berkelium" />
+												<include name="lib*.so" />
+											</fileset>
+										</copy>
+										<copy file="${target.bin}/liblibberkelium.so" tofile="${target.bin}/libberkelium.so" overwrite="true"/>
+									</then>
+									<else>
+										<isset property="unpacked"/>
+										<!-- download archive -->
+										<get src="${download_src}" dest="${download_dest_file}"
+											skipexisting="true" />
 
-								<!--  copy library files -->
-								<mkdir dir="${target}/lib" />
-								<copy file="${unpacked}/lib/berkelium.lib" todir="${target}/lib" 
-									failonerror="false" overwrite="true"/>
+										<mkdir dir="${unpack_base_dir}" />
 
-								<!--  copy binary files -->
-								<mkdir dir="${target.bin}" />
-								<copy todir="${target.bin}" overwrite="true">
-									<fileset dir="${target}/unpack/${download_unpacked}/bin">
-										<!-- resources -->
-										<include name="*.pak" />
-										<!-- windows files -->
-										<include name="locales/*" />
-										<include name="av*.dll" />
-										<include name="icu*.dll" />
-										<include name="berkelium.*" />
-										<include name="ppmrenderer.exe" />
-										<include name="wow_helper.exe" />
-										<!-- linux files -->
-										<include name="berkelium" />
-									</fileset>
-									<fileset dir="${target}/unpack/${download_unpacked}/lib">
-										<!-- linux files -->
-										<include name="lib*.so" />
-									</fileset>
-								</copy>
+										<!-- extract archive -->
+										<exec dir="${unpack_base_dir}" executable="7z">
+											<arg value="x" />
+											<arg value="${download_dest_file}" />
+										</exec>
 
-								<copy file="${target.bin}/liblibberkelium.so"
-									tofile="${target.bin}/libberkelium.so" failonerror="false" />
+										<!--  copy header files -->
+										<mkdir dir="${target}/include/berkelium" />
+										<copy todir="${target}/include/berkelium" overwrite="true">
+											<fileset dir="${unpacked}/include/berkelium">
+												<include name="*.hpp" />
+											</fileset>
+										</copy>
+
+										<!--  copy library files -->
+										<mkdir dir="${target}/lib" />
+										<copy file="${unpacked}/lib/berkelium.lib" todir="${target}/lib" 
+											failonerror="false" overwrite="true"/>
+
+										<!--  copy binary files -->
+										<mkdir dir="${target.bin}" />
+										<copy todir="${target.bin}" overwrite="true">
+											<fileset dir="${target}/unpack/${download_unpacked}/bin">
+												<!-- resources -->
+												<include name="*.pak" />
+												<!-- windows files -->
+												<include name="locales/*" />
+												<include name="av*.dll" />
+												<include name="icu*.dll" />
+												<include name="berkelium.*" />
+												<include name="ppmrenderer.exe" />
+												<include name="wow_helper.exe" />
+												<!-- linux files -->
+												<include name="berkelium" />
+											</fileset>
+											<fileset dir="${target}/unpack/${download_unpacked}/lib">
+												<!-- linux files -->
+												<include name="lib*.so" />
+											</fileset>
+										</copy>
+
+										<copy file="${target.bin}/liblibberkelium.so"
+											tofile="${target.bin}/libberkelium.so" failonerror="false" />
+									</else>
+								</if>
 
 								<echo message="${platform}" file="${target.bin}/../systemType.txt" />
 								<dirname file="${target.bin}/../systemType.txt" property="target.bin.abs" />
@@ -200,6 +244,19 @@
 						</goals>
 					</execution>
 				</executions>
+				<dependencies>
+					<dependency>
+						<groupId>ant-contrib</groupId>
+						<artifactId>ant-contrib</artifactId>
+						<version>1.0b3</version>
+						<exclusions>
+							<exclusion>
+								<groupId>ant</groupId>
+								<artifactId>ant</artifactId>
+							</exclusion>
+						</exclusions>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 		<pluginManagement>
