@@ -39,8 +39,7 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public void onJavascriptCallback(Window win, Object replyMsg, String origin,
-			String funcName, Variant[] args) {
+	public void onJavascriptCallback(Window win, String url, String funcName) {
 	}
 
 	@Override

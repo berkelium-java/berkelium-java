@@ -149,9 +149,12 @@ public:
 	}
 
 	virtual void onJavaScriptCallback(Berkelium::Window *win, void* replyMsg, Berkelium::URLString url, Berkelium::WideString funcName, Berkelium::Script::Variant *args, size_t numArgs) {
+		callFunc("onJavaScriptCallback", win, map(url), map(funcName));
+		/*
 		std::cout << "FIXME, NOT IMPLEMENTED: onJavaBerkelium::ScriptCallback at URL " << url << ", "
 				  << (replyMsg?"synchronous":"async") << std::endl;
 		std::wcout << L"	Function name: " << funcName << std::endl;
+		*/
 		for (size_t i = 0; i < numArgs; i++) {
 			Berkelium::WideString jsonStr = toJSON(args[i]);
 			std::wcout << L"	Argument " << i << ": ";
@@ -208,8 +211,12 @@ private:
 		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;)V", map(win), str);
 	}
 
-	void callFunc(const char* func, Berkelium::Window *arg1, jstring arg2, jstring arg3, jstring arg4) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", map(arg1), arg2, arg3, arg4);
+	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2){
+		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2);
+	}
+
+	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2, jstring arg3){
+		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2, arg3);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2, int arg3) {
@@ -220,16 +227,16 @@ private:
 		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;IZ)V", map(win), arg1, arg2, arg3);
 	}
 
-	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Window* arg2, const Berkelium::Rect& arg3) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Window;Lorg/berkelium/java/Rect;)V", map(arg1), map(arg2), map(arg3));
+	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Window* arg1, const Berkelium::Rect& arg2) {
+		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Window;Lorg/berkelium/java/Rect;)V", map(win), map(arg1), map(arg2));
 	}
 
-	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Widget* arg2, int arg3) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;I)V", map(arg1), map(arg2), arg3);
+	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Widget* arg1, int arg2) {
+		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;I)V", map(win), map(arg1), arg2);
 	}
 
-	void callFunc(const char* func, Berkelium::Window* arg1, Berkelium::Widget* arg2, int arg3, int arg4) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;II)V", map(arg1), map(arg2), arg3, arg4);
+	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Widget* arg1, int arg2, int arg3) {
+		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;II)V", map(win), map(arg1), arg2, arg3);
 	}
 
 	void callFuncA(const char* func, const char* sig, ...) {

@@ -58,8 +58,7 @@ public interface WindowDelegate {
 
 	public void onShowContextMenu(Window win, ContextMenuEventArgs args);
 
-	public void onJavascriptCallback(Window win, Object replyMsg, String origin,
-			String funcName, Variant args[]);
+	public void onJavascriptCallback(Window win, String url, String funcName);
 
 	public void onRunFileChooser(Window win, int mode, String title, String defaultFile);
 }

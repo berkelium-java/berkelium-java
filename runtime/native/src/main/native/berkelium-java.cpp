@@ -3,6 +3,8 @@
 #include "berkelium/Window.hpp"
 #include "berkelium/WindowDelegate.hpp"
 #include "berkelium/ScriptUtil.hpp"
+#include "berkelium/ScriptVariant.hpp"
+#include "berkelium/StringUtil.hpp"
 
 #include <cstring>
 #include <string>
@@ -31,6 +33,18 @@ class Berkelium_Java_Env {
 };
 
 JNIEnv* Berkelium_Java_Env::globalEnv = 0;
+
+static inline Berkelium::WideString jstring2WideString(JNIEnv* env, jstring string)
+{
+    jboolean iscopy;
+	const char* data = env->GetStringUTFChars(string, &iscopy);
+	jint len = env->GetStringUTFLength(string);
+	char* copy = new char[len];
+	std::memcpy(copy, data, len);
+	Berkelium::WideString ret = Berkelium::UTF8ToWide(Berkelium::WeakString<char>::point_to(copy, len));
+	env->ReleaseStringUTFChars(string, data);
+    return ret;
+}
 
 static inline void* getHandle(jobject self)
 {

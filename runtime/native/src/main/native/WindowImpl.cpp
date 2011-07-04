@@ -1,5 +1,4 @@
 #include <org_berkelium_java_WindowImpl.h>
-#include "berkelium/StringUtil.hpp"
 
 JNIEXPORT jobject JNICALL Java_org_berkelium_java_WindowImpl_getWidget(JNIEnv* env, jobject self)
 {
@@ -96,14 +95,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_adjustZoom(JNIEnv* env
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_executeJavascript(JNIEnv* env, jobject self, jstring script)
 {
 	Berkelium_Java_Env jEnv(env);
-	jboolean iscopy;
-	const char* data = env->GetStringUTFChars(script, &iscopy);
-	jint len = env->GetStringUTFLength(script);
-	char* copy = new char[len];
-	std::memcpy(copy, data, len);
-	Berkelium::WideString tmp = Berkelium::UTF8ToWide(Berkelium::WeakString<char>::point_to(copy, len));
-	env->ReleaseStringUTFChars(script, data);
-	getWindow(self)->executeJavascript(tmp);
+	getWindow(self)->executeJavascript(jstring2WideString(env, script));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_insertCSS(JNIEnv* env, jobject self, jstring css, jstring elementId)
@@ -221,7 +213,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_bind(JNIEnv* env, jobj
 {
 	Berkelium_Java_Env jEnv(env);
 	//FIXME
-	//getWindow(self)->bind();
+	getWindow(self)->bind(jstring2WideString(env, lval), Berkelium::Script::Variant::bindFunction(jstring2WideString(env, lval), true));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_addBindOnStartLoading(JNIEnv* env, jobject self, jstring lval, jobject rval)
