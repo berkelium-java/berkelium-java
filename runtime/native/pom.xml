@@ -177,7 +177,9 @@
 										<copy file="${target.bin}/liblibberkelium.so" tofile="${target.bin}/libberkelium.so" overwrite="true"/>
 									</then>
 									<else>
+										<!--
 										<isset property="unpacked"/>
+										-->
 										<!-- download archive -->
 										<get src="${download_src}" dest="${download_dest_file}"
 											skipexisting="true" />

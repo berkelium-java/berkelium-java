@@ -71,11 +71,8 @@
 			<activation>
 				<os>
 					<family>linux</family>
+					<arch>amd64</arch>
 				</os>
-				<property>
-					<name>sun.arch.data.model</name>
-					<value>64</value>
-				</property>
 			</activation>
 
 			<build>
@@ -119,11 +116,8 @@
 			<activation>
 				<os>
 					<family>linux</family>
+					<arch>x86</arch>
 				</os>
-				<property>
-					<name>sun.arch.data.model</name>
-					<value>32</value>
-				</property>
 			</activation>
 
 			<build>
