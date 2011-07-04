@@ -95,7 +95,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_adjustZoom(JNIEnv* env
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_executeJavascript(JNIEnv* env, jobject self, jstring script)
 {
 	Berkelium_Java_Env jEnv(env);
-	getWindow(self)->executeJavascript(jstring2WideString(env, script));
+	getWindow(self)->executeJavascript(jstring2WideString(script));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_insertCSS(JNIEnv* env, jobject self, jstring css, jstring elementId)
@@ -212,22 +212,21 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_synchronousScriptRetur
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_bind(JNIEnv* env, jobject self, jstring lval, jobject rval)
 {
 	Berkelium_Java_Env jEnv(env);
-	//FIXME
-	getWindow(self)->bind(jstring2WideString(env, lval), Berkelium::Script::Variant::bindFunction(jstring2WideString(env, lval), true));
+	Berkelium::WideString str = jstring2WideString(lval);
+	getWindow(self)->bind(str, Berkelium::Script::Variant::bindFunction(str, false));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_addBindOnStartLoading(JNIEnv* env, jobject self, jstring lval, jobject rval)
 {
 	Berkelium_Java_Env jEnv(env);
-	//FIXME
-	//getWindow(self)->addBindOnStartLoading();
+	Berkelium::WideString str = jstring2WideString(lval);
+	getWindow(self)->addBindOnStartLoading(str, Berkelium::Script::Variant::bindFunction(str, false));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_addEvalOnStartLoading(JNIEnv* env, jobject self, jstring script)
 {
 	Berkelium_Java_Env jEnv(env);
-	//FIXME
-	//getWindow(self)->addEvalOnStartLoading();
+	getWindow(self)->addEvalOnStartLoading(jstring2WideString(script));
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_WindowImpl_clearStartLoading(JNIEnv* env, jobject self)

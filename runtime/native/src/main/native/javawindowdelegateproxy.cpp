@@ -148,8 +148,8 @@ public:
 		std::cout << std::endl;
 	}
 
-	virtual void onJavaScriptCallback(Berkelium::Window *win, void* replyMsg, Berkelium::URLString url, Berkelium::WideString funcName, Berkelium::Script::Variant *args, size_t numArgs) {
-		callFunc("onJavaScriptCallback", win, map(url), map(funcName));
+	virtual void onJavascriptCallback(Berkelium::Window *win, void* replyMsg, Berkelium::URLString url, Berkelium::WideString funcName, Berkelium::Script::Variant *args, size_t numArgs) {
+		callFunc("onJavascriptCallback", win, map(url), map(funcName));
 		/*
 		std::cout << "FIXME, NOT IMPLEMENTED: onJavaBerkelium::ScriptCallback at URL " << url << ", "
 				  << (replyMsg?"synchronous":"async") << std::endl;
@@ -315,53 +315,8 @@ private:
 		return 0;
 	}
 
-	// from http://stackoverflow.com/questions/870414/passing-double-byte-wchar-strings-from-c-to-java-via-jni
 	jstring map(const Berkelium::WideString& ws) {
-#if WIN32
-		const wchar_t* utf16 = ws.data();
-		int utf16_length = ws.length();
-		int utf8_length = WideCharToMultiByte(
-		  CP_UTF8,           // Convert to UTF-8
-		  0,                 // No special character conversions required 
-		                     // (UTF-16 and UTF-8 support the same characters)
-		  utf16,             // UTF-16 string to convert
-		  utf16_length,      // utf16 is NULL terminated (if not, use length)
-		  NULL,              // Determining correct output buffer size
-		  0,                 // Determining correct output buffer size
-		  NULL,              // Must be NULL for CP_UTF8
-		  NULL);             // Must be NULL for CP_UTF8
-		
-		if (utf8_length == 0) {
-			printf("internal berkelium-java error: WideCharToMultiByte failed (1)\n");
-			return Berkelium_Java_Env::get()->NewStringUTF("");
-		}
-		
-		char* utf8 = new char[utf8_length+1]; // Allocate space for UTF-8 string
-		
-		utf8_length = WideCharToMultiByte(
-		  CP_UTF8,           // Convert to UTF-8
-		  0,                 // No special character conversions required 
-		                     // (UTF-16 and UTF-8 support the same characters)
-		  utf16,             // UTF-16 string to convert
-		  utf16_length,      // utf16 is NULL terminated (if not, use length)
-		  utf8,              // UTF-8 output buffer
-		  utf8_length,       // UTF-8 output buffer size
-		  NULL,              // Must be NULL for CP_UTF8
-		  NULL);             // Must be NULL for CP_UTF8
-		
-		if (utf8_length == 0) {
-			printf("internal berkelium-java error: WideCharToMultiByte failed (2)\n");
-			return Berkelium_Java_Env::get()->NewStringUTF("");
-		}
-		
-		utf8[utf8_length] = 0;
-		jstring ret = Berkelium_Java_Env::get()->NewStringUTF(utf8);
-		delete utf8;
-		
-		return ret;
-#else
-		return 0;
-#endif
+		return wideString2jstring(ws);
 	}
 
 };
