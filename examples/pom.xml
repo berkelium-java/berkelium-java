@@ -20,5 +20,6 @@
 		<module>awt</module>
 		<module>awt2</module>
 		<module>browser</module>
+		<module>javascript</module>
 	</modules>
 </project>
