@@ -54,7 +54,7 @@
 					<groupId>${project.groupId}</groupId>
 					<artifactId>berkelium-runtime-native-win64</artifactId>
 					<version>${project.version}</version>
-					<type>jar</type>
+					<type>dll</type>
 					<scope>runtime</scope>
 				</dependency>
 			</dependencies>
@@ -72,7 +72,7 @@
 					<groupId>${project.groupId}</groupId>
 					<artifactId>berkelium-runtime-native-linux32</artifactId>
 					<version>${project.version}</version>
-					<type>jar</type>
+					<type>so</type>
 					<scope>runtime</scope>
 				</dependency>
 			</dependencies>
@@ -90,7 +90,7 @@
 					<groupId>${project.groupId}</groupId>
 					<artifactId>berkelium-runtime-native-linux64</artifactId>
 					<version>${project.version}</version>
-					<type>jar</type>
+					<type>so</type>
 					<scope>runtime</scope>
 				</dependency>
 			</dependencies>

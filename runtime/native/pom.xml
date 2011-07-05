@@ -37,7 +37,7 @@
 			<activation>
 				<os>
 					<family>linux</family>
-					<arch>x64</arch>
+					<arch>amd64</arch>
 				</os>
 			</activation>
 			<modules>
@@ -45,7 +45,7 @@
 			</modules>
 			<properties>
 				<platform>linux64</platform>
-				<download_date>beta-2011-04-29</download_date>
+				<download_date>2010-11-02</download_date>
 			</properties>
 		</profile>
 		<profile>
@@ -53,9 +53,7 @@
 			<activation>
 				<os>
 					<family>linux</family>
-					<!--
 					<arch>x86</arch>
-					-->
 				</os>
 			</activation>
 			<modules>
@@ -63,7 +61,7 @@
 			</modules>
 			<properties>
 				<platform>linux32</platform>
-				<download_date>beta-2011-04-29</download_date>
+				<download_date>beta-2010-11-02</download_date>
 			</properties>
 		</profile>
 	</profiles>
