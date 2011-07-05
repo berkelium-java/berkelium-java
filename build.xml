@@ -1,0 +1,199 @@
+<?xml version="1.0"?>
+<project name="berkelium-java" default="all" basedir=".">
+
+	<taskdef resource="net/sf/antcontrib/antcontrib.properties">
+		<classpath>
+			<pathelement location="build/lib/ant-contrib-1.0b3.jar"/>
+		</classpath>
+	</taskdef>
+
+	<property environment="env"/>
+	<property file="user.build.properties"/>
+	<property file="build.properties"/>
+
+	<target name="env">
+		<condition property="sys.linux32" value="linux32" else="">
+			<os name="linux" arch="i386"/>
+		</condition>
+		<condition property="sys.linux64" value="linux64"  else="">
+			<os name="linux" arch="amd64"/>
+		</condition>
+		<condition property="sys.win32" value="win32" else="">
+			<os family="windows" arch="x86"/>
+		</condition>
+		<condition property="sys.win64" value="win64" else="">
+			<os family="windows" arch="amd64"/>
+		</condition>
+
+		<property name="sys.name" value="${sys.linux32}${sys.linux64}${sys.win32}${sys.win64}"/>
+
+		<if>
+			<equals arg1="${sys.name}" arg2=""/>
+			<then>
+				<fail>Unknown System</fail>
+			</then>
+			<else>
+				<echo>building for '${sys.name}'</echo>
+			</else>
+		</if>
+
+		<if>
+			<not>
+				<isset property="env.JAVA_HOME"/>
+			</not>
+			<then>
+				<fail>JAVA_HOME not set</fail>
+			</then>
+		</if>
+
+		<propertycopy from="download.date.${sys.name}" name="download.date"/>
+		<property name="download.name" value="berkelium-${sys.name}-${download.date}"/>
+	</target>
+
+	<target name="prepare" depends="env">
+		<if>
+			<available file="${target}/version.txt"/>
+			<then>
+				<loadfile property="current.version" srcfile="${target}/version.txt"/>
+				<if>
+					<not>
+						<equals arg1="${download.name}" arg2="${current.version}"/>
+					</not>
+					<then>
+						<fail>'${target}' contains wrong version '${current.version}', expected '${download.name}'. Run "ant clean" or rename/move '${target}' out of way.</fail>
+					</then>
+				</if>
+			</then>
+		</if>
+
+		<available file="${downloads_dir}/berkelium" property="downloads_dir_present"/>
+		<if>
+			<equals arg1="${downloads_dir_present}" arg2="true" />
+			<then>
+				<!--  copy header files -->
+				<mkdir dir="${target}/include/berkelium" />
+				<copy todir="${target}/include/berkelium" overwrite="true">
+					<fileset dir="${downloads_dir}/berkelium/include/berkelium">
+						<include name="*.hpp" />
+					</fileset>
+				</copy>
+
+				<!--  copy library files -->
+				<mkdir dir="${target}/lib" />
+				<copy file="${downloads_dir}/berkelium/berkelium.lib" todir="${target}/lib" 
+					failonerror="false" overwrite="true"/>
+
+				<!--  copy binary files -->
+				<mkdir dir="${target.bin}" />
+				<copy todir="${target.bin}" overwrite="true">
+					<fileset dir="${downloads_dir}/berkelium">
+						<!-- resources -->
+						<include name="*.pak" />
+						<!-- windows files -->
+						<include name="locales/*" />
+						<include name="av*.dll" />
+						<include name="icu*.dll" />
+						<include name="berkelium.*" />
+						<include name="ppmrenderer.exe" />
+						<include name="wow_helper.exe" />
+						<!-- linux files -->
+						<include name="berkelium" />
+						<include name="lib*.so" />
+					</fileset>
+				</copy>
+				<copy file="${target.bin}/liblibberkelium.so" tofile="${target.bin}/libberkelium.so" overwrite="true"/>
+			</then>
+			<else>
+				<!-- download archive -->
+				<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
+
+				<property name="unpacked" value="${target}/${download.name}"/>
+				<property name="unpacked.dir" value="${unpacked}/berkelium-${sys.name}"/>
+
+				<if>
+					<not>
+						<available file="${unpacked}/extracted.txt"/>
+					</not>
+					<then>
+						<delete dir="${unpacked}"/>
+						<mkdir dir="${unpacked}"/>
+						<!-- extract archive -->
+						<property name="download.target" location="${download.dir}/${download.name}.7z"/>
+						<exec dir="${unpacked}" executable="7z">
+							<arg value="x" />
+							<arg value="${download.target}" />
+						</exec>
+						<echo file="${unpacked}/extracted.txt"/>
+					</then>
+				</if>
+
+				<!--  copy header files -->
+				<mkdir dir="${target}/include/berkelium" />
+				<copy todir="${target}/include/berkelium" overwrite="true">
+					<fileset dir="${unpacked.dir}/include/berkelium">
+						<include name="*.hpp" />
+					</fileset>
+				</copy>
+
+				<!--  copy library files -->
+				<mkdir dir="${target}/lib" />
+				<copy file="${unpacked.dir}/lib/berkelium.lib" todir="${target}/lib" 
+					failonerror="false" overwrite="true"/>
+
+				<!--  copy binary files -->
+				<mkdir dir="${target}/bin" />
+				<copy todir="${target}/bin" overwrite="true">
+					<fileset dir="${unpacked.dir}/bin">
+						<!-- resources -->
+						<include name="*.pak" />
+						<!-- windows files -->
+						<include name="locales/*" />
+						<include name="av*.dll" />
+						<include name="icu*.dll" />
+						<include name="berkelium.*" />
+						<include name="ppmrenderer.exe" />
+						<include name="wow_helper.exe" />
+						<!-- linux files -->
+						<include name="berkelium" />
+					</fileset>
+					<fileset dir="${unpacked.dir}/lib">
+						<!-- linux files -->
+						<include name="lib*.so" />
+					</fileset>
+				</copy>
+
+				<echo file="${target}/version.txt">${download.name}</echo>
+			</else>
+		</if>
+<!-- TODO -->
+		<echo message="${platform}" file="${target.bin}/../systemType.txt" />
+		<dirname file="${target.bin}/../systemType.txt" property="target.bin.abs" />
+		<pathconvert dirsep="/" pathsep=";" property="platform-files">
+			<fileset dir="${target.bin}" includes="**" />
+			<map from="${target.bin.abs}/${platform}/" to="" />
+		</pathconvert>
+		<echo message="${platform-files}" file="${target.bin}/dependencies.txt" />
+	</target>
+
+	<target name="native-linux32" depends="env" if="sys.linux32">
+	</target>
+
+	<target name="native-linux64" depends="env" if="sys.linux64">
+	</target>
+
+	<target name="native-win32" depends="env" if="sys.win32">
+	</target>
+
+	<target name="native-win64" depends="env" if="sys.win64">
+	</target>
+
+	<target name="native" depends="prepare,native-linux32,native-linux64,native-win32,native-win64">
+	</target>
+
+	<target name="all" depends="native">
+	</target>
+
+	<target name="clean">
+		<delete dir="${target}"/>
+	</target>
+</project>
