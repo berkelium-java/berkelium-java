@@ -57,6 +57,10 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
+	public void onPaintDone() {
+	}
+
+	@Override
 	public void onPaint(Window win, Buffer sourceBuffer, Rect sourceBufferRect,
 			Rect[] copyRects, int dx, int dy, Rect scrollRect) {
 	}

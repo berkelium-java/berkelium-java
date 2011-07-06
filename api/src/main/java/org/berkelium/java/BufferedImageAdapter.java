@@ -56,6 +56,9 @@ public class BufferedImageAdapter extends WindowAdapter {
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			needs_full_refresh = true;
 		}
+		if(!updatedRect.isEmpty()) {
+			onPaintDone();
+		}
 	}
 
 	/**
