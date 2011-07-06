@@ -49,7 +49,17 @@ static inline Berkelium::WideString jstring2WideString(jstring string)
 static inline jstring wideString2jstring(const Berkelium::WideString& string)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	return env->NewString((const jchar*)string.data(), string.length());
+	char* copy;
+	{
+		Berkelium::UTF8String utf = Berkelium::WideToUTF8(string);
+		int len = utf.length();
+		copy = new char[len + 1];
+		std::memcpy(copy, utf.data(), len);
+		copy[len] = 0;
+	}
+	jstring ret = env->NewStringUTF(copy);
+	delete[] copy;
+	return ret;
 }
 
 static inline void* getHandle(jobject self)
