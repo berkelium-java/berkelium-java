@@ -11,14 +11,10 @@ exit /B 1
 
 call "%VS90COMNTOOLS%\vsvars32.bat"
 
-goto SET
+goto end
 
 :VS100
 
 call "%VS100COMNTOOLS%\vsvars32.bat"
-
-:SET
-
-set > vc.properties
 
 :end
