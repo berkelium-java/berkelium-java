@@ -48,12 +48,17 @@
 			</then>
 		</if>
 
+		<property name="target" location="build/target"/>
+		<property name="dist" location="build/dist"/>
+		<property name="download.dir" location="build/downloads"/>
+
 		<propertycopy from="download.date.${sys.name}" name="download.date" />
 		<property name="download.name" value="berkelium-${sys.name}-${download.date}" />
+		<property name="basedir" location="." />
 	</target>
 
 	<target name="env-linux" depends="env" />
-	<target name="env-win" depends="env"/>
+	<target name="env-win" depends="env" />
 	<target name="native-linux32" depends="env-linux" if="sys.linux32" />
 	<target name="native-linux64" depends="env-linux" if="sys.linux64" />
 	<target name="native-linux" depends="native-linux32,native-linux64" />
@@ -100,10 +105,17 @@
 			</then>
 			<else>
 				<!-- download archive -->
-				<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
+				<if>
+					<not>
+						<available file="${download.dir}/${download.name}.7z" />
+					</not>
+					<then>
+						<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
+					</then>
+				</if>
 
-				<property name="unpacked" value="${target}/${download.name}" />
-				<property name="unpacked.dir" value="${unpacked}/berkelium-${sys.name}" />
+				<property name="unpacked" location="${target}/${download.name}" />
+				<property name="unpacked.dir" location="${unpacked}/berkelium-${sys.name}" />
 
 				<if>
 					<not>
@@ -122,9 +134,9 @@
 					</then>
 				</if>
 
-				<property name="source.include" value="${unpacked.dir}/include" />
-				<property name="source.lib" value="${unpacked.dir}/lib" />
-				<property name="source.bin" value="${unpacked.dir}/bin" />
+				<property name="source.include" location="${unpacked.dir}/include" />
+				<property name="source.lib" location="${unpacked.dir}/lib" />
+				<property name="source.bin" location="${unpacked.dir}/bin" />
 			</else>
 		</if>
 
@@ -140,39 +152,86 @@
 	</target>
 
 	<target name="javac" depends="native,prepare">
-		<mkdir dir="${unpacked}/classes"/>
-		<javac srcdir="src/main/java" destdir="${unpacked}/classes" includeantruntime="false"/>
+		<mkdir dir="${unpacked}/classes" />
+		<javac srcdir="src/main/java" destdir="${unpacked}/classes" includeantruntime="false" />
 	</target>
 
 	<target name="javah" depends="javac">
-		<mkdir dir="${unpacked}/javah"/>
+		<mkdir dir="${unpacked}/javah" />
 		<javah classpath="${unpacked}/classes" destdir="${unpacked}/javah">
-			<class name="org.berkelium.java.impl.BufferImpl"/>
-			<class name="org.berkelium.java.impl.Context"/>
-			<class name="org.berkelium.java.impl.Platform"/>
-			<class name="org.berkelium.java.impl.WindowImpl"/>
+			<class name="org.berkelium.java.impl.BufferImpl" />
+			<class name="org.berkelium.java.impl.Context" />
+			<class name="org.berkelium.java.impl.Platform" />
+			<class name="org.berkelium.java.impl.WindowImpl" />
 		</javah>
 	</target>
 
-	<target name="compile-native" depends="javah">
-		<echo>source.include:'${source.include}'</echo>
-		<echo>source.lib:'${source.lib}'</echo>
-		<echo>source.bin:'${source.bin}'</echo>
-		<exec executable="cmd" failonerror="true">
-			<env key="CL" value="/EHsc /DWIN32 /I&quot;${source.include}&quot; /I&quot;${env.JAVA_HOME}/include&quot; /I&quot;${env.JAVA_HOME}/include/win32&quot; /I&quot;${unpacked}/javah&quot; src/main/native/berkelium-java.cpp" />
+	<target name="compile" depends="javah">
+		<var name="cl" value="/DWIN32 /EHsc /LD" />
+		<var name="cl" value="${cl} /I&quot;${source.include}&quot;" />
+		<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include&quot;" />
+		<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include/win32&quot;" />
+		<var name="cl" value="${cl} /I&quot;${unpacked}/javah&quot;" />
+		<var name="cl" value="${cl} &quot;${basedir}/src/main/native/berkelium-java.cpp&quot;" />
+		<var name="cl" value="${cl} /link" />
+		<var name="cl" value="${cl} &quot;${unpacked.dir}/lib/berkelium.lib&quot;" />
+
+		<mkdir dir="${unpacked}/target" />
+		<exec executable="cmd" failonerror="true" dir="${unpacked}/target">
+			<env key="ARGS" value="${cl}" />
+			<env key="BASEDIR" value="${basedir}" />
 			<arg value="/q" />
 			<arg value="/c" />
-			<arg value="call &quot;build/bin/cl.cmd&quot;" />
+			<arg value="call &quot;${basedir}/build/bin/cl.cmd&quot;" />
 		</exec>
 	</target>
 
-	<target name="compile" depends="compile-native">
+	<target name="package" depends="compile">
+		<delete dir="${unpacked}/package" />
+		<property name="native" location="${unpacked}/package/org/berkelium/java/native" />
+		<mkdir dir="${native}/${sys.name}" />
+		<echo file="${native}/systemType.txt">${sys.name}</echo>
+		<!--  copy binary files -->
+		<copy todir="${native}/${sys.name}" overwrite="true">
+			<fileset dir="${unpacked}/target">
+				<include name="*.dll" />
+				<include name="*.so" />
+			</fileset>
+			<fileset dir="${unpacked.dir}/bin">
+				<!-- resources -->
+				<include name="*.pak" />
+				<!-- windows files -->
+				<include name="locales/*" />
+				<include name="av*.dll" />
+				<include name="icu*.dll" />
+				<include name="berkelium.*" />
+				<include name="ppmrenderer.exe" />
+				<include name="wow_helper.exe" />
+				<!-- linux files -->
+				<include name="berkelium" />
+				<include name="lib*.so" />
+			</fileset>
+		</copy>
+		<if>
+			<available file="${unpacked.dir}/lib/liblibberkelium.so" />
+			<then>
+				<copy file="${unpacked.dir}/lib/liblibberkelium.so" tofile="${native}/${sys.name}/libberkelium.so" />
+			</then>
+		</if>
 	</target>
 
-	<target name="all" depends="compile">
+	<target name="jar" depends="package">
+		<property name="dist.dir" location="${dist}/${download.name}" />
+		<delete dir="${dist.dir}"/>
+		<mkdir dir="${dist.dir}"/>
+		<jar destfile="${dist.dir}/berkelium-${sys.name}.jar" basedir="${unpacked}/package"/>
 	</target>
 
-	<target name="clean">
+	<target name="all" depends="jar" description="">
+	</target>
+
+	<target name="clean" description="">
 		<delete dir="${target}" />
-	</target>
+		<delete dir="${dist}" />
+		</target>
 </project>
