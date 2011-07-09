@@ -12,30 +12,53 @@
 	<property file="build.properties" />
 
 	<target name="env">
-		<condition property="sys.linux32" value="linux32" else="">
+		<if>
 			<os name="linux" arch="i386" />
-		</condition>
-		<condition property="sys.linux64" value="linux64" else="">
-			<os name="linux" arch="amd64" />
-		</condition>
-		<condition property="sys.win32" value="win32" else="">
-			<os family="windows" arch="x86" />
-		</condition>
-		<condition property="sys.win64" value="win64" else="">
-			<os family="windows" arch="amd64" />
-		</condition>
-
-		<property name="sys.name" value="${sys.linux32}${sys.linux64}${sys.win32}${sys.win64}" />
-		<property name="sys.linux" value="${sys.linux32}${sys.linux64}" />
-		<property name="sys.win" value="${sys.win32}${sys.win64}" />
+			<then>
+				<property name="sys.name" value="linux32" />
+				<property name="sys.linux32" value="true" />
+				<property name="sys.linux" value="true" />
+				<property name="sys.bits" value="32" />
+			</then>
+		</if>
 
 		<if>
-			<equals arg1="${sys.name}" arg2="" />
+			<os name="linux" arch="amd64" />
 			<then>
-				<fail>Unknown System</fail>
+				<property name="sys.name" value="linux64" />
+				<property name="sys.linux32" value="true" />
+				<property name="sys.linux" value="true" />
+				<property name="sys.bits" value="64" />
+			</then>
+		</if>
+
+		<if>
+			<os name="win" arch="x86" />
+			<then>
+				<property name="sys.name" value="win32" />
+				<property name="sys.win32" value="true" />
+				<property name="sys.win" value="true" />
+				<property name="sys.bits" value="32" />
+			</then>
+		</if>
+
+		<if>
+			<os name="win" arch="amd64" />
+			<then>
+				<property name="sys.name" value="win64" />
+				<property name="sys.win64" value="true" />
+				<property name="sys.win" value="true" />
+				<property name="sys.bits" value="64" />
+			</then>
+		</if>
+
+		<if>
+			<isset property="sys.name" />
+			<then>
+				<echo>building for '${sys.name}'</echo>
 			</then>
 			<else>
-				<echo>building for '${sys.name}'</echo>
+				<fail>Unknown System</fail>
 			</else>
 		</if>
 
@@ -48,24 +71,14 @@
 			</then>
 		</if>
 
-		<property name="target" location="build/target"/>
-		<property name="dist" location="build/dist"/>
-		<property name="download.dir" location="build/downloads"/>
+		<property name="target" location="build/target" />
+		<property name="dist" location="build/dist" />
+		<property name="download.dir" location="build/downloads" />
 
 		<propertycopy from="download.date.${sys.name}" name="download.date" />
 		<property name="download.name" value="berkelium-${sys.name}-${download.date}" />
 		<property name="basedir" location="." />
 	</target>
-
-	<target name="env-linux" depends="env" />
-	<target name="env-win" depends="env" />
-	<target name="native-linux32" depends="env-linux" if="sys.linux32" />
-	<target name="native-linux64" depends="env-linux" if="sys.linux64" />
-	<target name="native-linux" depends="native-linux32,native-linux64" />
-	<target name="native-win32" depends="env-win" if="sys.win32" />
-	<target name="native-win64" depends="env-win" if="sys.win64" />
-	<target name="native-win" depends="native-win32,native-win64" />
-	<target name="native" depends="native-linux,native-win" />
 
 	<target name="prepare" depends="env">
 		<if>
@@ -151,7 +164,7 @@
 		-->
 	</target>
 
-	<target name="javac" depends="native,prepare">
+	<target name="javac" depends="prepare">
 		<mkdir dir="${unpacked}/classes" />
 		<javac srcdir="src/main/java" destdir="${unpacked}/classes" includeantruntime="false" />
 	</target>
@@ -166,16 +179,43 @@
 		</javah>
 	</target>
 
-	<target name="compile" depends="javah">
-		<var name="cl" value="/DWIN32 /EHsc /LD" />
+	<target name="compile-linux" depends="javah" if="sys.linux">
+		<delete dir="${unpacked}/target" />
+		<mkdir dir="${unpacked}/target" />
+		<echo>compile...</echo>
+		<exec executable="gcc" failonerror="true" dir="${unpacked}/target">
+			<arg value="-fPIC" />
+			<arg value="-o" />
+			<arg value="berkelium-java.o" />
+			<arg value="-I${source.include}" />
+			<arg value="-I${env.JAVA_HOME}include" />
+			<arg value="-I${env.JAVA_HOME}include/linux" />
+			<arg value="-I${unpacked}/javah" />
+			<arg value="-c" />
+			<arg value="${basedir}/src/main/native/berkelium-java.cpp" />
+		</exec>
+		<echo>link...</echo>
+		<exec executable="gcc" failonerror="true" dir="${unpacked}/target">
+			<arg value="-shared" />
+			<arg value="-lstdc++" />
+			<arg value="-L${unpacked.dir}/lib" />
+			<arg value="-llibberkelium" />
+			<arg value="-olibberkelium-java.so" />
+			<arg value="berkelium-java.o" />
+		</exec>
+	</target>
+
+	<target name="compile-win" depends="javah" if="sys.win">
+		<var name="cl" value="/DWIN${sys.bits} /EHsc /LD" />
 		<var name="cl" value="${cl} /I&quot;${source.include}&quot;" />
 		<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include&quot;" />
-		<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include/win32&quot;" />
+		<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include/${sys.name}&quot;" />
 		<var name="cl" value="${cl} /I&quot;${unpacked}/javah&quot;" />
 		<var name="cl" value="${cl} &quot;${basedir}/src/main/native/berkelium-java.cpp&quot;" />
 		<var name="cl" value="${cl} /link" />
 		<var name="cl" value="${cl} &quot;${unpacked.dir}/lib/berkelium.lib&quot;" />
 
+		<delete dir="${unpacked}/target" />
 		<mkdir dir="${unpacked}/target" />
 		<exec executable="cmd" failonerror="true" dir="${unpacked}/target">
 			<env key="ARGS" value="${cl}" />
@@ -185,6 +225,8 @@
 			<arg value="call &quot;${basedir}/build/bin/cl.cmd&quot;" />
 		</exec>
 	</target>
+
+	<target name="compile" depends="compile-win,compile-linux" />
 
 	<target name="package" depends="compile">
 		<delete dir="${unpacked}/package" />
@@ -222,9 +264,9 @@
 
 	<target name="jar" depends="package">
 		<property name="dist.dir" location="${dist}/${download.name}" />
-		<delete dir="${dist.dir}"/>
-		<mkdir dir="${dist.dir}"/>
-		<jar destfile="${dist.dir}/berkelium-${sys.name}.jar" basedir="${unpacked}/package"/>
+		<delete dir="${dist.dir}" />
+		<mkdir dir="${dist.dir}" />
+		<jar destfile="${dist.dir}/berkelium-${sys.name}.jar" basedir="${unpacked}/package" />
 	</target>
 
 	<target name="all" depends="jar" description="">
@@ -233,5 +275,5 @@
 	<target name="clean" description="">
 		<delete dir="${target}" />
 		<delete dir="${dist}" />
-		</target>
+	</target>
 </project>
