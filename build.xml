@@ -33,7 +33,7 @@
 		</if>
 
 		<if>
-			<os name="win" arch="x86" />
+			<os family="windows" arch="x86" />
 			<then>
 				<property name="sys.name" value="win32" />
 				<property name="sys.win32" value="true" />
@@ -43,7 +43,7 @@
 		</if>
 
 		<if>
-			<os name="win" arch="amd64" />
+			<os family="windows" arch="amd64" />
 			<then>
 				<property name="sys.name" value="win64" />
 				<property name="sys.win64" value="true" />
