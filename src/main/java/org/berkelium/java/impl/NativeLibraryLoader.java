@@ -59,8 +59,10 @@ public class NativeLibraryLoader {
 				loadLib(base, "avutil-50");
 				loadLib(base, "avcodec-52");
 				loadLib(base, "avformat-52");
+				loadLib(base, "berkelium");
+			} else {
+				loadLib(base, "libberkelium");
 			}
-			loadLib(base, "libberkelium");
 			loadLib(base, "berkelium-java");
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
