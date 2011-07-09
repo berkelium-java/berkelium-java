@@ -34,8 +34,11 @@ class Berkelium_Java_Env {
 
 JNIEnv* Berkelium_Java_Env::globalEnv = 0;
 
-static inline Berkelium::WideString jstring2WideString(jstring string)
+static inline Berkelium::WeakString<char> jstring2String(jstring string)
 {
+	if(string == NULL) {
+		return Berkelium::WeakString<char>::point_to((const char*)NULL, 0);
+	}
 	JNIEnv* env = Berkelium_Java_Env::get();
 	jboolean iscopy;
 	const char* data = env->GetStringUTFChars(string, &iscopy);
@@ -43,11 +46,23 @@ static inline Berkelium::WideString jstring2WideString(jstring string)
 	char* copy = new char[len];
 	std::memcpy(copy, data, len);
 	env->ReleaseStringUTFChars(string, data);
-	return Berkelium::UTF8ToWide(Berkelium::WeakString<char>::point_to(copy, len));
+	return Berkelium::WeakString<char>::point_to(copy, len);
+}
+
+static inline Berkelium::WideString jstring2WideString(jstring string)
+{
+	if(string == NULL) {
+		return Berkelium::WideString::point_to((const wchar_t*)NULL, 0);
+	}
+	return Berkelium::UTF8ToWide(jstring2String(string));
 }
 
 static inline jstring wideString2jstring(const Berkelium::WideString& string)
 {
+	if(string.data() == NULL) {
+		return NULL;
+	}
+
 	JNIEnv* env = Berkelium_Java_Env::get();
 	return env->NewString((const jchar*)string.data(), string.length());
 }
@@ -63,7 +78,7 @@ static inline void* getHandle(jobject self)
 void Berkelium_Java_Registry_add(jlong handle, jobject obj)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
 	jmethodID meth = env->GetStaticMethodID(cls, "add", "(JLjava/lang/Object;)V");
 	env->CallStaticVoidMethod(cls, meth, handle, obj);
 }
@@ -71,7 +86,7 @@ void Berkelium_Java_Registry_add(jlong handle, jobject obj)
 void Berkelium_Java_Registry_remove(jlong handle)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
 	jmethodID meth = env->GetStaticMethodID(cls, "remove", "(J)V");
 	env->CallStaticVoidMethod(cls, meth, handle);
 }
@@ -79,7 +94,7 @@ void Berkelium_Java_Registry_remove(jlong handle)
 jobject Berkelium_Java_Registry_get(jlong handle)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
 	jmethodID meth = env->GetStaticMethodID(cls, "get", "(J)Ljava/lang/Object;");
 	return env->CallStaticObjectMethod(cls, meth, handle);
 }

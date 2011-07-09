@@ -278,7 +278,6 @@
 	<target name="eclipse" depends="env" description="">
 		<var name="build" unset="true" />
 		<property name="build" location="build/eclipse" />
-		<property name="unpacked" location="${build}/src" />
 		<antcall target="package" />
 	</target>
 

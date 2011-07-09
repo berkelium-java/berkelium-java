@@ -26,7 +26,7 @@ public:
 	{
 		callFuncA(
 			"onPaint",
-			"(Lorg/berkelium/java/Window;Lorg/berkelium/java/Buffer;Lorg/berkelium/java/Rect;[Lorg/berkelium/java/Rect;IILorg/berkelium/java/Rect;)V",
+			"(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Buffer;Lorg/berkelium/java/api/Rect;[Lorg/berkelium/java/api/Rect;IILorg/berkelium/java/api/Rect;)V",
 			map(wini),
 			map(bitmap_in, 4 * bitmap_rect.width() * bitmap_rect.height()),
 			map(bitmap_rect),
@@ -71,7 +71,7 @@ public:
 							  int flags, bool &success, Berkelium::WideString &value) {
 		callFuncA(
 			"onScriptAlert",
-			"(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I[Z[Ljava/lang/String;)V",
+			"(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;I[Z[Ljava/lang/String;)V",
 			map(win),
 			map(message),
 			map(defaultValue),
@@ -89,7 +89,7 @@ public:
 									   bool &cancelDefaultAction) {
 		callFuncA(
 			"onNavigationRequested",
-			"(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Z[Z)Z",
+			"(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;Z[Z)Z",
 			map(win),
 			map(newURL),
 			map(referrer),
@@ -131,15 +131,21 @@ public:
 	}
 
 	virtual void onWidgetCreated(Berkelium::Window *win, Berkelium::Widget *newWidget, int zIndex) {
+		/*
 		callFunc("onWidgetCreated", win, newWidget, zIndex);
+		*/
 	}
 
 	virtual void onWidgetResize(Berkelium::Window *win, Berkelium::Widget *wid, int newWidth, int newHeight) {
+		/*
 		callFunc("onWidgetResize", win, wid, newWidth, newHeight);
+		*/
 	}
 
 	virtual void onWidgetMove(Berkelium::Window *win, Berkelium::Widget *wid, int newX, int newY) {
+		/*
 		callFunc("onWidgetMove", win, wid, newX, newY);
+		*/
 	}
 
 	virtual void onShowContextMenu(Berkelium::Window *win,
@@ -200,45 +206,45 @@ public:
 private:
 
 	void callFunc(const char* func, Berkelium::Window *win) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;)V", map(win));
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;)V", map(win));
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, bool val) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Z)V", map(win), val);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Z)V", map(win), val);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring str) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;)V", map(win), str);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Ljava/lang/String;)V", map(win), str);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2){
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2, jstring arg3){
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2, arg3);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V", map(win), arg1, arg2, arg3);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, jstring arg2, int arg3) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;Ljava/lang/String;I)V", map(win), arg1, arg2, arg3);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;I)V", map(win), arg1, arg2, arg3);
 	}
 
 	void callFunc(const char* func, Berkelium::Window *win, jstring arg1, int arg2, bool arg3) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Ljava/lang/String;IZ)V", map(win), arg1, arg2, arg3);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Ljava/lang/String;IZ)V", map(win), arg1, arg2, arg3);
 	}
 
 	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Window* arg1, const Berkelium::Rect& arg2) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Window;Lorg/berkelium/java/Rect;)V", map(win), map(arg1), map(arg2));
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Rect;)V", map(win), map(arg1), map(arg2));
 	}
-
+/*
 	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Widget* arg1, int arg2) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;I)V", map(win), map(arg1), arg2);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Widget;I)V", map(win), map(arg1), arg2);
 	}
 
 	void callFunc(const char* func, Berkelium::Window* win, Berkelium::Widget* arg1, int arg2, int arg3) {
-		callFuncA(func, "(Lorg/berkelium/java/Window;Lorg/berkelium/java/Widget;II)V", map(win), map(arg1), arg2, arg3);
+		callFuncA(func, "(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Widget;II)V", map(win), map(arg1), arg2, arg3);
 	}
-
+*/
 	void callFuncA(const char* func, const char* sig, ...) {
 		va_list args;
 		JNIEnv* env = Berkelium_Java_Env::get();
@@ -259,29 +265,32 @@ private:
 	}
 
 	jobject map(Berkelium::Window* win) {
+		if(win == NULL) return NULL;
 		return Berkelium_Java_Registry_get((jlong)win);
 	}
 
 	jobject map(Berkelium::Widget* wid) {
+		if(wid == NULL) return NULL;
 		return Berkelium_Java_Registry_get((jlong)wid);
 	}
 
 	jobject map(const Berkelium::Rect& in) {
 		JNIEnv* env = Berkelium_Java_Env::get();
-		jclass cls = env->FindClass("org/berkelium/java/Platform");
+		jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
 		if (cls == 0)return 0;
-		jmethodID meth = env->GetStaticMethodID(cls, "createRect", "(IIII)Lorg/berkelium/java/Rect;");
+		jmethodID meth = env->GetStaticMethodID(cls, "createRect", "(IIII)Lorg/berkelium/java/api/Rect;");
 		if (meth == 0)return 0;
 		return env->CallStaticObjectMethod(cls, meth, in.x(), in.y(), in.width(), in.height());
 	}
 
 	jstring map(Berkelium::URLString str) {
+		if(str.data() == NULL) return NULL;
 		return Berkelium_Java_Env::get()->NewStringUTF(str.data());
 	}
 
 	jobject map(const void* data, size_t num) {
 		JNIEnv* env = Berkelium_Java_Env::get();
-		jclass cls = env->FindClass("org/berkelium/java/BufferImpl");
+		jclass cls = env->FindClass("org/berkelium/java/impl/BufferImpl");
 		if (cls == 0)return 0;
 		jmethodID meth = env->GetStaticMethodID(cls, "create", "(JI)Ljava/lang/Object;");
 		if (meth == 0)return 0;
@@ -290,7 +299,7 @@ private:
 
 	jobject map(size_t num, const Berkelium::Rect* rects) {
 		JNIEnv* env = Berkelium_Java_Env::get();
-		jclass cls = env->FindClass("org/berkelium/java/Platform");
+		jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
 		if (cls == 0)return 0;
 		jmethodID meth = env->GetStaticMethodID(cls, "createRectArray", "(I)Ljava/lang/Object;");
 		if (meth == 0)return 0;
@@ -316,6 +325,7 @@ private:
 	}
 
 	jstring map(const Berkelium::WideString& ws) {
+		if(ws.data() == NULL) return NULL;
 		return wideString2jstring(ws);
 	}
 

@@ -28,7 +28,7 @@ public class NativeLibraryLoader {
 			tempDir.deleteOnExit();
 			temp.deleteOnExit();
 
-			System.err.println("using temp dir: " + tempDir.getCanonicalPath());
+			// System.err.println("using temp dir: " + tempDir.getCanonicalPath());
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -113,6 +113,9 @@ public class NativeLibraryLoader {
 		OutputStream os = new FileOutputStream(file);
 		copy(from, os);
 		os.close();
+		if("berkelium".equals(file.getName())) {
+			file.setExecutable(true);
+		}
 		return file;
 	}
 
@@ -122,5 +125,9 @@ public class NativeLibraryLoader {
 			path = "\"" + path + "\"";
 		}
 		return System.getenv("PATH") + File.pathSeparator + path;
+	}
+
+	public String getTempPath() throws IOException {
+		return tempDir.getCanonicalPath();
 	}
 }

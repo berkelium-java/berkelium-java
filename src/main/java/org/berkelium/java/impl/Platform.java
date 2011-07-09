@@ -8,11 +8,11 @@ import org.berkelium.java.api.Window;
 
 public final class Platform extends Berkelium {
 	private final static HashMap<Long, Object> map = new HashMap<Long, Object>();
-	// private final static NativeLibrary lib;
+	private final static NativeLibraryLoader loaded = new NativeLibraryLoader();
 
 	static {
 		try {
-			_init(new NativeLibraryLoader().getSystemPath());
+			_init(loaded.getSystemPath(), loaded.getTempPath());
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
@@ -26,7 +26,7 @@ public final class Platform extends Berkelium {
 		return new WindowImpl();
 	}
 
-	private final static native void _init(String path);
+	private final static native void _init(String path, String berkeliumDir);
 
 	@Override
 	public final native void update();

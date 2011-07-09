@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #endif
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform__1init(JNIEnv* env, jclass, jstring path)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform__1init(JNIEnv* env, jclass, jstring path, jstring berkeliumPath)
 {
 	Berkelium_Java_Env jEnv(env);
 	jboolean iscopy;
@@ -18,7 +18,11 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform__1init(JNIEnv* env,
 	//chdir(cPath);
 #endif 
 	env->ReleaseStringUTFChars(path, cPath);
-	Berkelium::init(Berkelium::FileString::empty());
+#if defined(WIN32) || defined(WIN64)
+	Berkelium::init(Berkelium::FileString::empty(), jstring2WideString(berkeliumPath));
+#else
+	Berkelium::init(Berkelium::FileString::empty(), jstring2String(berkeliumPath));
+#endif
 }
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform_destroy(JNIEnv* env, jobject)
