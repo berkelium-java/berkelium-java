@@ -13,21 +13,37 @@ public class NativeLibraryLoader {
 	private final static File tempDir;
 	static {
 		try {
-			tempDir = File.createTempFile("temp", Long.toString(System.nanoTime()));
+			File temp = new File(System.getProperty("java.io.tmpdir"), "berkelium." +  System.getProperty("user.name"));
 
-			if (!tempDir.delete()) {
-				throw new IOException("Could not delete temp file: "
-						+ tempDir.getAbsolutePath());
-			}
-
-			if (!tempDir.mkdir()) {
+			if (!temp.exists() && !temp.mkdir()) {
 				throw new IOException("Could not create temp directory: "
-						+ tempDir.getAbsolutePath());
+						+ temp.getAbsolutePath());
 			}
 
-			// System.err.println("using temp dir: " + tempDir.getCanonicalPath());
+			for(File path : temp.listFiles()) {
+				deleteDirectory(path);
+			}
+
+			tempDir = new File(temp, Long.toString(System.nanoTime()));
+			tempDir.deleteOnExit();
+			temp.deleteOnExit();
+
+			System.err.println("using temp dir: " + tempDir.getCanonicalPath());
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
+		}
+	}
+
+	static public void deleteDirectory(File path) {
+		if (path.exists()) {
+			for (File entry : path.listFiles()) {
+				if (entry.isDirectory()) {
+					deleteDirectory(entry);
+				} else {
+					entry.delete();
+				}
+			}
+			path.delete();
 		}
 	}
 
@@ -44,7 +60,7 @@ public class NativeLibraryLoader {
 				loadLib(base, "avcodec-52");
 				loadLib(base, "avformat-52");
 			}
-			loadLib(base, "berkelium");
+			loadLib(base, "libberkelium");
 			loadLib(base, "berkelium-java");
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
@@ -65,12 +81,13 @@ public class NativeLibraryLoader {
 
 	private final String read(String name) throws IOException {
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		copy(open(name), baos);
+		copy(name, baos);
 		return new String(baos.toByteArray());
 	}
 
-	private final void copy(InputStream in, OutputStream out) throws IOException {
+	private final void copy(String from, OutputStream out) throws IOException {
 		byte buf[] = new byte[4096];
+		InputStream in = open(from);
 
 		for (;;) {
 			int len = in.read(buf, 0, buf.length);
@@ -79,6 +96,7 @@ public class NativeLibraryLoader {
 			}
 			out.write(buf, 0, len);
 		}
+		in.close();
 	}
 
 	private final void processList(String base) throws IOException {
@@ -93,7 +111,7 @@ public class NativeLibraryLoader {
 		File file = new File(tempDir, to);
 		file.getParentFile().mkdirs();
 		OutputStream os = new FileOutputStream(file);
-		copy(open(from), os);
+		copy(from, os);
 		os.close();
 		return file;
 	}

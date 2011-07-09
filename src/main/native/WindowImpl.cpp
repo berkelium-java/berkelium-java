@@ -1,11 +1,13 @@
 #include <org_berkelium_java_impl_WindowImpl.h>
 
+/*
 JNIEXPORT jobject JNICALL Java_org_berkelium_java_impl_WindowImpl_getWidget(JNIEnv* env, jobject self)
 {
 	Berkelium_Java_Env jEnv(env);
 	getWindow(self)->getWidget();
 	return self;
 }
+*/
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_setDelegate(JNIEnv* env, jobject self, jobject dlg)
 {
@@ -13,6 +15,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_setDelegate(JNIEn
 	getWindow(self)->setDelegate(new JavaWindowDelegateProxy(dlg));
 }
 
+/*
 JNIEXPORT jobject JNICALL Java_org_berkelium_java_impl_WindowImpl_getWidgetAtPoint(JNIEnv* env, jobject self, jint x, jint y, jboolean returnRootIfOutside)
 {
 	Berkelium_Java_Env jEnv(env);
@@ -20,6 +23,7 @@ JNIEXPORT jobject JNICALL Java_org_berkelium_java_impl_WindowImpl_getWidgetAtPoi
 	getWindow(self)->getWidgetAtPoint(x, y, returnRootIfOutside ? true : false);
 	return self;
 }
+*/
 
 JNIEXPORT jint JNICALL Java_org_berkelium_java_impl_WindowImpl_getId(JNIEnv* env, jobject self)
 {
@@ -195,6 +199,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_selectAll(JNIEnv*
 	getWindow(self)->selectAll();
 }
 
+/*
 JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_filesSelected(JNIEnv* env, jobject self, jobject filesArray)
 {
 	Berkelium_Java_Env jEnv(env);
@@ -222,6 +227,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_addBindOnStartLoa
 	Berkelium::WideString str = jstring2WideString(lval);
 	getWindow(self)->addBindOnStartLoading(str, Berkelium::Script::Variant::bindFunction(str, false));
 }
+*/
 
 JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_addEvalOnStartLoading(JNIEnv* env, jobject self, jstring script)
 {

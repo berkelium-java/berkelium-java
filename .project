@@ -82,4 +82,17 @@
 		<nature>org.eclipse.cdt.managedbuilder.core.ScannerConfigNature</nature>
 		<nature>org.eclipse.jdt.core.javanature</nature>
 	</natures>
+	<linkedResources>
+		<link>
+			<name>build/eclipse/jdk</name>
+			<type>2</type>
+			<locationURI>JAVA_HOME</locationURI>
+		</link>
+	</linkedResources>
+	<variableList>
+		<variable>
+			<name>JAVA_HOME</name>
+			<value>file:/opt/java/64/jdk1.6.0_26</value>
+		</variable>
+	</variableList>
 </projectDescription>

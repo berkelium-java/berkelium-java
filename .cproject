@@ -16,7 +16,7 @@
 				</extensions>
 			</storageModule>
 			<storageModule moduleId="cdtBuildSystem" version="4.0.0">
-				<configuration buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.834520626" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
+				<configuration artifactName="berkelium-java" buildProperties="" description="" id="cdt.managedbuild.toolchain.gnu.base.834520626" name="Default" parent="org.eclipse.cdt.build.core.emptycfg">
 					<folderInfo id="cdt.managedbuild.toolchain.gnu.base.834520626.648513707" name="/" resourcePath="">
 						<toolChain id="cdt.managedbuild.toolchain.gnu.base.1701440972" name="cdt.managedbuild.toolchain.gnu.base" superClass="cdt.managedbuild.toolchain.gnu.base">
 							<targetPlatform archList="all" binaryParser="org.eclipse.cdt.core.ELF" id="cdt.managedbuild.target.gnu.platform.base.1588015094" name="Debug Platform" osList="linux,hpux,aix,qnx" superClass="cdt.managedbuild.target.gnu.platform.base"/>
@@ -25,6 +25,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1134990371" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1906011446" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/berkelium/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/berkelium-java/build/eclipse/jdk/include}&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1296223288" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>

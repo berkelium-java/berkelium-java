@@ -6,7 +6,6 @@ import java.lang.reflect.Proxy;
 import java.util.LinkedList;
 import java.util.List;
 
-import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowDelegate;
 
 public class MultiDelegate implements InvocationHandler {

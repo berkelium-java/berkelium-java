@@ -16,7 +16,7 @@ public abstract class Berkelium {
 		}
 		try {
 			Class<?> c = Berkelium.class.getClassLoader().loadClass(
-				"org.berkelium.java.Platform");
+				"org.berkelium.java.impl.Platform");
 			instance = (Berkelium) c.getConstructor().newInstance();
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
