@@ -11,7 +11,7 @@
 	<property file="user.build.properties" />
 	<property file="build.properties" />
 
-	<target name="env">
+	<target name="env" unless="sys.name">
 		<if>
 			<os name="linux" arch="i386" />
 			<then>
@@ -71,32 +71,33 @@
 			</then>
 		</if>
 
+		<property name="basedir" location="." />
 		<property name="target" location="build/target" />
 		<property name="dist" location="build/dist" />
+		<property name="dist.dir" location="${dist}/${download.name}" />
 		<property name="download.dir" location="build/downloads" />
+		<property name="build" location="${target}/${download.name}" />
+		<property name="native" location="${build}/package/org/berkelium/java/native" />
 
 		<if>
 			<isset property="berkelium.src" />
 			<then>
-				<property name="download.date" value="source"/>
+				<property name="download.date" value="source" />
 			</then>
 			<else>
 				<propertycopy from="download.date.${sys.name}" name="download.date" />
 			</else>
 		</if>
 		<property name="download.name" value="berkelium-${sys.name}-${download.date}" />
-		<property name="basedir" location="." />
 
-		<property name="build" location="${target}/${download.name}" />
-	</target>
+		<property name="source.java" location="${basedir}/src/main/java" />
+		<property name="source.native" location="${basedir}/src/main/native" />
 
-	<target name="prepare">
 		<if>
 			<isset property="berkelium.src" />
 			<then>
 				<property name="source.include" location="${berkelium.src}/include" />
-				<property name="source.lib1" location="${berkelium.src}" />
-				<property name="source.lib2" location="${berkelium.src}" />
+				<property name="source.lib" location="${berkelium.src}" />
 				<property name="source.bin" location="${berkelium.src}" />
 			</then>
 			<else>
@@ -130,8 +131,7 @@
 				</if>
 
 				<property name="source.include" location="${unpacked}/include" />
-				<property name="source.lib1" location="${unpacked}/lib" />
-				<property name="source.lib2" location="${unpacked}/lib" />
+				<property name="source.lib" location="${unpacked}/lib" />
 				<property name="source.bin" location="${unpacked}/bin" />
 			</else>
 		</if>
@@ -152,7 +152,7 @@
 		</javah>
 	</target>
 
-	<target name="native-compile" depends="prepare">
+	<target name="native-compile">
 		<delete dir="${build}/target" />
 		<mkdir dir="${build}/target" />
 		<if>
@@ -174,8 +174,7 @@
 				<exec executable="gcc" failonerror="true" dir="${build}/target">
 					<arg value="-shared" />
 					<arg value="-lstdc++" />
-					<arg value="-L${source.lib1}" />
-					<arg value="-L${source.lib2}" />
+					<arg value="-L${source.lib}" />
 					<arg value="-llibberkelium" />
 					<arg value="-olibberkelium-java.so" />
 					<arg value="berkelium-java.o" />
@@ -192,7 +191,7 @@
 				<var name="cl" value="${cl} /I&quot;${build}/javah&quot;" />
 				<var name="cl" value="${cl} &quot;${basedir}/src/main/native/berkelium-java.cpp&quot;" />
 				<var name="cl" value="${cl} /link" />
-				<var name="cl" value="${cl} &quot;${source.lib1}/berkelium.lib&quot;" />
+				<var name="cl" value="${cl} &quot;${source.lib}/berkelium.lib&quot;" />
 
 				<exec executable="cmd" failonerror="true" dir="${build}/target">
 					<env key="ARGS" value="${cl}" />
@@ -207,7 +206,6 @@
 
 	<target name="package" depends="env,javac,javah,native-compile">
 		<delete dir="${build}/package" />
-		<property name="native" location="${build}/package/org/berkelium/java/native" />
 		<mkdir dir="${native}/${sys.name}" />
 		<echo file="${native}/systemType.txt">${sys.name}</echo>
 		<!--  copy binary files -->
@@ -230,7 +228,7 @@
 				<include name="berkelium" />
 				<include name="lib*.so" />
 			</fileset>
-			<fileset dir="${source.lib1}">
+			<fileset dir="${source.lib}">
 				<include name="lib*.so" />
 			</fileset>
 		</copy>
@@ -256,7 +254,6 @@
 	</target>
 
 	<target name="jar" depends="package">
-		<property name="dist.dir" location="${dist}/${download.name}" />
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/berkelium-${sys.name}.jar" basedir="${build}/package">
@@ -278,7 +275,22 @@
 	<target name="eclipse" depends="env" description="">
 		<var name="build" unset="true" />
 		<property name="build" location="build/eclipse" />
-		<antcall target="package" />
+		<if>
+			<uptodate targetfile="${build}/lastbuild.txt">
+				<srcfiles dir="${source.java}" includes="**/*.java" />
+				<srcfiles dir="${source.native}" includes="**/*.cpp" />
+				<srcfiles dir="${source.include}" includes="**/*.hpp" />
+				<srcfiles dir="${source.lib}" includes="*.dll,*.so" />
+			</uptodate>
+			<then>
+				<echo>already up to date</echo>
+			</then>
+			<else>
+				<antcall target="package" />
+				<tstamp />
+				<echo file="${build}/lastbuild.txt">${DSTAMP}${TSTAMP}</echo>
+			</else>
+		</if>
 	</target>
 
 	<target name="clean" depends="env" description="">
