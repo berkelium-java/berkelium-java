@@ -71,14 +71,6 @@
 			</then>
 		</if>
 
-		<property name="basedir" location="." />
-		<property name="target" location="build/target" />
-		<property name="dist" location="build/dist" />
-		<property name="dist.dir" location="${dist}/${download.name}" />
-		<property name="download.dir" location="build/downloads" />
-		<property name="build" location="${target}/${download.name}" />
-		<property name="native" location="${build}/package/org/berkelium/java/native" />
-
 		<if>
 			<isset property="berkelium.src" />
 			<then>
@@ -88,7 +80,15 @@
 				<propertycopy from="download.date.${sys.name}" name="download.date" />
 			</else>
 		</if>
+
+		<property name="basedir" location="." />
+		<property name="target" location="build/target" />
+		<property name="dist" location="build/dist" />
 		<property name="download.name" value="berkelium-${sys.name}-${download.date}" />
+		<property name="dist.dir" location="${dist}/${download.name}" />
+		<property name="download.dir" location="build/downloads" />
+		<property name="build" location="${target}/${download.name}" />
+		<property name="native" location="${build}/package/org/berkelium/java/native" />
 
 		<property name="source.java" location="${basedir}/src/main/java" />
 		<property name="source.native" location="${basedir}/src/main/native" />
@@ -272,9 +272,7 @@
 	<target name="all" depends="jar" description="">
 	</target>
 
-	<target name="eclipse" depends="env" description="">
-		<var name="build" unset="true" />
-		<property name="build" location="build/eclipse" />
+	<target name="eclipse-internal" depends="env" description="">
 		<if>
 			<uptodate targetfile="${build}/lastbuild.txt">
 				<srcfiles dir="${source.java}" includes="**/*.java" />
@@ -291,6 +289,11 @@
 				<echo file="${build}/lastbuild.txt">${DSTAMP}${TSTAMP}</echo>
 			</else>
 		</if>
+	</target>
+
+	<target name="eclipse" description="">
+		<property name="build" location="build/eclipse" />
+		<antcall target="eclipse-internal" />
 	</target>
 
 	<target name="clean" depends="env" description="">
