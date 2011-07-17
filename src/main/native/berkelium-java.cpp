@@ -57,14 +57,28 @@ static inline Berkelium::WideString jstring2WideString(jstring string)
 	return Berkelium::UTF8ToWide(jstring2String(string));
 }
 
-static inline jstring wideString2jstring(const Berkelium::WideString& string)
+static inline jstring utf8String2jstring(const Berkelium::UTF8String& string)
 {
 	if(string.data() == NULL) {
 		return NULL;
 	}
 
 	JNIEnv* env = Berkelium_Java_Env::get();
-	return env->NewString((const jchar*)string.data(), string.length());
+	int l = string.length();
+	char* tmp = new char[l + 1];
+	memcpy(tmp, string.data(), string.length());
+	tmp[l] = 0;
+	jstring ret = env->NewStringUTF(tmp);
+	delete[] tmp;
+	return ret;
+}
+
+static inline jstring wideString2jstring(const Berkelium::WideString& string)
+{
+	if(string.data() == NULL) {
+		return NULL;
+	}
+	return utf8String2jstring(Berkelium::WideToUTF8(string));
 }
 
 static inline void* getHandle(jobject self)
