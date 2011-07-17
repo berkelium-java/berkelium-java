@@ -2,8 +2,8 @@ package org.berkelium.java.test;
 
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.DebugDelegate;
+import org.berkelium.java.api.LogHandler;
 import org.berkelium.java.api.Window;
-import org.berkelium.java.js.Function1;
 import org.junit.After;
 import org.junit.Before;
 
@@ -12,11 +12,10 @@ public abstract class AbstractBerkeliumTest {
 	protected final static Berkelium runtime = Berkelium
 			.createMultiThreadInstance();
 
-	private final Function1<Void, String> debug = new Function1<Void, String>() {
+	private final LogHandler debug = new LogHandler() {
 		@Override
-		public Void run(String arg) {
-			System.err.println(arg);
-			return null;
+		public void log(String message) {
+			System.err.println(message);
 		}
 	};
 

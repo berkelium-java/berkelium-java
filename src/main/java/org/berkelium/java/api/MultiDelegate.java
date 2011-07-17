@@ -3,24 +3,26 @@ package org.berkelium.java.api;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 public class MultiDelegate implements InvocationHandler {
 
-	private final Set<WindowDelegate> delegates = Collections
-			.synchronizedSet(new HashSet<WindowDelegate>());
+	private final Set<WindowDelegate> delegates = new HashSet<WindowDelegate>();
 	private final WindowDelegate proxy = (WindowDelegate) Proxy
 			.newProxyInstance(getClass().getClassLoader(),
 					new Class<?>[] { WindowDelegate.class }, this);
 
 	public void addDelegate(WindowDelegate delegate) {
-		delegates.add(delegate);
+		synchronized(delegates) {
+			delegates.add(delegate);
+		}
 	}
 
 	public void removeDelegate(WindowDelegate delegate) {
-		delegates.remove(delegate);
+		synchronized(delegates) {
+			delegates.remove(delegate);
+		}
 	}
 
 	@Override
@@ -29,7 +31,9 @@ public class MultiDelegate implements InvocationHandler {
 		Object ret = null;
 		// System.err.println(method.getName() + args(args));
 		HashSet<WindowDelegate> ds = new HashSet<WindowDelegate>();
-		ds.addAll(delegates);
+		synchronized(delegates) {
+			ds.addAll(delegates);
+		}
 		for (WindowDelegate obj : ds) {
 			ret = method.invoke(obj, args);
 		}
@@ -52,6 +56,8 @@ public class MultiDelegate implements InvocationHandler {
 	}
 
 	public void clear() {
-		delegates.clear();
+		synchronized(delegates) {
+			delegates.clear();
+		}
 	}
 }

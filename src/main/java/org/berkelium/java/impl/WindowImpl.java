@@ -4,7 +4,6 @@ import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.MultiDelegate;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowDelegate;
-import org.berkelium.java.js.Function0;
 
 public class WindowImpl implements Window {
 	private final Berkelium berkelium;
@@ -188,12 +187,18 @@ public class WindowImpl implements Window {
 	}
 
 	@Override
-	public <R> void bind(String name, Function0<R> function) {
-		getJS().bind(name, function);
+	public void bind(String name, Object target, String method, Class<?>... types) {
+		getJS().bind(name, target, method, types);
 	}
 
 	@Override
 	public Berkelium getBerkelium() {
 		return berkelium;
+	}
+
+	@Override
+	public void call(String name, Object... arguments) {
+		//TODO(drieks) args
+		executeJavascript(name + "();");
 	}
 }

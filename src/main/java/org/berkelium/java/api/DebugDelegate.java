@@ -4,16 +4,14 @@ import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 
-import org.berkelium.java.js.Function1;
-
 public class DebugDelegate implements InvocationHandler {
 	private final WindowAdapter adapter = new WindowAdapter();
-	private final Function1<Void, String> handler;
+	private final LogHandler handler;
 	private final WindowDelegate proxy = (WindowDelegate) Proxy
 			.newProxyInstance(getClass().getClassLoader(),
 					new Class<?>[] { WindowDelegate.class }, this);
 
-	public DebugDelegate(Function1<Void, String> handler) {
+	public DebugDelegate(LogHandler handler) {
 		this.handler = handler;
 	}
 
@@ -40,7 +38,7 @@ public class DebugDelegate implements InvocationHandler {
 			}
 		}
 		sb.append(')');
-		handler.run(sb.toString());
+		handler.log(sb.toString());
 		return method.invoke(adapter, args);
 	}
 

@@ -1,7 +1,5 @@
 package org.berkelium.java.api;
 
-import org.berkelium.java.js.Function0;
-
 public interface Window {
 	Window getThreadProxyWindow();
 
@@ -77,5 +75,7 @@ public interface Window {
 
 	Berkelium getBerkelium();
 
-	<R> void bind(String name, Function0<R> function);
+	void bind(String name, Object target, String method, Class<?>... types);
+
+	void call(String name, Object... arguments);
 }
