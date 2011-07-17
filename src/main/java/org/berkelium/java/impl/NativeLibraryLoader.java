@@ -13,14 +13,15 @@ public class NativeLibraryLoader {
 	private final static File tempDir;
 	static {
 		try {
-			File temp = new File(System.getProperty("java.io.tmpdir"), "berkelium." +  System.getProperty("user.name"));
+			File temp = new File(System.getProperty("java.io.tmpdir"),
+					"berkelium." + System.getProperty("user.name"));
 
 			if (!temp.exists() && !temp.mkdir()) {
 				throw new IOException("Could not create temp directory: "
 						+ temp.getAbsolutePath());
 			}
 
-			for(File path : temp.listFiles()) {
+			for (File path : temp.listFiles()) {
 				deleteDirectory(path);
 			}
 
@@ -28,7 +29,8 @@ public class NativeLibraryLoader {
 			tempDir.deleteOnExit();
 			temp.deleteOnExit();
 
-			// System.err.println("using temp dir: " + tempDir.getCanonicalPath());
+			// System.err.println("using temp dir: " +
+			// tempDir.getCanonicalPath());
 		} catch (IOException ex) {
 			throw new RuntimeException(ex);
 		}
@@ -53,7 +55,8 @@ public class NativeLibraryLoader {
 			String base = "org/berkelium/java/native/" + systemType;
 			processList(base);
 
-			// we can not alter the PATH, so we need to load the dependencies first
+			// we can not alter the PATH, so we need to load the dependencies
+			// first
 			if (systemType.startsWith("win")) {
 				loadLib(base, "icudt46");
 				loadLib(base, "avutil-50");
@@ -115,7 +118,7 @@ public class NativeLibraryLoader {
 		OutputStream os = new FileOutputStream(file);
 		copy(from, os);
 		os.close();
-		if("berkelium".equals(file.getName())) {
+		if ("berkelium".equals(file.getName())) {
 			file.setExecutable(true);
 		}
 		return file;

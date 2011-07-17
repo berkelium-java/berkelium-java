@@ -37,8 +37,9 @@ public class Toolbar extends JPanel implements ActionListener {
 		}
 
 		@Override
-		public boolean onNavigationRequested(Window win, String newUrl, String referrer,
-				boolean isNewWindow, boolean[] cancelDefaultAction) {
+		public boolean onNavigationRequested(Window win, String newUrl,
+				String referrer, boolean isNewWindow,
+				boolean[] cancelDefaultAction) {
 			updateNavButtons();
 			return true;
 		}

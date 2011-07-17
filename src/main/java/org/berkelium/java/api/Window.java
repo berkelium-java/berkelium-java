@@ -1,8 +1,17 @@
 package org.berkelium.java.api;
 
+import org.berkelium.java.js.Function0;
+
 public interface Window {
+	Window getThreadProxyWindow();
+
+	Window getRealWindow();
 
 	void setDelegate(WindowDelegate delegate);
+
+	void addDelegate(WindowDelegate delegate);
+
+	void removeDelegate(WindowDelegate delegate);
 
 	int getId();
 
@@ -65,4 +74,8 @@ public interface Window {
 	void clearStartLoading();
 
 	void destroy();
+
+	Berkelium getBerkelium();
+
+	<R> void bind(String name, Function0<R> function);
 }

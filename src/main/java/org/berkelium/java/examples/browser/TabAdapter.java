@@ -106,8 +106,10 @@ public class TabAdapter extends JComponent {
 	}
 
 	private void handleMouseButtonEvent(MouseEvent e, final boolean down) {
+		/*
 		final int x = e.getX();
 		final int y = e.getY();
+		*/
 		// java/awt: left=1 middel=2 right=3
 		// berkelium: left=0 middel=1 right=2
 		final int b = e.getButton() - 1;

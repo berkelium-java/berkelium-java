@@ -24,7 +24,7 @@ public class BrowserApp {
 	public static void main(String[] args) throws Exception {
 		try {
 			System.out.println("initializing berkelium-java...");
-			Berkelium.createInstance();
+			Berkelium.createSingleThreadInstance();
 			new BrowserApp().run();
 			System.out.println("main loop terminated.");
 		} catch (Throwable t) {

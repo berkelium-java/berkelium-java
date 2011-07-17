@@ -10,7 +10,7 @@ import org.berkelium.java.api.WindowAdapter;
 public class HelloWorld {
 	public static void main(String[] args) throws InterruptedException {
 		System.err.println("creating runtime instance");
-		final Berkelium berkelium = Berkelium.createInstance();
+		final Berkelium berkelium = Berkelium.createSingleThreadInstance();
 
 		System.err.println("creating window");
 		Window win = berkelium.createWindow();

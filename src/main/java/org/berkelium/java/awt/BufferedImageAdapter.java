@@ -33,24 +33,29 @@ public class BufferedImageAdapter extends WindowAdapter {
 	}
 
 	@Override
-	public synchronized void onPaint(Window wini, Buffer bitmap_in, Rect bitmap_rect,
-			Rect[] copy_rects, int dx, int dy, Rect scroll_rect) {
+	public synchronized void onPaint(Window wini, Buffer bitmap_in,
+			Rect bitmap_rect, Rect[] copy_rects, int dx, int dy,
+			Rect scroll_rect) {
 		// we have no image yet
 		if (img == null)
 			return;
 
 		try {
 			if (needs_full_refresh) {
-				// If we've reloaded the page and need a full update, ignore updates
-				// until a full one comes in. This handles out of date updates due to
+				// If we've reloaded the page and need a full update, ignore
+				// updates
+				// until a full one comes in. This handles out of date updates
+				// due to
 				// delays in event processing.
 				if (handleFullUpdate(bitmap_in, bitmap_rect)) {
 					updatedRect = updatedRect.grow(bitmap_rect);
 					needs_full_refresh = false;
 				}
 			} else {
-				// Now, we first handle scrolling. We need to do this first since it
-				// requires shifting existing data, some of which will be overwritten
+				// Now, we first handle scrolling. We need to do this first
+				// since it
+				// requires shifting existing data, some of which will be
+				// overwritten
 				// by the regular dirty rect update.
 				if (dx != 0 || dy != 0) {
 					handleScroll(dx, dy, scroll_rect);
@@ -91,18 +96,20 @@ public class BufferedImageAdapter extends WindowAdapter {
 		// Next we figure out where they intersect, giving the scrolled region
 		Rect scrolled_shared_rect = scroll_rect.intersect(scrolled_rect);
 		// Only do scrolling if they have non-zero intersection
-		if (scrolled_shared_rect.width() > 0 && scrolled_shared_rect.height() > 0) {
+		if (scrolled_shared_rect.width() > 0
+				&& scrolled_shared_rect.height() > 0) {
 			Rect shared_rect = scrolled_shared_rect.translate(dx, dy);
 
 			Object pixels = wr.getDataElements(scrolled_shared_rect.x,
-				scrolled_shared_rect.y, shared_rect.w, shared_rect.h, null);
+					scrolled_shared_rect.y, shared_rect.w, shared_rect.h, null);
 
 			wr.setDataElements(shared_rect.x, shared_rect.y, shared_rect.w,
-				shared_rect.h, pixels);
+					shared_rect.h, pixels);
 		}
 	}
 
-	private void handleCopyRects(Buffer bitmap_in, Rect bitmap_rect, Rect[] copy_rects) {
+	private void handleCopyRects(Buffer bitmap_in, Rect bitmap_rect,
+			Rect[] copy_rects) {
 		WritableRaster wr = img.getRaster();
 		int data[] = bitmap_in.getIntArray();
 
@@ -114,22 +121,24 @@ public class BufferedImageAdapter extends WindowAdapter {
 			int[] scroll_buffer = new int[hig * wid];
 			for (int jj = 0; jj < hig; jj++) {
 				memcpy(//
-					scroll_buffer, //
-					jj * wid, //
-					data, //
-					left + (jj + top) * bitmap_rect.width(), //
-					wid//
+				scroll_buffer, //
+						jj * wid, //
+						data, //
+						left + (jj + top) * bitmap_rect.width(), //
+						wid//
 				);
 			}
 
-			// Finally, we perform the main update, just copying the rect that is
+			// Finally, we perform the main update, just copying the rect that
+			// is
 			// marked as dirty but not from scrolled data.
-			wr.setDataElements(copy_rects[i].left(), copy_rects[i].top(), wid, hig,
-				scroll_buffer);
+			wr.setDataElements(copy_rects[i].left(), copy_rects[i].top(), wid,
+					hig, scroll_buffer);
 		}
 	}
 
-	private void memcpy(int dest[], int destPos, int src[], int srcPos, int length) {
+	private void memcpy(int dest[], int destPos, int src[], int srcPos,
+			int length) {
 		if (srcPos >= src.length) {
 			return;
 		}

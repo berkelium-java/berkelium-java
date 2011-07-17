@@ -14,15 +14,16 @@ public interface WindowDelegate {
 	public void onProvisionalLoadError(Window win, String url, int errorCode,
 			boolean isMainFrame);
 
-	public void onConsoleMessage(Window win, String message, String sourceId, int line_no);
+	public void onConsoleMessage(Window win, String message, String sourceId,
+			int line_no);
 
 	public void onScriptAlert(Window win, String message, String defaultValue,
 			String url, int flags, boolean success[], String value[]);
 
 	public void freeLastScriptAlert(String lastValue);
 
-	public boolean onNavigationRequested(Window win, String newUrl, String referrer,
-			boolean isNewWindow, boolean cancelDefaultAction[]);
+	public boolean onNavigationRequested(Window win, String newUrl,
+			String referrer, boolean isNewWindow, boolean cancelDefaultAction[]);
 
 	public void onLoadingStateChanged(Window win, boolean isLoading);
 
@@ -36,7 +37,8 @@ public interface WindowDelegate {
 
 	public void onResponsive(Window win);
 
-	public void onExternalHost(Window win, String message, String origin, String target);
+	public void onExternalHost(Window win, String message, String origin,
+			String target);
 
 	public void onCreatedWindow(Window win, Window newWindow, Rect initialRect);
 
@@ -45,5 +47,6 @@ public interface WindowDelegate {
 
 	public void onJavascriptCallback(Window win, String url, String funcName);
 
-	public void onRunFileChooser(Window win, int mode, String title, String defaultFile);
+	public void onRunFileChooser(Window win, int mode, String title,
+			String defaultFile);
 }

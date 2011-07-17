@@ -48,7 +48,8 @@ public class SimpleBrowser extends JFrame {
 
 	public void checkRepaint() {
 		Tab tab = adapter.getTab();
-		if(tab == null) return;
+		if (tab == null)
+			return;
 		Rect rect = tab.getUpdatedRect();
 		if (!rect.isEmpty()) {
 			repaint(rect.left(), rect.top(), rect.right(), rect.bottom());

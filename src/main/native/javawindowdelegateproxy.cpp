@@ -276,7 +276,7 @@ private:
 
 	jobject map(const Berkelium::Rect& in) {
 		JNIEnv* env = Berkelium_Java_Env::get();
-		jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
+		jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
 		if (cls == 0)return 0;
 		jmethodID meth = env->GetStaticMethodID(cls, "createRect", "(IIII)Lorg/berkelium/java/api/Rect;");
 		if (meth == 0)return 0;
@@ -299,7 +299,7 @@ private:
 
 	jobject map(size_t num, const Berkelium::Rect* rects) {
 		JNIEnv* env = Berkelium_Java_Env::get();
-		jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
+		jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
 		if (cls == 0)return 0;
 		jmethodID meth = env->GetStaticMethodID(cls, "createRectArray", "(I)Ljava/lang/Object;");
 		if (meth == 0)return 0;

@@ -54,7 +54,8 @@ public final class Tab {
 		if (!url.contains("://")) {
 			if (url.contains(" ")) {
 				try {
-					url = "http://google.com/search?q=" + URLEncoder.encode(url, "UTF-8");
+					url = "http://google.com/search?q="
+							+ URLEncoder.encode(url, "UTF-8");
 				} catch (UnsupportedEncodingException e) {
 				}
 			} else {

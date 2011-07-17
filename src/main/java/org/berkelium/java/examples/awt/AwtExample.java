@@ -98,7 +98,7 @@ public class AwtExample extends JFrame {
 	public static void main(String[] args) throws Exception {
 		try {
 			System.out.println("initializing berkelium-java...");
-			Berkelium.createInstance();
+			Berkelium.createSingleThreadInstance();
 			System.out.println("running main loop...");
 			new AwtExample().run();
 			System.out.println("main loop terminated.");

@@ -78,7 +78,7 @@ static inline void* getHandle(jobject self)
 void Berkelium_Java_Registry_add(jlong handle, jobject obj)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
 	jmethodID meth = env->GetStaticMethodID(cls, "add", "(JLjava/lang/Object;)V");
 	env->CallStaticVoidMethod(cls, meth, handle, obj);
 }
@@ -86,7 +86,7 @@ void Berkelium_Java_Registry_add(jlong handle, jobject obj)
 void Berkelium_Java_Registry_remove(jlong handle)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
 	jmethodID meth = env->GetStaticMethodID(cls, "remove", "(J)V");
 	env->CallStaticVoidMethod(cls, meth, handle);
 }
@@ -94,7 +94,7 @@ void Berkelium_Java_Registry_remove(jlong handle)
 jobject Berkelium_Java_Registry_get(jlong handle)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
-	jclass cls = env->FindClass("org/berkelium/java/impl/Platform");
+	jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
 	jmethodID meth = env->GetStaticMethodID(cls, "get", "(J)Ljava/lang/Object;");
 	return env->CallStaticObjectMethod(cls, meth, handle);
 }
@@ -107,5 +107,5 @@ static inline Berkelium::Window* getWindow(jobject self)
 #include "BufferImpl.cpp"
 #include "Context.cpp"
 #include "javawindowdelegateproxy.cpp"
-#include "Platform.cpp"
+#include "SingleThreadBerkelium.cpp"
 #include "WindowImpl.cpp"

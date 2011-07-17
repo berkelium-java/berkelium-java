@@ -3,16 +3,17 @@ package org.berkelium.java.api;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.berkelium.java.api.WindowDelegate;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 public class MultiDelegate implements InvocationHandler {
 
-	private final List<WindowDelegate> delegates = new LinkedList<WindowDelegate>();
-	private final WindowDelegate proxy = (WindowDelegate) Proxy.newProxyInstance(
-		getClass().getClassLoader(), new Class<?>[] { WindowDelegate.class }, this);
+	private final Set<WindowDelegate> delegates = Collections
+			.synchronizedSet(new HashSet<WindowDelegate>());
+	private final WindowDelegate proxy = (WindowDelegate) Proxy
+			.newProxyInstance(getClass().getClassLoader(),
+					new Class<?>[] { WindowDelegate.class }, this);
 
 	public void addDelegate(WindowDelegate delegate) {
 		delegates.add(delegate);
@@ -23,10 +24,13 @@ public class MultiDelegate implements InvocationHandler {
 	}
 
 	@Override
-	public Object invoke(Object proxy, Method method, Object[] args) throws Throwable {
+	public Object invoke(Object proxy, Method method, Object[] args)
+			throws Throwable {
 		Object ret = null;
 		// System.err.println(method.getName() + args(args));
-		for (WindowDelegate obj : delegates) {
+		HashSet<WindowDelegate> ds = new HashSet<WindowDelegate>();
+		ds.addAll(delegates);
+		for (WindowDelegate obj : ds) {
 			ret = method.invoke(obj, args);
 		}
 		return ret;
@@ -45,5 +49,9 @@ public class MultiDelegate implements InvocationHandler {
 
 	public WindowDelegate getProxy() {
 		return proxy;
+	}
+
+	public void clear() {
+		delegates.clear();
 	}
 }

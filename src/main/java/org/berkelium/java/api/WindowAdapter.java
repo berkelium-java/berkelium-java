@@ -11,7 +11,8 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public void onConsoleMessage(Window win, String message, String sourceId, int lineNo) {
+	public void onConsoleMessage(Window win, String message, String sourceId,
+			int lineNo) {
 	}
 
 	@Override
@@ -31,7 +32,8 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public void onExternalHost(Window win, String message, String origin, String target) {
+	public void onExternalHost(Window win, String message, String origin,
+			String target) {
 	}
 
 	@Override
@@ -47,8 +49,8 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public boolean onNavigationRequested(Window win, String newUrl, String referrer,
-			boolean isNewWindow, boolean[] cancelDefaultAction) {
+	public boolean onNavigationRequested(Window win, String newUrl,
+			String referrer, boolean isNewWindow, boolean[] cancelDefaultAction) {
 		return false;
 	}
 
@@ -67,7 +69,8 @@ public class WindowAdapter implements WindowDelegate {
 	}
 
 	@Override
-	public void onRunFileChooser(Window win, int mode, String title, String defaultFile) {
+	public void onRunFileChooser(Window win, int mode, String title,
+			String defaultFile) {
 	}
 
 	@Override

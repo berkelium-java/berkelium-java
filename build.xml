@@ -92,7 +92,9 @@
 
 		<property name="source.java" location="${basedir}/src/main/java" />
 		<property name="source.native" location="${basedir}/src/main/native" />
+	</target>
 
+	<target name="source">
 		<if>
 			<isset property="berkelium.src" />
 			<then>
@@ -147,7 +149,7 @@
 		<javah classpath="${build}/classes" destdir="${build}/javah">
 			<class name="org.berkelium.java.impl.BufferImpl" />
 			<class name="org.berkelium.java.impl.Context" />
-			<class name="org.berkelium.java.impl.Platform" />
+			<class name="org.berkelium.java.impl.SingleThreadBerkelium" />
 			<class name="org.berkelium.java.impl.WindowImpl" />
 		</javah>
 	</target>
@@ -204,7 +206,7 @@
 		</if>
 	</target>
 
-	<target name="package" depends="env,javac,javah,native-compile">
+	<target name="package" depends="javac,javah,native-compile">
 		<delete dir="${build}/package" />
 		<mkdir dir="${native}/${sys.name}" />
 		<echo file="${native}/systemType.txt">${sys.name}</echo>
@@ -253,7 +255,7 @@
 		<echo message="${platform-files}" file="${native}/${sys.name}/dependencies.txt" />
 	</target>
 
-	<target name="jar" depends="package">
+	<target name="jar" depends="env,source,package">
 		<delete dir="${dist.dir}" />
 		<mkdir dir="${dist.dir}" />
 		<jar destfile="${dist.dir}/berkelium-${sys.name}.jar" basedir="${build}/package">
@@ -272,7 +274,7 @@
 	<target name="all" depends="jar" description="">
 	</target>
 
-	<target name="eclipse-internal" depends="env" description="">
+	<target name="eclipse-internal" depends="env,source" description="">
 		<if>
 			<uptodate targetfile="${build}/lastbuild.txt">
 				<srcfiles dir="${source.java}" includes="**/*.java" />

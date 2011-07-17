@@ -1,4 +1,4 @@
-#include <org_berkelium_java_impl_Platform.h>
+#include <org_berkelium_java_impl_SingleThreadBerkelium.h>
 
 #if defined(WIN32) || defined(WIN64)
 #include <windows.h>
@@ -6,7 +6,7 @@
 #include <stdlib.h>
 #endif
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform__1init(JNIEnv* env, jclass, jstring path, jstring berkeliumPath)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1init(JNIEnv* env, jclass, jstring path, jstring berkeliumPath)
 {
 	Berkelium_Java_Env jEnv(env);
 	jboolean iscopy;
@@ -25,13 +25,13 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform__1init(JNIEnv* env,
 #endif
 }
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform_destroy(JNIEnv* env, jobject)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium_destroy(JNIEnv* env, jobject)
 {
 	Berkelium_Java_Env jEnv(env);
 	Berkelium::destroy();
 }
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_Platform_update(JNIEnv* env, jobject)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium_update(JNIEnv* env, jobject)
 {
 	Berkelium_Java_Env jEnv(env);
 	Berkelium::update();
