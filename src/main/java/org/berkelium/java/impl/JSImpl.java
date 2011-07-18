@@ -9,6 +9,8 @@ import java.util.UUID;
 
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowAdapter;
+import org.json.simple.JSONArray;
+import org.json.simple.JSONValue;
 
 public class JSImpl {
 	private final Map<String, JavaScriptBind> javaScriptBinds = Collections
@@ -26,15 +28,19 @@ public class JSImpl {
 		@Override
 		public void onExternalHost(Window win, String message, String origin,
 				String target) {
-			System.err.printf("test '%s'/'%s' !\n", message, target);
 			JavaScriptBind bind = javaScriptBinds.get(target);
 			if (bind != null) {
-				System.err.printf("JavaScript Function '%s' called!\n",
-						bind.name);
+				System.err.printf("JavaScript Function '%s' called!\n", bind.name);
+				int a = bind.method.getParameterTypes().length;
+				JSONArray array = (JSONArray) JSONValue.parse(message);
+				Object[] args = new Object[a];
+				for(int i = 0; i < a; i++) {
+					args[i] = array.get(i);
+				}
 				try {
 					//TODO(drieks) arguments
 					bind.method.setAccessible(true);
-					bind.method.invoke(bind.target);
+					bind.method.invoke(bind.target, args);
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
 				} catch (IllegalAccessException e) {
@@ -67,16 +73,11 @@ public class JSImpl {
 		javaScriptBinds.put(jsb.id, jsb);
 		StringBuilder cmd = new StringBuilder();
 		cmd.append(name);
-		cmd.append("=function(){window.externalHost.postMessage(JSON.stringify(arguments)");
+		cmd.append("=function(){window.externalHost.postMessage('['");
 		for(int i = 0; i < types.length; i++) {
-			String type = types[i].getCanonicalName();
-			if("java.lang.String".equals(type)) {
-			} else {
-				throw new IllegalArgumentException();
-			}
-			//cmd.append(String.format("+", i));
+			cmd.append(String.format("+JSON.stringify(arguments[%d])", i));
 		}
-		cmd.append(", '");
+		cmd.append("+ ']', '");
 		cmd.append(jsb.id);
 		cmd.append("')};");
 		window.getThreadProxyWindow().executeJavascript(cmd.toString());

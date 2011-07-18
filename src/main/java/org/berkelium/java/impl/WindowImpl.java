@@ -4,6 +4,7 @@ import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.MultiDelegate;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowDelegate;
+import org.json.simple.JSONObject;
 
 public class WindowImpl implements Window {
 	private final Berkelium berkelium;
@@ -198,7 +199,25 @@ public class WindowImpl implements Window {
 
 	@Override
 	public void call(String name, Object... arguments) {
-		//TODO(drieks) args
-		executeJavascript(name + "();");
+		StringBuilder sb = new StringBuilder();
+		sb.append(name);
+		sb.append('(');
+		for(int i = 0; i < arguments.length; i++) {
+			if(i != 0) {
+				sb.append(',');
+			}
+			Object o = arguments[i];
+			if(o == null) {
+				sb.append("null");
+			} else if(o instanceof String) {
+				sb.append('"');
+				sb.append(JSONObject.escape((String)o));
+				sb.append('"');
+			} else {
+				sb.append(o);
+			}
+		}
+		sb.append(");");
+		executeJavascript(sb.toString());
 	}
 }
