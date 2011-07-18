@@ -1,6 +1,8 @@
 package org.berkelium.java.api;
 
 public interface WindowDelegate {
+	public void onPaintDone(Window win, Rect rect);
+
 	public void onAddressBarChanged(Window win, String newURL);
 
 	public void onStartLoading(Window win, String newURL);

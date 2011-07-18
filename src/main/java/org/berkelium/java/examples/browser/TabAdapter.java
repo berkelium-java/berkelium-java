@@ -9,14 +9,11 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JComponent;
 
 public class TabAdapter extends JComponent {
 	private static final long serialVersionUID = -6034381086824065656L;
-	private final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 	private Tab tab;
 	private final MouseAdapter mouseAdapter = new MouseAdapter() {
 
@@ -40,7 +37,7 @@ public class TabAdapter extends JComponent {
 			final int x = dir ? e.getWheelRotation() * -33 : 0;
 			final int y = dir ? 0 : e.getWheelRotation() * -100;
 
-			queue.add(new Runnable() {
+			tab.execute(new Runnable() {
 				@Override
 				public void run() {
 					if (tab != null) {
@@ -52,10 +49,13 @@ public class TabAdapter extends JComponent {
 
 		@Override
 		public void mouseMoved(MouseEvent e) {
+			if (tab == null)
+				return;
+
 			final int x = e.getX();
 			final int y = e.getY();
 
-			queue.add(new Runnable() {
+			tab.execute(new Runnable() {
 				@Override
 				public void run() {
 					if (tab != null) {
@@ -78,7 +78,9 @@ public class TabAdapter extends JComponent {
 		addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				queue.add(new Runnable() {
+				if (tab == null)
+					return;
+				tab.execute(new Runnable() {
 					@Override
 					public void run() {
 						checkSize();
@@ -90,12 +92,17 @@ public class TabAdapter extends JComponent {
 
 	@Override
 	public void setSize(int width, int height) {
-		tab.resize(width, height);
+		if (tab != null) {
+			tab.resize(width, height);
+		}
 		super.setSize(width, height);
 	}
 
 	private void zoom(final int mode) {
-		queue.add(new Runnable() {
+		if (tab == null)
+			return;
+
+		tab.execute(new Runnable() {
 			@Override
 			public void run() {
 				if (tab != null) {
@@ -106,16 +113,15 @@ public class TabAdapter extends JComponent {
 	}
 
 	private void handleMouseButtonEvent(MouseEvent e, final boolean down) {
-		/*
-		final int x = e.getX();
-		final int y = e.getY();
-		*/
+		if (tab == null)
+			return;
+
 		// java/awt: left=1 middel=2 right=3
 		// berkelium: left=0 middel=1 right=2
 		final int b = e.getButton() - 1;
 
 		// the event must be handled in the berkelium thread
-		queue.add(new Runnable() {
+		tab.execute(new Runnable() {
 			@Override
 			public void run() {
 				if (tab != null) {
@@ -129,12 +135,6 @@ public class TabAdapter extends JComponent {
 	public void paint(Graphics g) {
 		if (tab != null)
 			tab.paint(g, getWidth(), getHeight());
-	}
-
-	public void update() {
-		while (!queue.isEmpty()) {
-			queue.remove().run();
-		}
 	}
 
 	public void setTab(Tab tab) {

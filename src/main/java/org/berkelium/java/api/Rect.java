@@ -65,11 +65,12 @@ public class Rect {
 		if (w == 0 || h == 0) {
 			return new Rect(other.x, other.y, other.w, other.h);
 		} else {
+			// TODO junit test
 			int left = Math.min(left(), other.left());
 			int top = Math.min(top(), other.top());
-			int width = Math.max(width(), other.width());
-			int height = Math.max(bottom(), other.height());
-			return new Rect(left, top, width, height);
+			int right = Math.max(right(), other.right());
+			int bottom = Math.max(bottom(), other.bottom());
+			return new Rect(left, top, right - left, bottom - top);
 		}
 	}
 }

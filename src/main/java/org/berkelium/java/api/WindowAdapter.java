@@ -1,6 +1,9 @@
 package org.berkelium.java.api;
 
 public class WindowAdapter implements WindowDelegate {
+	@Override
+	public void onPaintDone(Window win, Rect rect) {
+	}
 
 	@Override
 	public void freeLastScriptAlert(String lastValue) {

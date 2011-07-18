@@ -7,6 +7,8 @@ public interface Window {
 
 	void setDelegate(WindowDelegate delegate);
 
+	WindowDelegate getDelegate();
+
 	void addDelegate(WindowDelegate delegate);
 
 	void removeDelegate(WindowDelegate delegate);

@@ -5,10 +5,9 @@ import java.awt.Graphics;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.Rect;
@@ -19,15 +18,25 @@ public class AwtExample extends JFrame {
 	private static final long serialVersionUID = 8835790859223385092L;
 	private final Berkelium runtime = Berkelium.getInstance();
 	private final Window win = runtime.createWindow();
-	private final BufferedImageAdapter bia = new BufferedImageAdapter();
+	private final BufferedImageAdapter bia = new BufferedImageAdapter() {
+		@Override
+		public void onPaintDone(Window win, final Rect rect) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					repaint(rect.left(), rect.top(), rect.right(),
+							rect.bottom());
+				}
+			});
+		};
+	};
 	private final int initialWidth = 640;
 	private final int initialHeight = 480;
-	private final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 
 	public AwtExample() {
 		setTitle("AwtExample");
 		setSize(new Dimension(initialWidth, initialHeight));
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setVisible(true);
 
 		addMouseListener(new MouseAdapter() {
@@ -52,7 +61,7 @@ public class AwtExample extends JFrame {
 		final int b = e.getButton();
 
 		// the event must be handled in the berkelium thread
-		queue.add(new Runnable() {
+		runtime.execute(new Runnable() {
 			@Override
 			public void run() {
 				win.mouseMoved(x, y);
@@ -79,36 +88,15 @@ public class AwtExample extends JFrame {
 			win.resize(initialWidth, initialHeight);
 			win.navigateTo("http://www.youtube.com/");
 		}
-
-		while (isVisible()) {
-			while (!queue.isEmpty()) {
-				queue.remove().run();
-			}
-			synchronized (runtime) {
-				runtime.update();
-			}
-			Rect rect = bia.getUpdatedRect();
-			if (!rect.isEmpty()) {
-				repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
-			}
-			Thread.sleep(10);
-		}
 	}
 
 	public static void main(String[] args) throws Exception {
 		try {
 			System.out.println("initializing berkelium-java...");
-			Berkelium.createSingleThreadInstance();
-			System.out.println("running main loop...");
+			Berkelium.createMultiThreadInstance();
 			new AwtExample().run();
-			System.out.println("main loop terminated.");
 		} catch (Throwable t) {
 			t.printStackTrace();
-		} finally {
-			System.out.println("destroying berkelium-java...");
-			Berkelium.getInstance().destroy();
-			System.out.println("berkelium-java destroyed.");
-			System.exit(0);
 		}
 	}
 }

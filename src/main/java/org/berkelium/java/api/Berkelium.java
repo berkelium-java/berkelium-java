@@ -39,7 +39,9 @@ public abstract class Berkelium {
 
 	public abstract void sync(Window window);
 
-	public abstract void assertNotSameThread();
+	public abstract void assertIsBerkeliumThread();
+
+	public abstract void assertNotBerkeliumThread();
 
 	public abstract void update();
 

@@ -5,6 +5,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
@@ -20,12 +21,23 @@ public class SimpleBrowser extends JFrame {
 		public void onTitleChanged(Window win, String title) {
 			setTitle(title);
 		}
+
+		@Override
+		public void onPaintDone(Window win, final Rect rect) {
+			SwingUtilities.invokeLater(new Runnable() {
+				@Override
+				public void run() {
+					repaint(rect.left(), rect.top(), rect.right(),
+							rect.bottom());
+				}
+			});
+		}
 	};
 
 	public SimpleBrowser() {
-		setTitle("AwtExample");
+		setTitle("Berkelium-Java Simple Browser");
 		setSize(new Dimension(640, 480));
-		setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		add(toolbar, BorderLayout.PAGE_START);
 		add(adapter, BorderLayout.CENTER);
 		setBackground(Color.green);
@@ -40,19 +52,5 @@ public class SimpleBrowser extends JFrame {
 		toolbar.setTab(tab);
 		adapter.setTab(tab);
 		tab.addDelegate(delegate);
-	}
-
-	public void update() {
-		adapter.update();
-	}
-
-	public void checkRepaint() {
-		Tab tab = adapter.getTab();
-		if (tab == null)
-			return;
-		Rect rect = tab.getUpdatedRect();
-		if (!rect.isEmpty()) {
-			repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
-		}
 	}
 }

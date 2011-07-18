@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
+import org.berkelium.java.api.WindowAdapter;
 import org.berkelium.java.awt.BufferedImageAdapter;
 
 public class Awt2Example extends JFrame {
@@ -27,6 +28,12 @@ public class Awt2Example extends JFrame {
 	private final int initialWidth = 640;
 	private final int initialHeight = 480;
 	private final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
+	private final WindowAdapter adapter = new WindowAdapter() {
+		@Override
+		public void onPaintDone(Window win, Rect rect) {
+			repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
+		}
+	};
 
 	public Awt2Example() {
 		setTitle("Awt2Example");
@@ -87,13 +94,15 @@ public class Awt2Example extends JFrame {
 
 	public void run() throws Exception {
 		synchronized (runtime) {
-			win.setDelegate(bia);
+			win.addDelegate(bia);
+			win.addDelegate(adapter);
 			bia.resize(initialWidth, initialHeight);
 			win.resize(initialWidth, initialHeight);
 			win.navigateTo("http://www.youtube.com/");
 
 			win2.setTransparent(true);
-			win2.setDelegate(bia2);
+			win2.addDelegate(bia2);
+			win2.addDelegate(adapter);
 			bia2.resize(initialWidth, initialHeight);
 			win2.resize(initialWidth, initialHeight);
 			win2.navigateTo("http://jensbeimsurfen.de/ping-pong/");
@@ -105,11 +114,6 @@ public class Awt2Example extends JFrame {
 			}
 			synchronized (runtime) {
 				runtime.update();
-			}
-			Rect rect = bia.getUpdatedRect();
-			rect = rect.grow(bia2.getUpdatedRect());
-			if (!rect.isEmpty()) {
-				repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
 			}
 			Thread.sleep(10);
 		}

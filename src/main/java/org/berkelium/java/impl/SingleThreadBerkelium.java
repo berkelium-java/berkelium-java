@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.Rect;
@@ -30,8 +31,23 @@ public final class SingleThreadBerkelium extends Berkelium {
 
 	private final static native void _init(String path, String berkeliumDir);
 
+	private final AtomicBoolean updateRunning = new AtomicBoolean(false);
+
 	@Override
-	public final native void update();
+	public final void update() {
+		assertIsBerkeliumThread();
+
+		if (updateRunning.getAndSet(true))
+			throw new IllegalStateException("update() can not call itself");
+
+		try {
+			_update();
+		} finally {
+			updateRunning.set(false);
+		}
+	}
+
+	private final native void _update();
 
 	@Override
 	public final native void destroy();
@@ -81,7 +97,7 @@ public final class SingleThreadBerkelium extends Berkelium {
 
 	@Override
 	public void sync(Window win) {
-		assertNotSameThread();
+		assertNotBerkeliumThread();
 		win = win.getRealWindow();
 		final String prefix = UUID.randomUUID().toString();
 		final CyclicBarrier barrier = new CyclicBarrier(2);
@@ -110,10 +126,18 @@ public final class SingleThreadBerkelium extends Berkelium {
 	}
 
 	@Override
-	public void assertNotSameThread() {
+	public void assertNotBerkeliumThread() {
 		if (Thread.currentThread().equals(thread)) {
-			throw new IllegalAccessError(
+			throw new IllegalStateException(
 					"Can not call this function from inside berkelium thread!");
+		}
+	}
+
+	@Override
+	public void assertIsBerkeliumThread() {
+		if (!Thread.currentThread().equals(thread)) {
+			throw new IllegalStateException(
+					"Must call this function from inside berkelium thread!");
 		}
 	}
 }

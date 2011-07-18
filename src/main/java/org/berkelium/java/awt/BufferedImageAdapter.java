@@ -2,11 +2,14 @@ package org.berkelium.java.awt;
 
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import org.berkelium.java.api.Buffer;
 import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowAdapter;
+import org.berkelium.java.api.WindowDelegate;
 
 public class BufferedImageAdapter extends WindowAdapter {
 	private BufferedImage img;
@@ -32,6 +35,46 @@ public class BufferedImageAdapter extends WindowAdapter {
 		return img;
 	}
 
+	private final HashMap<Window, OnCallPaintDone> onCallPaints = new HashMap<Window, BufferedImageAdapter.OnCallPaintDone>();
+
+	private class OnCallPaintDone implements Runnable {
+		private final AtomicBoolean waiting = new AtomicBoolean(false);
+		private final Window window;
+
+		private OnCallPaintDone(Window window) {
+			this.window = window;
+		}
+
+		@Override
+		public void run() {
+			synchronized (onCallPaints) {
+				if (!waiting.getAndSet(false))
+					return;
+				WindowDelegate delegate = window.getDelegate();
+				if (delegate != null) {
+					delegate.onPaintDone(window, getUpdatedRect());
+				}
+			}
+		}
+
+		private void schedule() {
+			if (!waiting.getAndSet(true)) {
+				window.getBerkelium().execute(this);
+			}
+		}
+	};
+
+	private void scheduleOnPaintDone(Window window) {
+		synchronized (onCallPaints) {
+			OnCallPaintDone cpd = onCallPaints.get(window);
+			if (cpd == null) {
+				cpd = new OnCallPaintDone(window);
+				onCallPaints.put(window, cpd);
+			}
+			cpd.schedule();
+		}
+	}
+
 	@Override
 	public synchronized void onPaint(Window wini, Buffer bitmap_in,
 			Rect bitmap_rect, Rect[] copy_rects, int dx, int dy,
@@ -50,6 +93,8 @@ public class BufferedImageAdapter extends WindowAdapter {
 				if (handleFullUpdate(bitmap_in, bitmap_rect)) {
 					updatedRect = updatedRect.grow(bitmap_rect);
 					needs_full_refresh = false;
+				} else {
+					return;
 				}
 			} else {
 				// Now, we first handle scrolling. We need to do this first
@@ -63,6 +108,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 				handleCopyRects(bitmap_in, bitmap_rect, copy_rects);
 				updatedRect = updatedRect.grow(bitmap_rect);
 			}
+			scheduleOnPaintDone(wini);
 		} catch (ArrayIndexOutOfBoundsException ex) {
 			needs_full_refresh = true;
 		}
@@ -148,7 +194,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 		System.arraycopy(src, srcPos, dest, destPos, length);
 	}
 
-	public Rect getUpdatedRect() {
+	private Rect getUpdatedRect() {
 		Rect ret = updatedRect;
 		updatedRect = new Rect(0, 0, 0, 0);
 		return ret;

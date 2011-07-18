@@ -34,8 +34,20 @@ public class WindowImpl implements Window {
 		return context;
 	}
 
+	private native void _setDelegate(WindowDelegate delegate);
+
+	private WindowDelegate delegate;
+
 	@Override
-	public native void setDelegate(WindowDelegate delegate);
+	public void setDelegate(WindowDelegate delegate) {
+		this.delegate = delegate;
+		_setDelegate(delegate);
+	}
+
+	@Override
+	public WindowDelegate getDelegate() {
+		return delegate;
+	}
 
 	@Override
 	public native int getId();
@@ -188,7 +200,8 @@ public class WindowImpl implements Window {
 	}
 
 	@Override
-	public void bind(String name, Object target, String method, Class<?>... types) {
+	public void bind(String name, Object target, String method,
+			Class<?>... types) {
 		getJS().bind(name, target, method, types);
 	}
 
@@ -202,16 +215,16 @@ public class WindowImpl implements Window {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name);
 		sb.append('(');
-		for(int i = 0; i < arguments.length; i++) {
-			if(i != 0) {
+		for (int i = 0; i < arguments.length; i++) {
+			if (i != 0) {
 				sb.append(',');
 			}
 			Object o = arguments[i];
-			if(o == null) {
+			if (o == null) {
 				sb.append("null");
-			} else if(o instanceof String) {
+			} else if (o instanceof String) {
 				sb.append('"');
-				sb.append(JSONObject.escape((String)o));
+				sb.append(JSONObject.escape((String) o));
 				sb.append('"');
 			} else {
 				sb.append(o);

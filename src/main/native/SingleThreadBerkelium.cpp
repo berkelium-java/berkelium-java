@@ -25,13 +25,14 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1init
 #endif
 }
 
+//TODO private _destroy with thread access check
 JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium_destroy(JNIEnv* env, jobject)
 {
 	Berkelium_Java_Env jEnv(env);
 	Berkelium::destroy();
 }
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium_update(JNIEnv* env, jobject)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1update(JNIEnv* env, jobject)
 {
 	Berkelium_Java_Env jEnv(env);
 	Berkelium::update();

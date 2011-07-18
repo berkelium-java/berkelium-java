@@ -6,8 +6,6 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 import org.berkelium.java.api.Berkelium;
-import org.berkelium.java.api.MultiDelegate;
-import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowDelegate;
 import org.berkelium.java.awt.BufferedImageAdapter;
@@ -15,15 +13,14 @@ import org.berkelium.java.awt.BufferedImageAdapter;
 public final class Tab {
 	private final Window win = Berkelium.getInstance().createWindow();
 	private final BufferedImageAdapter bia = new BufferedImageAdapter();
-	private final MultiDelegate multi = new MultiDelegate();
 	private String url;
 
 	public Tab() {
-		multi.addDelegate(bia);
-		win.setDelegate(multi.getProxy());
+		win.addDelegate(bia);
 	}
 
 	public Tab(String url) {
+		this();
 		setUrl(url);
 	}
 
@@ -67,14 +64,14 @@ public final class Tab {
 	}
 
 	public void addDelegate(WindowDelegate delegate) {
-		multi.addDelegate(delegate);
+		win.addDelegate(delegate);
 	}
 
 	public void removeDelegate(WindowDelegate delegate) {
-		multi.removeDelegate(delegate);
+		win.removeDelegate(delegate);
 	}
 
-	public Rect getUpdatedRect() {
-		return bia.getUpdatedRect();
+	public void execute(Runnable job) {
+		getWindow().getBerkelium().execute(job);
 	}
 }

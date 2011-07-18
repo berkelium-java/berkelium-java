@@ -9,7 +9,7 @@ JNIEXPORT jobject JNICALL Java_org_berkelium_java_impl_WindowImpl_getWidget(JNIE
 }
 */
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_setDelegate(JNIEnv* env, jobject self, jobject dlg)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl__1setDelegate(JNIEnv* env, jobject self, jobject dlg)
 {
 	Berkelium_Java_Env jEnv(env);
 	getWindow(self)->setDelegate(new JavaWindowDelegateProxy(dlg));

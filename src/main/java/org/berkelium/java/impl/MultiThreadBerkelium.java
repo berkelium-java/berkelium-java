@@ -197,8 +197,13 @@ public class MultiThreadBerkelium extends Berkelium {
 	}
 
 	@Override
-	public void assertNotSameThread() {
-		berkelium.assertNotSameThread();
+	public void assertNotBerkeliumThread() {
+		berkelium.assertNotBerkeliumThread();
+	}
+
+	@Override
+	public void assertIsBerkeliumThread() {
+		berkelium.assertIsBerkeliumThread();
 	}
 
 	@Override
