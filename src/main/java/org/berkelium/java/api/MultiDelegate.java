@@ -14,13 +14,13 @@ public class MultiDelegate implements InvocationHandler {
 					new Class<?>[] { WindowDelegate.class }, this);
 
 	public void addDelegate(WindowDelegate delegate) {
-		synchronized(delegates) {
+		synchronized (delegates) {
 			delegates.add(delegate);
 		}
 	}
 
 	public void removeDelegate(WindowDelegate delegate) {
-		synchronized(delegates) {
+		synchronized (delegates) {
 			delegates.remove(delegate);
 		}
 	}
@@ -31,7 +31,7 @@ public class MultiDelegate implements InvocationHandler {
 		Object ret = null;
 		// System.err.println(method.getName() + args(args));
 		HashSet<WindowDelegate> ds = new HashSet<WindowDelegate>();
-		synchronized(delegates) {
+		synchronized (delegates) {
 			ds.addAll(delegates);
 		}
 		for (WindowDelegate obj : ds) {
@@ -56,7 +56,7 @@ public class MultiDelegate implements InvocationHandler {
 	}
 
 	public void clear() {
-		synchronized(delegates) {
+		synchronized (delegates) {
 			delegates.clear();
 		}
 	}

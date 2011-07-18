@@ -10,7 +10,7 @@ import org.berkelium.java.api.WindowAdapter;
 import org.junit.Test;
 
 public class WindowDelegateTest extends AbstractBerkeliumTest {
-	@Test(timeout=20000)
+	@Test(timeout = 20000)
 	public void onConsoleMessageTest() {
 		final String testMessage = createTestMessage();
 		final AtomicBoolean result = new AtomicBoolean(false);
@@ -33,7 +33,7 @@ public class WindowDelegateTest extends AbstractBerkeliumTest {
 		Assert.assertTrue("onConsoleMessage not called!", result.get());
 	}
 
-	@Test(timeout=20000)
+	@Test(timeout = 20000)
 	public void onExternalHostTest() {
 		final String id = "urn:uuid:" + UUID.randomUUID().toString();
 		final String testMessage = createTestMessage();

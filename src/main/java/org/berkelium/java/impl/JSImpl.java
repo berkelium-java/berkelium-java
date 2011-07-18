@@ -30,15 +30,16 @@ public class JSImpl {
 				String target) {
 			JavaScriptBind bind = javaScriptBinds.get(target);
 			if (bind != null) {
-				System.err.printf("JavaScript Function '%s' called!\n", bind.name);
+				System.err.printf("JavaScript Function '%s' called!\n",
+						bind.name);
 				int a = bind.method.getParameterTypes().length;
 				JSONArray array = (JSONArray) JSONValue.parse(message);
 				Object[] args = new Object[a];
-				for(int i = 0; i < a; i++) {
+				for (int i = 0; i < a; i++) {
 					args[i] = array.get(i);
 				}
 				try {
-					//TODO(drieks) arguments
+					// TODO(drieks) arguments
 					bind.method.setAccessible(true);
 					bind.method.invoke(bind.target, args);
 				} catch (IllegalArgumentException e) {
@@ -59,7 +60,8 @@ public class JSImpl {
 		window.getThreadProxyWindow().addDelegate(bindAdapter);
 	}
 
-	public <R> void bind(String name, Object target, String method, Class<?>... types) {
+	public <R> void bind(String name, Object target, String method,
+			Class<?>... types) {
 		JavaScriptBind jsb = new JavaScriptBind();
 		try {
 			jsb.method = target.getClass().getDeclaredMethod(method, types);
@@ -74,7 +76,7 @@ public class JSImpl {
 		StringBuilder cmd = new StringBuilder();
 		cmd.append(name);
 		cmd.append("=function(){window.externalHost.postMessage('['");
-		for(int i = 0; i < types.length; i++) {
+		for (int i = 0; i < types.length; i++) {
 			cmd.append(String.format("+JSON.stringify(arguments[%d])", i));
 		}
 		cmd.append("+ ']', '");
