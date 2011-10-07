@@ -15,6 +15,15 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1init
 	SetEnvironmentVariable("PATH", cPath);
 #else
 	setenv("PATH", cPath, 1);
+	char *ld = getenv("LD_LIBRARY_PATH");
+	if(ld == NULL) {
+		setenv("LD_LIBRARY_PATH", ".", 1);
+	} else {
+		char *ld2 = (char *)malloc(strlen(ld) + strlen(cPath) + 1);
+		sprintf(ld2, "%s:%s", ld, cPath);
+		setenv("LD_LIBRARY_PATH", ld2, 1);
+		free(ld2);
+	}
 	//chdir(cPath);
 #endif 
 	env->ReleaseStringUTFChars(path, cPath);
