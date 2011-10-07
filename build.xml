@@ -109,7 +109,7 @@
 						<available file="${download.dir}/${download.name}.7z" />
 					</not>
 					<then>
-						<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
+						<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" />
 					</then>
 				</if>
 
@@ -166,8 +166,8 @@
 					<arg value="-o" />
 					<arg value="berkelium-java.o" />
 					<arg value="-I${source.include}" />
-					<arg value="-I${env.JAVA_HOME}include" />
-					<arg value="-I${env.JAVA_HOME}include/linux" />
+					<arg value="-I${env.JAVA_HOME}/include" />
+					<arg value="-I${env.JAVA_HOME}/include/linux" />
 					<arg value="-I${build}/javah" />
 					<arg value="-c" />
 					<arg value="${basedir}/src/main/native/berkelium-java.cpp" />
