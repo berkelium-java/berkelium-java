@@ -38,109 +38,76 @@ public class WindowImpl implements Window {
 
 	private WindowDelegate delegate;
 
-	@Override
 	public void setDelegate(WindowDelegate delegate) {
 		this.delegate = delegate;
 		_setDelegate(delegate);
 	}
 
-	@Override
 	public WindowDelegate getDelegate() {
 		return delegate;
 	}
 
-	@Override
 	public native int getId();
 
-	@Override
 	public native void setTransparent(boolean istrans);
 
-	@Override
 	public native void focus();
 
-	@Override
 	public native void unfocus();
 
-	@Override
 	public native void mouseMoved(int xPos, int yPos);
 
-	@Override
 	public native void mouseButton(int buttonID, boolean down);
 
-	@Override
 	public native void mouseWheel(int xScroll, int yScroll);
 
-	@Override
 	public native void textEvent(String evt);
 
-	@Override
 	public native void keyEvent(boolean pressed, int mods, int vk_code,
 			int scancode);
 
-	@Override
 	public native void resize(int width, int height);
 
-	@Override
 	public native void adjustZoom(int mode);
 
-	@Override
 	public native void executeJavascript(String javascript);
 
-	@Override
 	public native void insertCSS(String css, String elementId);
 
-	@Override
 	public native boolean navigateTo(String url);
 
-	@Override
 	public native void refresh();
 
-	@Override
 	public native void stop();
 
-	@Override
 	public native void goBack();
 
-	@Override
 	public native void goForward();
 
-	@Override
 	public native boolean canGoBack();
 
-	@Override
 	public native boolean canGoForward();
 
-	@Override
 	public native void cut();
 
-	@Override
 	public native void copy();
 
-	@Override
 	public native void paste();
 
-	@Override
 	public native void undo();
 
-	@Override
 	public native void redo();
 
-	@Override
 	public native void del();
 
-	@Override
 	public native void selectAll();
 
-	@Override
 	public native void filesSelected(String files[]);
 
-	@Override
 	public native void addEvalOnStartLoading(String script);
 
-	@Override
 	public native void clearStartLoading();
 
-	@Override
 	public synchronized void destroy() {
 		if (multiDelegate != null) {
 			multiDelegate.clear();
@@ -159,7 +126,6 @@ public class WindowImpl implements Window {
 	private Context context;
 	protected volatile long handle;
 
-	@Override
 	public synchronized Window getThreadProxyWindow() {
 		if (threadProxy == null) {
 			threadProxy = new WindowThreadProxy(this);
@@ -167,14 +133,12 @@ public class WindowImpl implements Window {
 		return threadProxy.getProxy();
 	}
 
-	@Override
 	public Window getRealWindow() {
 		return this;
 	}
 
 	private MultiDelegate multiDelegate;
 
-	@Override
 	public synchronized void addDelegate(WindowDelegate delegate) {
 		if (multiDelegate == null) {
 			multiDelegate = new MultiDelegate();
@@ -183,7 +147,6 @@ public class WindowImpl implements Window {
 		multiDelegate.addDelegate(delegate);
 	}
 
-	@Override
 	public synchronized void removeDelegate(WindowDelegate delegate) {
 		if (multiDelegate != null) {
 			multiDelegate.removeDelegate(delegate);
@@ -199,18 +162,15 @@ public class WindowImpl implements Window {
 		return jsImpl;
 	}
 
-	@Override
 	public void bind(String name, Object target, String method,
 			Class<?>... types) {
 		getJS().bind(name, target, method, types);
 	}
 
-	@Override
 	public Berkelium getBerkelium() {
 		return berkelium;
 	}
 
-	@Override
 	public void call(String name, Object... arguments) {
 		StringBuilder sb = new StringBuilder();
 		sb.append(name);

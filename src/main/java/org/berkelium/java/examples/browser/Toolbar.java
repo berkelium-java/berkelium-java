@@ -23,20 +23,17 @@ public class Toolbar extends JPanel implements ActionListener {
 	// private final JButton go = new JButton("go");
 	private Tab tab;
 	private final WindowAdapter adapter = new WindowAdapter() {
-		@Override
 		public void onAddressBarChanged(Window win, String newURL) {
 			url.setText(newURL);
 			updateNavButtons();
 		}
 
-		@Override
 		public void onLoadingStateChanged(Window win, boolean isLoading) {
 			reload.setVisible(!isLoading);
 			stop.setVisible(isLoading);
 			updateNavButtons();
 		}
 
-		@Override
 		public boolean onNavigationRequested(Window win, String newUrl,
 				String referrer, boolean isNewWindow,
 				boolean[] cancelDefaultAction) {
@@ -87,7 +84,6 @@ public class Toolbar extends JPanel implements ActionListener {
 		next.setEnabled(win.canGoForward());
 	}
 
-	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (tab == null)
 			return;

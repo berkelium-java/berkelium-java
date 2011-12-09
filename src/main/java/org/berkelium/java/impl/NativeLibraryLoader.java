@@ -49,9 +49,11 @@ public class NativeLibraryLoader {
 		}
 	}
 
+	private final String systemType;
+
 	public NativeLibraryLoader() {
 		try {
-			String systemType = read("org/berkelium/java/native/systemType.txt");
+			systemType = read("org/berkelium/java/native/systemType.txt");
 			String base = "org/berkelium/java/native/" + systemType;
 			processList(base);
 
@@ -119,7 +121,10 @@ public class NativeLibraryLoader {
 		copy(from, os);
 		os.close();
 		if ("berkelium".equals(file.getName())) {
-			file.setExecutable(true);
+			if(systemType.startsWith("linux")) {
+				Runtime.getRuntime ().exec("chmod +x " + file.getAbsolutePath());
+			}
+//			file.setExecutable(true);
 		}
 		return file;
 	}

@@ -24,7 +24,6 @@ public final class SingleThreadBerkelium extends Berkelium {
 		}
 	}
 
-	@Override
 	public final Window createWindow() {
 		return new WindowImpl(this);
 	}
@@ -33,7 +32,6 @@ public final class SingleThreadBerkelium extends Berkelium {
 
 	private final AtomicBoolean updateRunning = new AtomicBoolean(false);
 
-	@Override
 	public final void update() {
 		assertIsBerkeliumThread();
 
@@ -49,7 +47,6 @@ public final class SingleThreadBerkelium extends Berkelium {
 
 	private final native void _update();
 
-	@Override
 	public final native void destroy();
 
 	// FIXME: jni helper
@@ -85,17 +82,14 @@ public final class SingleThreadBerkelium extends Berkelium {
 		map.remove(handle);
 	}
 
-	@Override
 	public void execute(Runnable job) {
 		job.run();
 	}
 
-	@Override
 	public void executeAndWait(Runnable job) {
 		job.run();
 	}
 
-	@Override
 	public void sync(Window win) {
 		assertNotBerkeliumThread();
 		win = win.getRealWindow();
@@ -125,7 +119,6 @@ public final class SingleThreadBerkelium extends Berkelium {
 		win.removeDelegate(delegate);
 	}
 
-	@Override
 	public void assertNotBerkeliumThread() {
 		if (Thread.currentThread().equals(thread)) {
 			throw new IllegalStateException(
@@ -133,7 +126,6 @@ public final class SingleThreadBerkelium extends Berkelium {
 		}
 	}
 
-	@Override
 	public void assertIsBerkeliumThread() {
 		if (!Thread.currentThread().equals(thread)) {
 			throw new IllegalStateException(

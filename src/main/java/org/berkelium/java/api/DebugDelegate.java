@@ -15,7 +15,6 @@ public class DebugDelegate implements InvocationHandler {
 		this.handler = handler;
 	}
 
-	@Override
 	public Object invoke(Object proxy, Method method, Object[] args)
 			throws Throwable {
 		StringBuffer sb = new StringBuffer();

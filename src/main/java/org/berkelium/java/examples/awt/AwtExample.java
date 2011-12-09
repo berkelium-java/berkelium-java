@@ -19,10 +19,8 @@ public class AwtExample extends JFrame {
 	private final Berkelium runtime = Berkelium.getInstance();
 	private final Window win = runtime.createWindow();
 	private final BufferedImageAdapter bia = new BufferedImageAdapter() {
-		@Override
 		public void onPaintDone(Window win, final Rect rect) {
 			SwingUtilities.invokeLater(new Runnable() {
-				@Override
 				public void run() {
 					repaint(rect.left(), rect.top(), rect.right(),
 							rect.bottom());
@@ -40,12 +38,10 @@ public class AwtExample extends JFrame {
 		setVisible(true);
 
 		addMouseListener(new MouseAdapter() {
-			@Override
 			public void mouseReleased(MouseEvent e) {
 				handleMouseButtonEvent(e, false);
 			}
 
-			@Override
 			public void mousePressed(MouseEvent e) {
 				handleMouseButtonEvent(e, true);
 			}
@@ -62,7 +58,6 @@ public class AwtExample extends JFrame {
 
 		// the event must be handled in the berkelium thread
 		runtime.execute(new Runnable() {
-			@Override
 			public void run() {
 				win.mouseMoved(x, y);
 				win.mouseButton(b, down);
@@ -70,7 +65,6 @@ public class AwtExample extends JFrame {
 		});
 	}
 
-	@Override
 	public void paint(Graphics g) {
 		BufferedImage img = bia.getImage();
 		if (img != null) {

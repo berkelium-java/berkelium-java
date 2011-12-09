@@ -29,7 +29,6 @@ public class Awt2Example extends JFrame {
 	private final int initialHeight = 480;
 	private final Queue<Runnable> queue = new ConcurrentLinkedQueue<Runnable>();
 	private final WindowAdapter adapter = new WindowAdapter() {
-		@Override
 		public void onPaintDone(Window win, Rect rect) {
 			repaint(rect.left(), rect.top(), rect.right(), rect.bottom());
 		}
@@ -43,7 +42,6 @@ public class Awt2Example extends JFrame {
 		panel = new JPanel() {
 			private static final long serialVersionUID = 2923057154675646250L;
 
-			@Override
 			public void paint(Graphics g) {
 				Awt2Example.this.paint(g, bia);
 				Awt2Example.this.paint(g, bia2);
@@ -52,12 +50,10 @@ public class Awt2Example extends JFrame {
 		panel.setDoubleBuffered(true);
 		add(panel);
 		addMouseListener(new MouseAdapter() {
-			@Override
 			public void mouseReleased(MouseEvent e) {
 				handleMouseButtonEvent(e, false);
 			}
 
-			@Override
 			public void mousePressed(MouseEvent e) {
 				handleMouseButtonEvent(e, true);
 			}
@@ -74,7 +70,6 @@ public class Awt2Example extends JFrame {
 
 		// the event must be handled in the berkelium thread
 		queue.add(new Runnable() {
-			@Override
 			public void run() {
 				win.mouseMoved(x, y);
 				win.mouseButton(b, down);

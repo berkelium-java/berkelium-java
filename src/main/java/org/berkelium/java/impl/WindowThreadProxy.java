@@ -19,7 +19,6 @@ public class WindowThreadProxy implements InvocationHandler {
 		berkelium = target.getBerkelium();
 	}
 
-	@Override
 	public Object invoke(Object proxy, final Method method, final Object[] args)
 			throws Throwable {
 		String name = method.getName();
@@ -33,7 +32,6 @@ public class WindowThreadProxy implements InvocationHandler {
 		final AtomicReference<Throwable> th = new AtomicReference<Throwable>();
 
 		berkelium.executeAndWait(new Runnable() {
-			@Override
 			public void run() {
 				try {
 					ret.set(method.invoke(target, args));

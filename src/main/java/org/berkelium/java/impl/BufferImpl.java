@@ -8,12 +8,10 @@ public final class BufferImpl implements Buffer {
 	private int[] intArray = null;
 	private byte[] byteArray = null;
 
-	@Override
 	public ByteBuffer getByteBuffer() {
 		return createByteBuffer(handle, size);
 	}
 
-	@Override
 	public int[] getIntArray() {
 		if (intArray == null) {
 			intArray = createIntArray(handle, size);
@@ -21,7 +19,6 @@ public final class BufferImpl implements Buffer {
 		return intArray;
 	}
 
-	@Override
 	public byte[] getByteArray() {
 		if (byteArray == null) {
 			byteArray = createByteArray(handle, size);

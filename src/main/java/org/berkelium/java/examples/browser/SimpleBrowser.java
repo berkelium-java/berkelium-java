@@ -17,15 +17,12 @@ public class SimpleBrowser extends JFrame {
 	private final Toolbar toolbar = new Toolbar();
 	private final TabAdapter adapter = new TabAdapter();
 	private final WindowDelegate delegate = new WindowAdapter() {
-		@Override
 		public void onTitleChanged(Window win, String title) {
 			setTitle(title);
 		}
 
-		@Override
 		public void onPaintDone(Window win, final Rect rect) {
 			SwingUtilities.invokeLater(new Runnable() {
-				@Override
 				public void run() {
 					repaint(rect.left(), rect.top(), rect.right(),
 							rect.bottom());

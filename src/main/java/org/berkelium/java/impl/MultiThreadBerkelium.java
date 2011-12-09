@@ -19,7 +19,6 @@ public class MultiThreadBerkelium extends Berkelium {
 	private final AtomicBoolean isShutdown = new AtomicBoolean(false);
 
 	private final Thread shutdown = new Thread("Berkelium Shutdown Thread") {
-		@Override
 		public void run() {
 			try {
 				Thread.sleep(1000);
@@ -37,7 +36,6 @@ public class MultiThreadBerkelium extends Berkelium {
 	};
 
 	private final Runnable threadRunnable = new Runnable() {
-		@Override
 		public void run() {
 			try {
 				initThread();
@@ -69,7 +67,6 @@ public class MultiThreadBerkelium extends Berkelium {
 	};
 
 	private final Runnable updater = new Runnable() {
-		@Override
 		public void run() {
 			try {
 				berkelium.update();
@@ -135,12 +132,10 @@ public class MultiThreadBerkelium extends Berkelium {
 		re.printStackTrace();
 	}
 
-	@Override
 	public void execute(Runnable command) {
 		queue.add(command);
 	}
 
-	@Override
 	public void executeAndWait(final Runnable job) {
 		if (Thread.currentThread().equals(thread)) {
 			job.run();
@@ -151,7 +146,6 @@ public class MultiThreadBerkelium extends Berkelium {
 		final AtomicReference<RuntimeException> ex = new AtomicReference<RuntimeException>();
 
 		execute(new Runnable() {
-			@Override
 			public void run() {
 				try {
 					try {
@@ -184,11 +178,9 @@ public class MultiThreadBerkelium extends Berkelium {
 			throw re;
 	}
 
-	@Override
 	public Window createWindow() {
 		final AtomicReference<Window> ret = new AtomicReference<Window>();
 		executeAndWait(new Runnable() {
-			@Override
 			public void run() {
 				ret.set(new WindowImpl(MultiThreadBerkelium.this));
 			}
@@ -196,28 +188,23 @@ public class MultiThreadBerkelium extends Berkelium {
 		return ret.get();
 	}
 
-	@Override
 	public void assertNotBerkeliumThread() {
 		berkelium.assertNotBerkeliumThread();
 	}
 
-	@Override
 	public void assertIsBerkeliumThread() {
 		berkelium.assertIsBerkeliumThread();
 	}
 
-	@Override
 	public void sync(Window win) {
 		berkelium.sync(win);
 	}
 
-	@Override
 	public void update() {
 		// not implemented
 		// update is called in berkelium thread
 	}
 
-	@Override
 	public void destroy() {
 		// not implemented
 		// runtime is destroyed in berkelium thread
