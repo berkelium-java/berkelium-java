@@ -11,11 +11,16 @@ import org.berkelium.java.api.WindowDelegate;
 import org.berkelium.java.awt.BufferedImageAdapter;
 
 public final class Tab {
-	private final Window win = Berkelium.getInstance().createWindow();
+	private final Window win;
 	private final BufferedImageAdapter bia = new BufferedImageAdapter();
 	private String url;
 
 	public Tab() {
+		this(Berkelium.getInstance().createWindow());
+	}
+
+	public Tab(Window win) {
+		this.win = win;
 		win.addDelegate(bia);
 	}
 
@@ -28,7 +33,7 @@ public final class Tab {
 		BufferedImage img = bia.getImage();
 		if (img != null) {
 			// do not allow updates to the image while we draw it
-			synchronized (this) {
+			synchronized (bia) {
 				g.drawImage(img, 0, 0, img.getWidth(), img.getHeight(), null);
 			}
 		}

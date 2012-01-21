@@ -53,6 +53,15 @@
 		</if>
 
 		<if>
+			<os name="Mac OS X" />
+			<then>
+				<property name="sys.name" value="mac" />
+				<property name="sys.mac" value="true" />
+				<property name="sys.bits" value="64" />
+			</then>
+		</if>
+
+		<if>
 			<isset property="sys.name" />
 			<then>
 				<echo>building for '${sys.name}'</echo>
@@ -105,11 +114,28 @@
 			<else>
 				<!-- download archive -->
 				<if>
+					<isset property="sys.mac" />
+					<then>
+						<available file="${download.dir}/${download.name}.tgz" property="download.present" />
+					</then>
+					<else>
+						<available file="${download.dir}/${download.name}.7z" property="download.present" />
+					</else>
+				</if>
+				<if>
 					<not>
-						<available file="${download.dir}/${download.name}.7z" />
+						<isset property="download.present" />
 					</not>
 					<then>
-						<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" />
+						<if>
+							<isset property="sys.mac" />
+							<then>
+								<get src="${download.base}${download.name}.tgz" dest="${download.dir}/${download.name}.tgz" />
+							</then>
+							<else>
+								<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
+							</else>
+						</if>
 					</then>
 				</if>
 
@@ -123,12 +149,29 @@
 						<delete dir="${unpacked}" />
 						<mkdir dir="${unpacked}" />
 						<!-- extract archive -->
-						<property name="download.target" location="${download.dir}/${download.name}.7z" />
-						<exec dir="${build}" executable="7z" failonerror="true">
-							<arg value="x" />
-							<arg value="${download.target}" />
-						</exec>
-						<echo file="${unpacked}/extracted.txt" />
+						<if>
+							<isset property="sys.mac" />
+							<then>
+								<!-- Extract tgz archives -->
+								<property name="download.target" location="${download.dir}/${download.name}.tgz" />
+								<exec dir="${build}" executable="tar" failonerror="true">
+									<arg value="zxvf" />
+									<arg value="${download.target}" />
+								</exec>
+								<echo file="${unpacked}/extracted.txt" />
+							</then>
+							<else>
+								<!-- Extract 7z archives -->
+								<property name="download.target" location="${download.dir}/${download.name}.7z" />
+								<exec dir="${build}" executable="7z" failonerror="true">
+									<arg value="x" />
+									<arg value="${download.target}" />
+								</exec>
+								<echo file="${unpacked}/extracted.txt" />
+								<property name="download.target" location="${download.dir}/${download.name}.7z" />
+							</else>
+						</if>
+
 					</then>
 				</if>
 
@@ -179,6 +222,37 @@
 					<arg value="-L${source.lib}" />
 					<arg value="-llibberkelium" />
 					<arg value="-olibberkelium-java.so" />
+					<arg value="berkelium-java.o" />
+				</exec>
+			</then>
+		</if>
+		<if>
+			<isset property="sys.mac" />
+			<then>
+				<echo>compile...</echo>
+				<exec executable="gcc" failonerror="true" dir="${build}/target">
+					<arg value="-fPIC" />
+					<arg value="-o" />
+					<arg value="berkelium-java.o" />
+					<arg value="-arch" />
+					<arg value="i386" />
+					<arg value="-I${source.include}" />
+					<!-- Temporary hack because I don't feel like restarting my computer -->
+					<arg value="-I/System/Library/Frameworks/JavaVM.framework/Headers" />
+					<arg value="-I${basedir}/build/eclipse/bin/javah" />
+					<arg value="-c" />
+					<arg value="${basedir}/src/main/native/berkelium-java.cpp" />
+				</exec>
+				<echo>link...</echo>
+				<exec executable="gcc" failonerror="true" dir="${build}/target">
+					<arg value="-shared" />
+					<arg value="-arch" />
+					<arg value="i386" />
+					<arg value="-lstdc++" />
+					<arg value="-L${source.lib}" />
+					<arg value="-llibberkelium" />
+					<arg value="-o" />
+					<arg value="libberkelium-java.jnilib" />
 					<arg value="berkelium-java.o" />
 				</exec>
 			</then>

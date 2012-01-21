@@ -14,7 +14,7 @@ import org.berkelium.java.api.WindowDelegate;
 
 public class SimpleBrowser extends JFrame {
 	private static final long serialVersionUID = 8835790859223385092L;
-	private final Toolbar toolbar = new Toolbar();
+	private final Toolbar toolbar = new Toolbar(this);
 	private final TabAdapter adapter = new TabAdapter();
 	private final WindowDelegate delegate = new WindowAdapter() {
 		public void onTitleChanged(Window win, String title) {

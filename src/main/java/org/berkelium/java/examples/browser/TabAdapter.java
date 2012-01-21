@@ -66,6 +66,7 @@ public class TabAdapter extends JComponent {
 		setPreferredSize(new Dimension(640, 480));
 		setBackground(Color.blue);
 		addMouseListener(mouseAdapter);
+		// not available in java 1.5
 //		addMouseMotionListener(mouseAdapter);
 //		addMouseWheelListener(mouseAdapter);
 

@@ -28,9 +28,13 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1init
 #endif 
 	env->ReleaseStringUTFChars(path, cPath);
 #if defined(WIN32) || defined(WIN64)
+	// doesn't compile with second argument!
 	Berkelium::init(Berkelium::FileString::empty(), jstring2WideString(berkeliumPath));
+	//Berkelium::init(Berkelium::FileString::empty());
 #else
+	// doesn't compile with second argument!
 	Berkelium::init(Berkelium::FileString::empty(), jstring2String(berkeliumPath));
+	//Berkelium::init(Berkelium::FileString::empty());
 #endif
 }
 

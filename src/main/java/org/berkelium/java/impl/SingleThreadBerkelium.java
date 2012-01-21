@@ -66,8 +66,20 @@ public final class SingleThreadBerkelium extends Berkelium {
 		rect[i] = new Rect(x, y, w, h);
 	}
 
-	public final static Object get(long handle) {
+	public final static Object get(long handle, int type) {
 		Object ret = map.get(handle);
+		if (ret == null) {
+			switch (type) {
+			case 1: {
+				ret = getInstance().createWindow();
+				map.put(handle, ret);
+				return ret;
+			}
+			default:
+				throw new IllegalArgumentException("unknown type:" + type
+						+ " for handle:" + handle);
+			}
+		}
 		// System.out.println("Registry.get(" + handle + "): " + ret);
 		return ret;
 	}

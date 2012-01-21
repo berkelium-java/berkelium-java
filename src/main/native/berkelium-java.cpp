@@ -105,12 +105,12 @@ void Berkelium_Java_Registry_remove(jlong handle)
 	env->CallStaticVoidMethod(cls, meth, handle);
 }
 
-jobject Berkelium_Java_Registry_get(jlong handle)
+jobject Berkelium_Java_Registry_get(jlong handle, jint type)
 {
 	JNIEnv* env = Berkelium_Java_Env::get();
 	jclass cls = env->FindClass("org/berkelium/java/impl/SingleThreadBerkelium");
-	jmethodID meth = env->GetStaticMethodID(cls, "get", "(J)Ljava/lang/Object;");
-	return env->CallStaticObjectMethod(cls, meth, handle);
+	jmethodID meth = env->GetStaticMethodID(cls, "get", "(JI)Ljava/lang/Object;");
+	return env->CallStaticObjectMethod(cls, meth, handle, type);
 }
 
 static inline Berkelium::Window* getWindow(jobject self)

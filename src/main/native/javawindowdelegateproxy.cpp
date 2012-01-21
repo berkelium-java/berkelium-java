@@ -266,12 +266,12 @@ private:
 
 	jobject map(Berkelium::Window* win) {
 		if(win == NULL) return NULL;
-		return Berkelium_Java_Registry_get((jlong)win);
+		return Berkelium_Java_Registry_get((jlong)win, (jint)1);
 	}
 
 	jobject map(Berkelium::Widget* wid) {
 		if(wid == NULL) return NULL;
-		return Berkelium_Java_Registry_get((jlong)wid);
+		return Berkelium_Java_Registry_get((jlong)wid, (jint)2);
 	}
 
 	jobject map(const Berkelium::Rect& in) {

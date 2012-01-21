@@ -121,10 +121,11 @@ public class NativeLibraryLoader {
 		copy(from, os);
 		os.close();
 		if ("berkelium".equals(file.getName())) {
-			if(systemType.startsWith("linux")) {
-				Runtime.getRuntime ().exec("chmod +x " + file.getAbsolutePath());
+			// FIXME: check if we are running with java 1.5:
+			if (systemType.startsWith("linux")) {
+				Runtime.getRuntime().exec("chmod +x " + file.getAbsolutePath());
 			}
-//			file.setExecutable(true);
+			// file.setExecutable(true);
 		}
 		return file;
 	}

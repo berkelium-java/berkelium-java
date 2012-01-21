@@ -78,7 +78,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 			Rect bitmap_rect, Rect[] copy_rects, int dx, int dy,
 			Rect scroll_rect) {
 		// we have no image yet
-		if (img == null)
+		if (img == null || wini == null)
 			return;
 
 		try {

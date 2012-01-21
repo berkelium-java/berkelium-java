@@ -23,26 +23,38 @@ public class Toolbar extends JPanel implements ActionListener {
 	// private final JButton go = new JButton("go");
 	private Tab tab;
 	private final WindowAdapter adapter = new WindowAdapter() {
+		@Override
 		public void onAddressBarChanged(Window win, String newURL) {
 			url.setText(newURL);
 			updateNavButtons();
 		}
 
+		@Override
 		public void onLoadingStateChanged(Window win, boolean isLoading) {
 			reload.setVisible(!isLoading);
 			stop.setVisible(isLoading);
 			updateNavButtons();
 		}
 
-		public boolean onNavigationRequested(Window win, String newUrl,
-				String referrer, boolean isNewWindow,
-				boolean[] cancelDefaultAction) {
+		@Override
+		public boolean onNavigationRequested(Window win, String newUrl, String referrer,
+				boolean isNewWindow, boolean[] cancelDefaultAction) {
 			updateNavButtons();
 			return true;
 		}
-	};
 
-	public Toolbar() {
+		@Override
+		public void onCreatedWindow(Window win, Window newWindow,
+				org.berkelium.java.api.Rect initialRect) {
+			// TODO: the new tab is empty, is the url correct?
+			simpleBrowser.setTab(new Tab(newWindow));
+		}
+
+	};
+	private final SimpleBrowser simpleBrowser;
+
+	public Toolbar(SimpleBrowser simpleBrowser) {
+		this.simpleBrowser = simpleBrowser;
 		setLayout(new GridBagLayout());
 		GridBagConstraints c = new GridBagConstraints();
 		c.fill = GridBagConstraints.HORIZONTAL;
@@ -84,6 +96,7 @@ public class Toolbar extends JPanel implements ActionListener {
 		next.setEnabled(win.canGoForward());
 	}
 
+	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (tab == null)
 			return;
