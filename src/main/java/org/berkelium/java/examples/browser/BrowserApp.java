@@ -15,12 +15,10 @@ public class BrowserApp {
 
 			// single-threaded api
 			SwingUtilities.invokeLater(new Runnable() {
-				@Override
 				public void run() {
 					final Berkelium b = Berkelium.createSingleThreadInstance();
 					startBrowser();
 					new Runnable() {
-						@Override
 						public void run() {
 							b.update();
 							SwingUtilities.invokeLater(this);
