@@ -8,15 +8,21 @@ import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComponent;
 
 public class TabAdapter extends JComponent {
 	private static final long serialVersionUID = -6034381086824065656L;
 	private Tab tab;
-	private final MouseAdapter mouseAdapter = new MouseAdapter() {
 
+	// Java 1.5 MouseAdapter don't implement MouseMotionListener and MouseWheelListener...
+	private abstract class Mouse extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
+	}
+
+	private final Mouse mouseAdapter = new Mouse() {
 		public void mouseReleased(MouseEvent e) {
 			handleMouseButtonEvent(e, false);
 		}
@@ -58,6 +64,9 @@ public class TabAdapter extends JComponent {
 				}
 			});
 		}
+
+		public void mouseDragged(MouseEvent e) {
+		}
 	};
 
 	{
@@ -66,9 +75,8 @@ public class TabAdapter extends JComponent {
 		setPreferredSize(new Dimension(640, 480));
 		setBackground(Color.blue);
 		addMouseListener(mouseAdapter);
-		// not available in java 1.5
-//		addMouseMotionListener(mouseAdapter);
-//		addMouseWheelListener(mouseAdapter);
+		addMouseMotionListener(mouseAdapter);
+		addMouseWheelListener(mouseAdapter);
 
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
