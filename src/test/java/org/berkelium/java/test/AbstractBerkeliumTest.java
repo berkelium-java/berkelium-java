@@ -20,7 +20,6 @@ public abstract class AbstractBerkeliumTest {
 	}
 
 	private final LogHandler debug = new LogHandler() {
-		@Override
 		public void log(String message) {
 			System.err.println(message);
 		}

@@ -25,7 +25,7 @@
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1134990371" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1906011446" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
 									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/berkelium/include}&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/berkelium-java/build/eclipse/jdk/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1296223288" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
