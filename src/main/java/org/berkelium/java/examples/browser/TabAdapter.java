@@ -2,70 +2,33 @@ package org.berkelium.java.examples.browser;
 
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.Event;
 import java.awt.Graphics;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseMotionListener;
-import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
 
 import javax.swing.JComponent;
+
+import org.berkelium.java.api.Window;
+import org.berkelium.java.awt.AwtInputAdapter;
 
 public class TabAdapter extends JComponent {
 	private static final long serialVersionUID = -6034381086824065656L;
 	private Tab tab;
-
-	// Java 1.5 MouseAdapter don't implement MouseMotionListener and MouseWheelListener...
-	private abstract class Mouse extends MouseAdapter implements MouseMotionListener, MouseWheelListener {
-	}
-
-	private final Mouse mouseAdapter = new Mouse() {
-		public void mouseReleased(MouseEvent e) {
-			handleMouseButtonEvent(e, false);
-		}
-
-		public void mousePressed(MouseEvent e) {
-			handleMouseButtonEvent(e, true);
-		}
-
-		public void mouseWheelMoved(MouseWheelEvent e) {
-			if ((e.getModifiers() & Event.CTRL_MASK) != 0) {
-				zoom(e.getWheelRotation() < 0 ? 1 : -1);
-				return;
+	private AwtInputAdapter input = new AwtInputAdapter() {
+		protected Window getWindow() {
+			if(tab == null) {
+				return null;
 			}
-			boolean dir = (e.getModifiers() & Event.SHIFT_MASK) != 0;
-			final int x = dir ? e.getWheelRotation() * -33 : 0;
-			final int y = dir ? 0 : e.getWheelRotation() * -100;
-
-			tab.execute(new Runnable() {
-				public void run() {
-					if (tab != null) {
-						tab.getWindow().mouseWheel(x, y);
-					}
-				}
-			});
+			return tab.getWindow();
+		}
+		protected void execute(Runnable job) {
+			if(tab != null) {
+				tab.execute(job);
+			}
 		}
 
-		public void mouseMoved(MouseEvent e) {
-			if (tab == null)
-				return;
-
-			final int x = e.getX();
-			final int y = e.getY();
-
-			tab.execute(new Runnable() {
-				public void run() {
-					if (tab != null) {
-						tab.getWindow().mouseMoved(x, y);
-					}
-				}
-			});
-		}
-
-		public void mouseDragged(MouseEvent e) {
+		public void requestFocus() {
+			TabAdapter.this.requestFocus();
 		}
 	};
 
@@ -74,9 +37,7 @@ public class TabAdapter extends JComponent {
 		setFocusable(true);
 		setPreferredSize(new Dimension(640, 480));
 		setBackground(Color.blue);
-		addMouseListener(mouseAdapter);
-		addMouseMotionListener(mouseAdapter);
-		addMouseWheelListener(mouseAdapter);
+		input.add(this);
 
 		addComponentListener(new ComponentAdapter() {
 			public void componentResized(ComponentEvent e) {
@@ -96,37 +57,6 @@ public class TabAdapter extends JComponent {
 			tab.resize(width, height);
 		}
 		super.setSize(width, height);
-	}
-
-	private void zoom(final int mode) {
-		if (tab == null)
-			return;
-
-		tab.execute(new Runnable() {
-			public void run() {
-				if (tab != null) {
-					tab.getWindow().adjustZoom(mode);
-				}
-			}
-		});
-	}
-
-	private void handleMouseButtonEvent(MouseEvent e, final boolean down) {
-		if (tab == null)
-			return;
-
-		// java/awt: left=1 middel=2 right=3
-		// berkelium: left=0 middel=1 right=2
-		final int b = e.getButton() - 1;
-
-		// the event must be handled in the berkelium thread
-		tab.execute(new Runnable() {
-			public void run() {
-				if (tab != null) {
-					tab.getWindow().mouseButton(b, down);
-				}
-			}
-		});
 	}
 
 	public void paint(Graphics g) {
