@@ -24,7 +24,7 @@ public class SimpleBrowser extends JFrame {
 		public void onPaintDone(Window win, final Rect rect) {
 			SwingUtilities.invokeLater(new Runnable() {
 				public void run() {
-					repaint(rect.left(), rect.top(), rect.right(),
+					adapter.repaint(rect.left(), rect.top(), rect.right(),
 							rect.bottom());
 				}
 			});
