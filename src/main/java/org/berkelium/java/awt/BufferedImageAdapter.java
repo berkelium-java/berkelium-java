@@ -17,6 +17,9 @@ public class BufferedImageAdapter extends WindowAdapter {
 	}
 
 	public void resize(int width, int height) {
+		if(img != null && img.getWidth() == width && img.getHeight() == height) {
+			return;
+		}
 		setImage(new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB));
 		needs_full_refresh = true;
 	}
