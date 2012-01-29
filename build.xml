@@ -11,9 +11,12 @@
 	<property file="user.build.properties" />
 	<property file="build.properties" />
 
-	<target name="env" unless="sys.name">
+	<target name="detect-os" unless="sys.name">
 		<if>
-			<os name="linux" arch="i386" />
+			<or>
+				<equals arg1="${target.os}" arg2="linux32"/>
+				<os name="linux" arch="i386" />
+			</or>
 			<then>
 				<property name="sys.name" value="linux32" />
 				<property name="sys.linux32" value="true" />
@@ -23,7 +26,10 @@
 		</if>
 
 		<if>
-			<os name="linux" arch="amd64" />
+			<or>
+				<equals arg1="${target.os}" arg2="linux64"/>
+				<os name="linux" arch="amd64" />
+			</or>
 			<then>
 				<property name="sys.name" value="linux64" />
 				<property name="sys.linux32" value="true" />
@@ -33,7 +39,10 @@
 		</if>
 
 		<if>
-			<os family="windows" arch="x86" />
+			<or>
+				<equals arg1="${target.os}" arg2="win32"/>
+				<os family="windows" arch="x86" />
+			</or>
 			<then>
 				<property name="sys.name" value="win32" />
 				<property name="sys.win32" value="true" />
@@ -43,7 +52,10 @@
 		</if>
 
 		<if>
-			<os family="windows" arch="amd64" />
+			<or>
+				<equals arg1="${target.os}" arg2="win64"/>
+				<os family="windows" arch="amd64" />
+			</or>
 			<then>
 				<property name="sys.name" value="win64" />
 				<property name="sys.win64" value="true" />
@@ -52,15 +64,21 @@
 			</then>
 		</if>
 
+		<!-- TODO: mac 32 / 64 ? -->
 		<if>
-			<os name="Mac OS X" />
+			<or>
+				<equals arg1="${target.os}" arg2="mac"/>
+				<os name="Mac OS X" />
+			</or>
 			<then>
 				<property name="sys.name" value="mac" />
 				<property name="sys.mac" value="true" />
 				<property name="sys.bits" value="64" />
 			</then>
 		</if>
+	</target>
 
+	<target name="env" depends="detect-os">
 		<if>
 			<isset property="sys.name" />
 			<then>
@@ -72,12 +90,33 @@
 		</if>
 
 		<if>
-			<not>
-				<isset property="env.JAVA_HOME" />
-			</not>
+			<and>
+				<not>
+					<isset property="env.JAVA_HOME" />
+				</not>
+				<not>
+					<isset property="env.JDK_HOME" />
+				</not>
+			</and>
 			<then>
-				<fail>JAVA_HOME not set</fail>
+				<fail>JAVA_HOME or JDK_HOME must be set</fail>
 			</then>
+		</if>
+
+		<if>
+			<available file="${env.JDK_HOME}/include" type="dir"/>
+			<then>
+				<property name="java.include" value="${env.JDK_HOME}/include" />
+			</then>
+			<elseif>
+				<available file="${env.JAVA_HOME}/include" type="dir"/>
+				<then>
+					<property name="java.include" value="${env.JAVA_HOME}/include" />
+				</then>
+			</elseif>
+			<else>
+				<fail>JAVA_HOME or JDK_HOME must point to a JDK</fail>
+			</else>
 		</if>
 
 		<if>
@@ -114,28 +153,28 @@
 			<else>
 				<!-- download archive -->
 				<if>
+					<not>
+						<available file="${download.dir}" type="dir"/>
+					</not>
+					<then>
+						<mkdir dir="${download.dir}"/>
+					</then>
+				</if>
+				<if>
 					<isset property="sys.mac" />
 					<then>
-						<available file="${download.dir}/${download.name}.tgz" property="download.present" />
+						<property name="download.ext" value="tgz" />
 					</then>
 					<else>
-						<available file="${download.dir}/${download.name}.7z" property="download.present" />
+						<property name="download.ext" value="7z" />
 					</else>
 				</if>
 				<if>
 					<not>
-						<isset property="download.present" />
+						<available file="${download.dir}/${download.name}.${download.ext}"/>
 					</not>
 					<then>
-						<if>
-							<isset property="sys.mac" />
-							<then>
-								<get src="${download.base}${download.name}.tgz" dest="${download.dir}/${download.name}.tgz" />
-							</then>
-							<else>
-								<get src="${download.base}${download.name}.7z" dest="${download.dir}/${download.name}.7z" skipexisting="true" />
-							</else>
-						</if>
+						<get src="${download.base}${download.name}.${download.ext}" dest="${download.dir}/${download.name}.${download.ext}" />
 					</then>
 				</if>
 
@@ -149,28 +188,25 @@
 						<delete dir="${unpacked}" />
 						<mkdir dir="${unpacked}" />
 						<!-- extract archive -->
+						<property name="download.target" location="${download.dir}/${download.name}.${download.ext}" />
 						<if>
-							<isset property="sys.mac" />
+							<equals arg1="${download.ext}" arg2="tgz"/>
 							<then>
 								<!-- Extract tgz archives -->
-								<property name="download.target" location="${download.dir}/${download.name}.tgz" />
 								<exec dir="${build}" executable="tar" failonerror="true">
 									<arg value="zxvf" />
 									<arg value="${download.target}" />
 								</exec>
-								<echo file="${unpacked}/extracted.txt" />
 							</then>
 							<else>
 								<!-- Extract 7z archives -->
-								<property name="download.target" location="${download.dir}/${download.name}.7z" />
 								<exec dir="${build}" executable="7z" failonerror="true">
 									<arg value="x" />
 									<arg value="${download.target}" />
 								</exec>
-								<echo file="${unpacked}/extracted.txt" />
-								<property name="download.target" location="${download.dir}/${download.name}.7z" />
 							</else>
 						</if>
+						<echo file="${unpacked}/extracted.txt" />
 
 					</then>
 				</if>
@@ -209,8 +245,8 @@
 					<arg value="-o" />
 					<arg value="berkelium-java.o" />
 					<arg value="-I${source.include}" />
-					<arg value="-I${env.JAVA_HOME}/include" />
-					<arg value="-I${env.JAVA_HOME}/include/linux" />
+					<arg value="-I${java.include}" />
+					<arg value="-I${java.include}/linux" />
 					<arg value="-I${build}/javah" />
 					<arg value="-c" />
 					<arg value="${basedir}/src/main/native/berkelium-java.cpp" />
@@ -262,8 +298,8 @@
 			<then>
 				<var name="cl" value="/DWIN${sys.bits} /EHsc /LD" />
 				<var name="cl" value="${cl} /I&quot;${source.include}&quot;" />
-				<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include&quot;" />
-				<var name="cl" value="${cl} /I&quot;${env.JAVA_HOME}/include/${sys.name}&quot;" />
+				<var name="cl" value="${cl} /I&quot;${java.include}&quot;" />
+				<var name="cl" value="${cl} /I&quot;${java.include}/${sys.name}&quot;" />
 				<var name="cl" value="${cl} /I&quot;${build}/javah&quot;" />
 				<var name="cl" value="${cl} &quot;${basedir}/src/main/native/berkelium-java.cpp&quot;" />
 				<var name="cl" value="${cl} /link" />
