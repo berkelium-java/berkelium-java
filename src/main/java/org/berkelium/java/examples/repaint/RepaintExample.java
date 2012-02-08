@@ -54,7 +54,7 @@ public class RepaintExample extends JFrame {
 	}
 
 	public void run() throws Exception {
-		win.setDelegate(bia);
+		win.addDelegate(bia);
 		bia.resize(800, 600);
 		win.resize(800, 600);
 		//win.navigateTo("http://jensbeimsurfen.de/clock/");

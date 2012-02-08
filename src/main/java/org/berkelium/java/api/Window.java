@@ -7,8 +7,6 @@ public interface Window {
 
 	Window getRealWindow();
 
-	void setDelegate(WindowDelegate delegate);
-
 	WindowDelegate getDelegate();
 
 	void addDelegate(WindowDelegate delegate);

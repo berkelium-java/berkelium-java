@@ -77,7 +77,7 @@ public class AwtExample extends JFrame {
 
 	public void run() throws Exception {
 		synchronized (runtime) {
-			win.setDelegate(bia);
+			win.addDelegate(bia);
 			bia.resize(initialWidth, initialHeight);
 			win.resize(initialWidth, initialHeight);
 			win.navigateTo("http://www.youtube.com/");

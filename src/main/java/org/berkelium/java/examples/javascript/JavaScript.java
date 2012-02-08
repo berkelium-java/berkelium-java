@@ -16,7 +16,7 @@ public class JavaScript {
 		Window win = berkelium.createWindow();
 
 		System.err.println("setting window delegate");
-		win.setDelegate(new WindowAdapter() {
+		win.addDelegate(new WindowAdapter() {
 			@Override
 			public void onLoad(Window win) {
 				System.err.println("onLoad");

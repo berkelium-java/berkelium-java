@@ -13,7 +13,7 @@ class Example1 extends WindowAdapter {
 
 	public Example1() {
 		win = runtime.createWindow();
-		win.setDelegate(this);
+		win.addDelegate(this);
 	}
 
 	public void run() throws InterruptedException {

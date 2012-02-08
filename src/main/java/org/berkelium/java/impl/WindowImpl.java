@@ -39,15 +39,11 @@ public class WindowImpl implements Window {
 
 	private native void _setDelegate(WindowDelegate delegate);
 
-	private WindowDelegate delegate;
-
-	public void setDelegate(WindowDelegate delegate) {
-		this.delegate = delegate;
-		_setDelegate(delegate);
-	}
-
 	public WindowDelegate getDelegate() {
-		return delegate;
+		if (multiDelegate == null) {
+			return null;
+		}
+		return multiDelegate.getProxy();
 	}
 
 	public native int getId();
@@ -145,7 +141,7 @@ public class WindowImpl implements Window {
 	public synchronized void addDelegate(WindowDelegate delegate) {
 		if (multiDelegate == null) {
 			multiDelegate = new MultiDelegate();
-			setDelegate(multiDelegate.getProxy());
+			_setDelegate(multiDelegate.getProxy());
 		}
 		multiDelegate.addDelegate(delegate);
 	}

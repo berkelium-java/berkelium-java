@@ -7,6 +7,7 @@ import java.util.concurrent.atomic.AtomicReference;
 
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.Window;
+import org.berkelium.java.api.WindowDelegate;
 
 public class WindowThreadProxy implements InvocationHandler {
 	private final Berkelium berkelium;
@@ -26,6 +27,14 @@ public class WindowThreadProxy implements InvocationHandler {
 			return target.getRealWindow();
 		} else if ("getThreadProxyWindow".equals(name)) {
 			return target.getThreadProxyWindow();
+/*
+		} else if ("addDelegate".equals(name)) {
+			target.getRealWindow().addDelegate((WindowDelegate)args[0]);
+			return null;
+		} else if ("removeDelegate".equals(name)) {
+			target.getRealWindow().removeDelegate((WindowDelegate)args[0]);
+			return null;
+*/
 		}
 
 		final AtomicReference<Object> ret = new AtomicReference<Object>();
