@@ -189,7 +189,7 @@ public class MultiThreadBerkelium extends Berkelium {
 				ret.set(new WindowImpl(MultiThreadBerkelium.this));
 			}
 		});
-		return ret.get();
+		return ret.get().getThreadProxyWindow();
 	}
 
 	public void assertNotBerkeliumThread() {
