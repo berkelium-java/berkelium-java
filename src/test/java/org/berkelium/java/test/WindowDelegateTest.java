@@ -5,6 +5,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
+import org.berkelium.java.api.Buffer;
+import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.api.WindowAdapter;
 import org.junit.Test;
@@ -55,5 +57,29 @@ public class WindowDelegateTest extends AbstractBerkeliumTest {
 		runtime.sync(window);
 
 		Assert.assertTrue("onExternalHost not called!", result.get());
+	}
+
+	/*
+	TODO this test case do not work?
+	@Test(timeout = 20000)
+	*/
+	public void onPaintTest() throws InterruptedException {
+		final AtomicBoolean result = new AtomicBoolean(false);
+		
+		window.addDelegate(new WindowAdapter() {
+			@Override
+			public void onPaint(Window win, Buffer sourceBuffer,
+					Rect sourceBufferRect, Rect[] copyRects, int dx, int dy,
+					Rect scrollRect) {
+				Assert.assertEquals(win.getRealWindow(), window.getRealWindow());
+				result.set(true);
+			}
+		});
+
+		window.navigateTo("http://google.com/");
+
+		runtime.sync(window);
+
+		Assert.assertTrue("onPaint not called!", result.get());
 	}
 }
