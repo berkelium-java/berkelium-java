@@ -1,5 +1,8 @@
 package org.berkelium.java.impl;
 
+import java.io.InputStream;
+import java.util.Scanner;
+
 import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.MultiDelegate;
 import org.berkelium.java.api.Window;
@@ -192,5 +195,13 @@ public class WindowImpl implements Window {
 		}
 		sb.append(");");
 		executeJavascript(sb.toString());
+	}
+
+	public void setHtml(InputStream html) {
+		setHtml(new Scanner(html).useDelimiter("\\A").next());
+	}
+
+	public void setHtml(String html) {
+		navigateTo("data:text/html;charset=utf-8;base64," + Base64Coder.encodeString(html));		
 	}
 }

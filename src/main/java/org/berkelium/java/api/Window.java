@@ -1,5 +1,7 @@
 package org.berkelium.java.api;
 
+import java.io.InputStream;
+
 public interface Window {
 	Window getThreadProxyWindow();
 
@@ -80,4 +82,8 @@ public interface Window {
 	void bind(String name, Object target, String method, Class<?>... types);
 
 	void call(String name, Object... arguments);
+
+	void setHtml(String html);
+
+	void setHtml(InputStream html);
 }
