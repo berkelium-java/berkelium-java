@@ -46,6 +46,17 @@ public class WindowImpl implements Window {
 		return multiDelegate.getProxy();
 	}
 
+	public void resize(int width, int height) {
+		_resize(width, height);
+		WindowDelegate d = getDelegate();
+		if(d != null) {
+			// TODO
+			// move this into c++ code
+			// also handle browser window resizes
+			d.onResize(width, height);
+		}
+	}
+
 	public native int getId();
 
 	public native void setTransparent(boolean istrans);
@@ -65,7 +76,7 @@ public class WindowImpl implements Window {
 	public native void keyEvent(boolean pressed, int mods, int vk_code,
 			int scancode);
 
-	public native void resize(int width, int height);
+	public native void _resize(int width, int height);
 
 	public native void adjustZoom(int mode);
 
