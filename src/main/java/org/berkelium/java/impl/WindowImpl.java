@@ -13,19 +13,6 @@ public class WindowImpl implements Window {
 	private final Berkelium berkelium;
 	private WindowThreadProxy threadProxy;
 
-	public final static class KeyModifier {
-		final static int SHIFT_MOD = 1 << 0;
-		final static int CONTROL_MOD = 1 << 1;
-		final static int ALT_MOD = 1 << 2;
-		final static int META_MOD = 1 << 3;
-		// If the key is on the keypad (use instead of keypad-specific keycodes)
-		final static int KEYPAD_KEY = 1 << 4;
-		// If this is not the first KeyPress event for this key
-		final static int AUTOREPEAT_KEY = 1 << 5;
-		// if the keypress is a system event (WM_SYS* messages in windows)
-		final static int SYSTEM_KEY = 1 << 6;
-	}
-
 	public WindowImpl(Berkelium berkelium) {
 		this.berkelium = berkelium;
 		Context ctx = Context.getDefault();
