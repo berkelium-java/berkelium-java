@@ -84,7 +84,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_keyEvent(JNIEnv* 
 	getWindow(self)->keyEvent(pressed ? true : false, mods, vk_code, scancode);
 }
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl_resize(JNIEnv* env, jobject self, jint w, jint h)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_WindowImpl__1resize(JNIEnv* env, jobject self, jint w, jint h)
 {
 	Berkelium_Java_Env jEnv(env);
 	getWindow(self)->resize(w, h);

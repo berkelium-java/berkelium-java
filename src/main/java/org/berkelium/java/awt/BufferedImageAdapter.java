@@ -16,6 +16,10 @@ public class BufferedImageAdapter extends WindowAdapter {
 	public BufferedImageAdapter() {
 	}
 
+	public void onResize(int width, int height) {
+		resize(width, height);
+	}
+
 	public void resize(int width, int height) {
 		if(img != null && img.getWidth() == width && img.getHeight() == height) {
 			return;
