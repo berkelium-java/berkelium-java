@@ -73,4 +73,13 @@ public class Rect {
 			return new Rect(left, top, right - left, bottom - top);
 		}
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(obj instanceof Rect) {
+			Rect r = (Rect) obj;
+			return r.x == x && r.y == y && r.w == w && r.h == h;
+		}
+		return false;
+	}
 }
