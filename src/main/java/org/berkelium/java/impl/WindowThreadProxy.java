@@ -27,14 +27,12 @@ public class WindowThreadProxy implements InvocationHandler {
 			return target.getRealWindow();
 		} else if ("getThreadProxyWindow".equals(name)) {
 			return target.getThreadProxyWindow();
-/*
 		} else if ("addDelegate".equals(name)) {
 			target.getRealWindow().addDelegate((WindowDelegate)args[0]);
 			return null;
 		} else if ("removeDelegate".equals(name)) {
 			target.getRealWindow().removeDelegate((WindowDelegate)args[0]);
 			return null;
-*/
 		}
 
 		final AtomicReference<Object> ret = new AtomicReference<Object>();

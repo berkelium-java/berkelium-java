@@ -26,7 +26,7 @@ public class WindowImpl implements Window {
 
 	private native void _setDelegate(WindowDelegate delegate);
 
-	public WindowDelegate getDelegate() {
+	public synchronized WindowDelegate getDelegate() {
 		if (multiDelegate == null) {
 			return null;
 		}
