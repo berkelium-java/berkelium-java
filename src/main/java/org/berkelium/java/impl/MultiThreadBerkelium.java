@@ -19,7 +19,11 @@ public class MultiThreadBerkelium extends Berkelium {
 	private final AtomicBoolean isShutdown = new AtomicBoolean(false);
 
 	private final Thread shutdown = new Thread("Berkelium Shutdown Thread") {
-		public void run() {
+		private boolean done = false;
+
+		public synchronized void run() {
+			if(done) return;
+			done = true;
 			try {
 				Thread.sleep(1000);
 				isShutdown.set(true);
@@ -206,7 +210,6 @@ public class MultiThreadBerkelium extends Berkelium {
 	}
 
 	public void destroy() {
-		// not implemented
-		// runtime is destroyed in berkelium thread
+		shutdown.run();
 	}
 }
