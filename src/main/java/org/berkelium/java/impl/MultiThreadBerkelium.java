@@ -43,8 +43,12 @@ public class MultiThreadBerkelium extends Berkelium {
 		public void run() {
 			try {
 				initThread();
+			} catch (ExceptionInInitializerError eie) {
+				initRuntimeException = new RuntimeException(eie);
+				return;
 			} catch (RuntimeException re) {
 				initRuntimeException = re;
+				return;
 			} finally {
 				try {
 					initDoneBarrier.await();
