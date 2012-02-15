@@ -120,6 +120,22 @@
 		</if>
 
 		<if>
+			<available file="${env.JDK_HOME}/include" type="dir"/>
+			<then>
+				<property name="java.include" value="${env.JDK_HOME}/include" />
+			</then>
+			<elseif>
+				<available file="${env.JAVA_HOME}/include" type="dir"/>
+				<then>
+					<property name="java.include" value="${env.JAVA_HOME}/include" />
+				</then>
+			</elseif>
+			<else>
+				<fail>JAVA_HOME or JDK_HOME must point to a JDK</fail>
+			</else>
+		</if>
+
+		<if>
 			<isset property="berkelium.src" />
 			<then>
 				<property name="download.date" value="source" />
