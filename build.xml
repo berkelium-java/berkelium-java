@@ -228,7 +228,15 @@
 				</if>
 
 				<property name="source.include" location="${unpacked}/include" />
-				<property name="source.lib" location="${unpacked}/lib" />
+				<if>
+					<available file="${unpacked}/lib" type="dir"/>
+					<then>
+						<property name="source.lib" location="${unpacked}/lib" />
+					</then>
+					<else>
+						<property name="source.lib" location="${unpacked}/bin" />
+					</else>
+				</if>
 				<property name="source.bin" location="${unpacked}/bin" />
 			</else>
 		</if>
