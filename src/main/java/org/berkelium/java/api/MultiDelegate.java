@@ -34,7 +34,11 @@ public class MultiDelegate implements InvocationHandler {
 			ds.addAll(delegates);
 		}
 		for (WindowDelegate obj : ds) {
-			ret = method.invoke(obj, args);
+			try {
+				ret = method.invoke(obj, args);
+			} catch (Throwable th) {
+				Berkelium.handleThrowable(th);
+			}
 		}
 		return ret;
 	}

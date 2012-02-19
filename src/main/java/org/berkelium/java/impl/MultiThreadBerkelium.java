@@ -55,7 +55,7 @@ public class MultiThreadBerkelium extends Berkelium {
 				} catch (InterruptedException e) {
 					// TODO
 				} catch (Throwable t) {
-					System.err.println(t);
+					Berkelium.handleThrowable(t);
 					throw new RuntimeException(t);
 				}
 			}
@@ -66,7 +66,7 @@ public class MultiThreadBerkelium extends Berkelium {
 					}
 				}
 			} catch (Throwable t) {
-				System.err.println(t);
+				Berkelium.handleThrowable(t);
 				throw new RuntimeException(t);
 			} finally {
 				shutdownThread();
@@ -79,7 +79,7 @@ public class MultiThreadBerkelium extends Berkelium {
 			try {
 				berkelium.update();
 			} catch (RuntimeException re) {
-				handleRuntimeException(re);
+				handleThrowable(re);
 			}
 			try {
 				Thread.sleep(100);
@@ -97,7 +97,7 @@ public class MultiThreadBerkelium extends Berkelium {
 		} catch (InterruptedException e) {
 			// TODO
 		} catch (Exception e) {
-			e.printStackTrace();
+			Berkelium.handleThrowable(e);
 		}
 		if (initRuntimeException != null)
 			throw initRuntimeException;
@@ -115,8 +115,7 @@ public class MultiThreadBerkelium extends Berkelium {
 			try {
 				queue.remove().run();
 			} catch (Throwable ignore) {
-				System.err.println(ignore);
-				// TODO ignore...
+				Berkelium.handleThrowable(ignore);
 			}
 		}
 
@@ -133,11 +132,6 @@ public class MultiThreadBerkelium extends Berkelium {
 			// TODO
 		}
 		berkelium.destroy();
-	}
-
-	public void handleRuntimeException(RuntimeException re) {
-		// TODO delegate
-		re.printStackTrace();
 	}
 
 	public void execute(Runnable command) {
@@ -165,9 +159,9 @@ public class MultiThreadBerkelium extends Berkelium {
 					try {
 						barrier.await();
 					} catch (InterruptedException e) {
-						e.printStackTrace();
+						Berkelium.handleThrowable(e);
 					} catch (BrokenBarrierException e) {
-						e.printStackTrace();
+						Berkelium.handleThrowable(e);
 					}
 				}
 			}
@@ -176,10 +170,9 @@ public class MultiThreadBerkelium extends Berkelium {
 		try {
 			barrier.await();
 		} catch (InterruptedException e) {
-			// TODO
-			e.printStackTrace();
+			Berkelium.handleThrowable(e);
 		} catch (BrokenBarrierException e) {
-			e.printStackTrace();
+			Berkelium.handleThrowable(e);
 		}
 		RuntimeException re = ex.get();
 		if (re != null)

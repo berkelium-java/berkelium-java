@@ -8,6 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 
+import org.berkelium.java.api.Berkelium;
+
 public class NativeLibraryLoader {
 
 	private final static File tempDir;
@@ -78,6 +80,7 @@ public class NativeLibraryLoader {
 			}
 			loadLib(base, "berkelium-java");
 		} catch (Exception ex) {
+			Berkelium.handleThrowable(ex);
 			throw new RuntimeException(ex);
 		}
 	}
