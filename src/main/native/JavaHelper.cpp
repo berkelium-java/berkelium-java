@@ -68,7 +68,7 @@ void Java::add(jlong handle, jobject obj) {
 	env->CallStaticVoidMethod(_class.SingleThreadBerkelium, _static.SingleThreadBerkelium_add, handle, obj);
 }
 
-void Java::remove(long handle) {
+void Java::remove(jlong handle) {
 	env->CallStaticVoidMethod(_class.SingleThreadBerkelium, _static.SingleThreadBerkelium_remove, handle);
 }
 
@@ -189,16 +189,6 @@ void Java::fail(const char* msg) {
 
 }
 
-JavaVM* getJavaVM()
-{
-	JavaVM* vms[1];
-	jsize nVMs;
-	if(JNI_GetCreatedJavaVMs(vms, 1, &nVMs) != JNI_OK) {
-		return NULL;
-	}
-	return vms[0];
-}
-
 #ifdef WIN32
 static __declspec( thread ) Java* java;
 #else
@@ -224,18 +214,6 @@ Java* Java::getOrCreateJava(JNIEnv* env) {
 			return NULL;
 		}
 		berkeliumThread = java = new Java(env);
-		/*
-		JNIEnv* ret;
-		//int r = vms[1]->AttachCurrentThread((void **)&ret, NULL);
-		int r = vms[0]->GetEnv((void **)&ret, NULL);
-		if(r == JNI_OK) {
-			return ret;
-		}
-		if(javaThreadEnv != NULL) {
-			return javaThreadEnv;
-		}
-		fprintf(stderr, "invalid thread access!");
-		*/
 	}
 	return java;
 }
