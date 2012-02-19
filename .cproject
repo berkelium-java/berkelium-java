@@ -5,7 +5,9 @@
 	<storageModule moduleId="org.eclipse.cdt.core.settings">
 		<cconfiguration id="cdt.managedbuild.toolchain.gnu.base.834520626">
 			<storageModule buildSystemId="org.eclipse.cdt.managedbuilder.core.configurationDataProvider" id="cdt.managedbuild.toolchain.gnu.base.834520626" moduleId="org.eclipse.cdt.core.settings" name="Default">
-				<externalSettings/>
+				<externalSettings>
+					<externalSetting/>
+				</externalSettings>
 				<extensions>
 					<extension id="org.eclipse.cdt.core.ELF" point="org.eclipse.cdt.core.BinaryParser"/>
 					<extension id="org.eclipse.cdt.core.GmakeErrorParser" point="org.eclipse.cdt.core.ErrorParser"/>
@@ -24,8 +26,10 @@
 							<tool id="cdt.managedbuild.tool.gnu.archiver.base.1903488082" name="GCC Archiver" superClass="cdt.managedbuild.tool.gnu.archiver.base"/>
 							<tool id="cdt.managedbuild.tool.gnu.cpp.compiler.base.1134990371" name="GCC C++ Compiler" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.base">
 								<option id="gnu.cpp.compiler.option.include.paths.1906011446" name="Include paths (-I)" superClass="gnu.cpp.compiler.option.include.paths" valueType="includePath">
-									<listOptionValue builtIn="false" value="&quot;${workspace_loc:/berkelium/include}&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${workspace_loc:${ProjDirPath}/../berkelium/include}&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/linux&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;${JDK_HOME}/include/win32&quot;"/>
 								</option>
 								<inputType id="cdt.managedbuild.tool.gnu.cpp.compiler.input.1296223288" superClass="cdt.managedbuild.tool.gnu.cpp.compiler.input"/>
 							</tool>
