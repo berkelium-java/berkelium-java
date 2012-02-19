@@ -144,4 +144,12 @@ public class ByteBufferImageAdapter extends WindowAdapter {
 			}
 		}
 	}
+
+	public int geWidth() {
+		return width;
+	}
+
+	public int geHeight() {
+		return height;
+	}
 }
