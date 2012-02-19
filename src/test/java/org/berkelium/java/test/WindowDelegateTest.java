@@ -12,6 +12,12 @@ import org.berkelium.java.api.WindowAdapter;
 import org.junit.Test;
 
 public class WindowDelegateTest extends AbstractBerkeliumTest {
+
+	@Test(timeout = 20000, expected=IllegalThreadStateException.class)
+	public void illegalThreadAccessTest() {
+		window.getRealWindow().canGoBack();
+	}
+
 	@Test(timeout = 20000)
 	public void onConsoleMessageTest() {
 		final String testMessage = createTestMessage();
