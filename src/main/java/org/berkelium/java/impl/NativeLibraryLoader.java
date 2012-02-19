@@ -66,7 +66,15 @@ public class NativeLibraryLoader {
 				loadLib(base, "avformat-52");
 				loadLib(base, "berkelium");
 			} else {
-				loadLib(base, "libberkelium");
+				try {
+					loadLib(base, "libberkelium");
+				} catch(FileNotFoundException ex) {
+					try {
+						loadLib(base, "libberkelium_d");
+					} catch(FileNotFoundException ex2) {
+						throw ex;
+					}
+				}
 			}
 			loadLib(base, "berkelium-java");
 		} catch (Exception ex) {

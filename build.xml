@@ -90,6 +90,16 @@
 		</if>
 
 		<if>
+			<equals arg1="${debug}" arg2="true"/>
+			<then>
+				<echo>building debug version</echo>
+			</then>
+			<else>
+				<echo>building release version</echo>
+			</else>
+		</if>
+
+		<if>
 			<and>
 				<not>
 					<isset property="env.JAVA_HOME" />
@@ -263,8 +273,20 @@
 		<if>
 			<isset property="sys.linux" />
 			<then>
+				<if>
+					<equals arg1="${debug}" arg2="true"/>
+					<then>
+						<property name="berkelium.debug" value="-g" />
+						<property name="berkelium.lib" value="-llibberkelium_d" />
+					</then>
+					<else>
+						<property name="berkelium.debug" value="-g0" />
+						<property name="berkelium.lib" value="-llibberkelium" />
+					</else>
+				</if>
 				<echo>compile...</echo>
 				<exec executable="gcc" failonerror="true" dir="${build}/target">
+					<arg value="${berkelium.debug}" />
 					<arg value="-fPIC" />
 					<arg value="-o" />
 					<arg value="berkelium-java.o" />
@@ -280,7 +302,7 @@
 					<arg value="-shared" />
 					<arg value="-lstdc++" />
 					<arg value="-L${source.lib}" />
-					<arg value="-llibberkelium" />
+					<arg value="${berkelium.lib}" />
 					<arg value="-olibberkelium-java.so" />
 					<arg value="berkelium-java.o" />
 				</exec>
