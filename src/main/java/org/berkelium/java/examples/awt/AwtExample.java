@@ -10,6 +10,7 @@ import javax.swing.JFrame;
 import javax.swing.SwingUtilities;
 
 import org.berkelium.java.api.Berkelium;
+import org.berkelium.java.api.DebugDelegate;
 import org.berkelium.java.api.Rect;
 import org.berkelium.java.api.Window;
 import org.berkelium.java.awt.BufferedImageAdapter;
@@ -78,6 +79,7 @@ public class AwtExample extends JFrame {
 	public void run() throws Exception {
 		synchronized (runtime) {
 			win.addDelegate(bia);
+			win.addDelegate(new DebugDelegate().getProxy());
 			bia.resize(initialWidth, initialHeight);
 			win.resize(initialWidth, initialHeight);
 			win.navigateTo("http://www.youtube.com/");

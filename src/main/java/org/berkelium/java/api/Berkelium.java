@@ -64,6 +64,11 @@ public abstract class Berkelium {
 			handlers.remove(handler);
 		}
 	}
+	public final static LogHandler berkeliumLogHandler = new LogHandler() {
+		public void log(String message) {
+			Berkelium.log(message);
+		}
+	}; 
 
 	public static void log(String message) {
 		synchronized (handlers) {

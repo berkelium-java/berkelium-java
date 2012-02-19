@@ -11,6 +11,10 @@ public class DebugDelegate implements InvocationHandler {
 			.newProxyInstance(getClass().getClassLoader(),
 					new Class<?>[] { WindowDelegate.class }, this);
 
+	public DebugDelegate() {
+		this(Berkelium.berkeliumLogHandler);
+	}
+
 	public DebugDelegate(LogHandler handler) {
 		this.handler = handler;
 	}
