@@ -139,7 +139,11 @@ public class WindowImpl implements Window {
 	public synchronized void addDelegate(WindowDelegate delegate) {
 		if (multiDelegate == null) {
 			multiDelegate = new MultiDelegate();
-			_setDelegate(multiDelegate.getProxy());
+			berkelium.executeAndWait(new Runnable() {
+				public void run() {
+					_setDelegate(multiDelegate.getProxy());
+				}
+			});
 		}
 		multiDelegate.addDelegate(delegate);
 	}
