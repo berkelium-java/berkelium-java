@@ -1,4 +1,4 @@
-#include <org_berkelium_java_impl_Context.h>
+#include "berkelium-java.h"
 
 JNIEXPORT jlong JNICALL Java_org_berkelium_java_impl_Context__1init(JNIEnv *, jclass)
 {
