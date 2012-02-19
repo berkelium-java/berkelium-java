@@ -1,56 +1,49 @@
 package org.berkelium.java.api;
 
-public interface WindowDelegate {
-	public void onResize(int width, int height);
+interface WindowDelegate {
+	void onResize(int width, int height);
 
-	public void onPaintDone(Window win, Rect rect);
+	void onPaintDone(Window win, Rect rect);
 
-	public void onAddressBarChanged(Window win, String newURL);
+	void onAddressBarChanged(Window win, String newURL);
 
-	public void onStartLoading(Window win, String newURL);
+	void onStartLoading(Window win, String newURL);
 
-	public void onLoad(Window win);
+	void onLoad(Window win);
 
-	public void onCrashedWorker(Window win);
+	void onCrashedWorker(Window win);
 
-	public void onCrashedPlugin(Window win, String pluginName);
+	void onCrashedPlugin(Window win, String pluginName);
 
-	public void onProvisionalLoadError(Window win, String url, int errorCode,
-			boolean isMainFrame);
+	void onProvisionalLoadError(Window win, String url, int errorCode, boolean isMainFrame);
 
-	public void onConsoleMessage(Window win, String message, String sourceId,
-			int line_no);
+	void onConsoleMessage(Window win, String message, String sourceId, int line_no);
 
-	public void onScriptAlert(Window win, String message, String defaultValue,
-			String url, int flags, boolean success[], String value[]);
+	void onScriptAlert(Window win, String message, String defaultValue, String url, int flags, boolean success[], String value[]);
 
-	public void freeLastScriptAlert(String lastValue);
+	void freeLastScriptAlert(String lastValue);
 
-	public boolean onNavigationRequested(Window win, String newUrl,
-			String referrer, boolean isNewWindow, boolean cancelDefaultAction[]);
+	boolean onNavigationRequested(Window win, String newUrl, String referrer, boolean isNewWindow, boolean cancelDefaultAction[]);
 
-	public void onLoadingStateChanged(Window win, boolean isLoading);
+	void onLoadingStateChanged(Window win, boolean isLoading);
 
-	public void onTitleChanged(Window win, String title);
+	void onTitleChanged(Window win, String title);
 
-	public void onTooltipChanged(Window win, String text);
+	void onTooltipChanged(Window win, String text);
 
-	public void onCrashed(Window win);
+	void onCrashed(Window win);
 
-	public void onUnresponsive(Window win);
+	void onUnresponsive(Window win);
 
-	public void onResponsive(Window win);
+	void onResponsive(Window win);
 
-	public void onExternalHost(Window win, String message, String origin,
-			String target);
+	void onExternalHost(Window win, String message, String origin, String target);
 
-	public void onCreatedWindow(Window win, Window newWindow, Rect initialRect);
+	void onCreatedWindow(Window win, Window newWindow, Rect initialRect);
 
-	public void onPaint(Window win, Buffer sourceBuffer, Rect sourceBufferRect,
-			Rect copyRects[], int dx, int dy, Rect scrollRect);
+	void onPaint(Window win, Buffer sourceBuffer, Rect sourceBufferRect, Rect copyRects[], int dx, int dy, Rect scrollRect);
 
-	public void onJavascriptCallback(Window win, String url, String funcName);
+	void onJavascriptCallback(Window win, String url, String funcName);
 
-	public void onRunFileChooser(Window win, int mode, String title,
-			String defaultFile);
+	void onRunFileChooser(Window win, int mode, String title, String defaultFile);
 }
