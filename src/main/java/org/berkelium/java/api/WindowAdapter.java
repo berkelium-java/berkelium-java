@@ -77,4 +77,7 @@ public class WindowAdapter implements WindowDelegate {
 
 	public void onUnresponsive(Window win) {
 	}
+
+	public void onResizeRequested(Window win, int x, int y, int width, int height) {
+	}
 }

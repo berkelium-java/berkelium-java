@@ -219,4 +219,10 @@ public:
 		if(java == NULL) return;
 		java->env->CallVoidMethod(globalDelegate, java->_call.WindowDelegate_onExternalHost, java->map(win), java->map(message), java->map(origin), java->map(target));
 	}
+
+	virtual void onResizeRequested(Berkelium::Window *win, int x, int y, int width, int height) {
+		Java* java = Java::getJava();
+		if(java == NULL) return;
+		java->env->CallVoidMethod(globalDelegate, java->_call.WindowDelegate_onResizeRequested, java->map(win), x, y, width, height);
+	}
 };

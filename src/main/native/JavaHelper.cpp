@@ -39,6 +39,7 @@ Java::Java(JNIEnv* e) {
 	_call.WindowDelegate_onCreatedWindow = e->GetMethodID(_class.WindowDelegate, "onCreatedWindow", "(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Rect;)V");
 	_call.WindowDelegate_onJavascriptCallback = e->GetMethodID(_class.WindowDelegate, "onJavascriptCallback", "(Lorg/berkelium/java/api/Window;Ljava/lang/String;Ljava/lang/String;)V");
 	_call.WindowDelegate_onRunFileChooser = e->GetMethodID(_class.WindowDelegate, "onRunFileChooser", "(Lorg/berkelium/java/api/Window;ILjava/lang/String;Ljava/lang/String;)V");
+	_call.WindowDelegate_onResizeRequested = e->GetMethodID(_class.WindowDelegate, "onResizeRequested", "(Lorg/berkelium/java/api/Window;IIII)V");
 
 	thread = env->CallStaticObjectMethod(_class.Thread, _static.Thread_currentThread);
 	threadName = jstring2String((jstring)env->CallObjectMethod(thread, _call.Thread_getName));

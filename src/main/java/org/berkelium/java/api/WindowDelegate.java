@@ -46,4 +46,6 @@ public interface WindowDelegate {
 	void onJavascriptCallback(Window win, String url, String funcName);
 
 	void onRunFileChooser(Window win, int mode, String title, String defaultFile);
+
+	void onResizeRequested(Window win, int x, int y, int width, int height);
 }

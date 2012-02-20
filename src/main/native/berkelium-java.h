@@ -109,6 +109,7 @@ public:
 		jmethodID WindowDelegate_onCreatedWindow;
 		jmethodID WindowDelegate_onJavascriptCallback;
 		jmethodID WindowDelegate_onRunFileChooser;
+		jmethodID WindowDelegate_onResizeRequested;
 	} _call;
 };
 
