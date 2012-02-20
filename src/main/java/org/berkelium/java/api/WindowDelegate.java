@@ -1,7 +1,7 @@
 package org.berkelium.java.api;
 
 public interface WindowDelegate {
-	void onResize(int width, int height);
+	void onResize(Window win, int width, int height);
 
 	void onPaintDone(Window win, Rect rect);
 

@@ -18,7 +18,7 @@ Java::Java(JNIEnv* e) {
 	const char* windowStringVoid = "(Lorg/berkelium/java/api/Window;Ljava/lang/String;)V";
 	_call.Thread_getName = e->GetMethodID(_class.Thread, "getName", "()Ljava/lang/String;");
 	_call.WindowDelegate_onPaint = e->GetMethodID(_class.WindowDelegate, "onPaint", "(Lorg/berkelium/java/api/Window;Lorg/berkelium/java/api/Buffer;Lorg/berkelium/java/api/Rect;[Lorg/berkelium/java/api/Rect;IILorg/berkelium/java/api/Rect;)V");
-	_call.WindowDelegate_onResize = e->GetMethodID(_class.WindowDelegate, "onResize", "(II)V");
+	_call.WindowDelegate_onResize = e->GetMethodID(_class.WindowDelegate, "onResize", "(Lorg/berkelium/java/api/Window;II)V");
 	_call.WindowDelegate_onAddressBarChanged = e->GetMethodID(_class.WindowDelegate, "onAddressBarChanged", windowStringVoid);
 	_call.WindowDelegate_onStartLoading = e->GetMethodID(_class.WindowDelegate, "onStartLoading", windowStringVoid);
 	_call.WindowDelegate_onLoad = e->GetMethodID(_class.WindowDelegate, "onLoad", windowVoid);

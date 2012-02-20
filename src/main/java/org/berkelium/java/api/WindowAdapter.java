@@ -1,7 +1,7 @@
 package org.berkelium.java.api;
 
 public class WindowAdapter implements WindowDelegate {
-	public void onResize(int width, int height) {
+	public void onResize(Window win, int width, int height) {
 	}
 
 	public void onPaintDone(Window win, Rect rect) {

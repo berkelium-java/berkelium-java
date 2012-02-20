@@ -40,7 +40,7 @@ public class WindowImpl implements Window {
 			// TODO
 			// move this into c++ code
 			// also handle browser window resizes
-			d.onResize(width, height);
+			d.onResize(this, width, height);
 		}
 	}
 
