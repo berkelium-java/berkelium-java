@@ -70,6 +70,10 @@ public abstract class Berkelium {
 		}
 	}; 
 
+	public static void log(String format, Object ... args) {
+		log(String.format(format, args));
+	}
+
 	public static void log(String message) {
 		synchronized (handlers) {
 			if(handlers.size() == 0) {

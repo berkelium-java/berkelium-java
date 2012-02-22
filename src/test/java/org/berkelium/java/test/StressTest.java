@@ -4,6 +4,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 
 import junit.framework.Assert;
 
+import org.berkelium.java.api.Berkelium;
 import org.berkelium.java.api.Buffer;
 import org.berkelium.java.api.DebugDelegate;
 import org.berkelium.java.api.Rect;
@@ -15,8 +16,8 @@ import org.junit.Test;
 public class StressTest extends AbstractBerkeliumTest {
 	@Test
 	public void onPaint() throws InterruptedException {
-		for(int i = 0, to = 100; i < to; i++) {
-			//System.err.printf("running test %d of %d\n", i + 1, to);
+		for(int i = 0, to = 1000; i < to; i++) {
+			Berkelium.log("running test %d of %d", i + 1, to);
 			final AtomicBoolean result = new AtomicBoolean(false);
 			
 			window.addDelegate(new WindowAdapter() {
