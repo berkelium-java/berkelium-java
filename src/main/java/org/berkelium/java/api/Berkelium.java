@@ -2,6 +2,7 @@ package org.berkelium.java.api;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.lang.reflect.InvocationTargetException;
 import java.util.LinkedList;
 
 public abstract class Berkelium {
@@ -30,6 +31,13 @@ public abstract class Berkelium {
 		try {
 			Class<?> c = Berkelium.class.getClassLoader().loadClass(clazz);
 			instance = (Berkelium) c.getConstructor().newInstance();
+		} catch (InvocationTargetException ite) {
+			Throwable cause = ite;
+			Throwable tmp;
+			while((tmp = cause.getCause()) != null) {
+				cause = tmp;
+			}
+			throw new RuntimeException(ite.getMessage(), cause);
 		} catch (Exception ex) {
 			throw new RuntimeException(ex);
 		}
