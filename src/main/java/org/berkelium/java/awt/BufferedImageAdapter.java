@@ -16,7 +16,7 @@ public class BufferedImageAdapter extends WindowAdapter {
 	public BufferedImageAdapter() {
 	}
 
-	public void onResize(int width, int height) {
+	public void onResize(Window win, int width, int height) {
 		resize(width, height);
 	}
 
