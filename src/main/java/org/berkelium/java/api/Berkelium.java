@@ -11,6 +11,7 @@ public abstract class Berkelium {
 		if (instance == null) {
 			throw new IllegalStateException();
 		}
+		instance.assertIsRunning();
 		return instance;
 	}
 
@@ -42,6 +43,8 @@ public abstract class Berkelium {
 	public abstract void executeAndWait(Runnable job);
 
 	public abstract void sync(Window window);
+
+	public abstract void assertIsRunning();
 
 	public abstract void assertIsBerkeliumThread();
 

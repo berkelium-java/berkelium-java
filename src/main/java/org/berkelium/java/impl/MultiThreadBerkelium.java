@@ -135,6 +135,7 @@ public class MultiThreadBerkelium extends Berkelium {
 	}
 
 	public void execute(Runnable command) {
+		assertIsRunning();
 		queue.add(command);
 	}
 
@@ -143,6 +144,8 @@ public class MultiThreadBerkelium extends Berkelium {
 			job.run();
 			return;
 		}
+
+		assertIsRunning();
 
 		final CyclicBarrier barrier = new CyclicBarrier(2);
 		final AtomicReference<RuntimeException> ex = new AtomicReference<RuntimeException>();
@@ -187,6 +190,10 @@ public class MultiThreadBerkelium extends Berkelium {
 			}
 		});
 		return ret.get().getThreadProxyWindow();
+	}
+
+	public void assertIsRunning() {
+		berkelium.assertIsRunning();
 	}
 
 	public void assertNotBerkeliumThread() {

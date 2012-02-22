@@ -15,6 +15,8 @@ public final class SingleThreadBerkelium extends Berkelium {
 	private final static HashMap<Long, Object> map = new HashMap<Long, Object>();
 	private final static NativeLibraryLoader loaded = new NativeLibraryLoader();
 	private final Thread thread = Thread.currentThread();
+	private boolean running = false;
+	private boolean destroyed = false;
 
 	public SingleThreadBerkelium() {
 		try {
@@ -33,6 +35,7 @@ public final class SingleThreadBerkelium extends Berkelium {
 	private final AtomicBoolean updateRunning = new AtomicBoolean(false);
 
 	public final void update() {
+		running = true;
 		assertIsBerkeliumThread();
 
 		if (updateRunning.getAndSet(true))
@@ -47,7 +50,14 @@ public final class SingleThreadBerkelium extends Berkelium {
 
 	private final native void _update();
 
-	public final native void destroy();
+	public void destroy() {
+		if(!destroyed) {
+			destroyed = true;
+			_destroy();
+		}
+	}
+
+	public final native void _destroy();
 
 	// FIXME: jni helper
 	public final static Rect createRect(int x, int y, int w, int h) {
@@ -129,6 +139,13 @@ public final class SingleThreadBerkelium extends Berkelium {
 		} catch (BrokenBarrierException e) {
 		}
 		win.removeDelegate(delegate);
+	}
+
+	public void assertIsRunning() {
+		if(running && destroyed) {
+			throw new IllegalStateException(
+					"Berkelium is not running!");
+		}		
 	}
 
 	public void assertNotBerkeliumThread() {

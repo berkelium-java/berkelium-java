@@ -33,7 +33,7 @@ JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1init
 #endif
 }
 
-JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium_destroy(JNIEnv* env, jobject)
+JNIEXPORT void JNICALL Java_org_berkelium_java_impl_SingleThreadBerkelium__1destroy(JNIEnv* env, jobject)
 {
 	Java* java = Java::getOrCreateJava(env);
 	if(java == NULL) return;
