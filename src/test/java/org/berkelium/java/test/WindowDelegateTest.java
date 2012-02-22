@@ -66,10 +66,7 @@ public class WindowDelegateTest extends AbstractBerkeliumTest {
 		Assert.assertTrue("onExternalHost not called!", result.get());
 	}
 
-	/*
-	TODO this test case do not work?
 	@Test(timeout = 20000)
-	*/
 	public void onPaintTest() throws InterruptedException {
 		final AtomicBoolean result = new AtomicBoolean(false);
 		

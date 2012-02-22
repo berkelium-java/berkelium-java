@@ -29,6 +29,7 @@ public abstract class AbstractBerkeliumTest {
 	public void createWindow() {
 		window = runtime.createWindow().getThreadProxyWindow();
 		window.addDelegate(new DebugDelegate(debug).getProxy());
+		window.resize(640, 480);
 	}
 
 	@After
